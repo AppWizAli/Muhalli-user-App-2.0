@@ -7,7 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hiskytechs.muhallinewuserapp.Adapters.OrderAdapter
+import com.hiskytechs.muhallinewuserapp.Data.AppData
 import com.hiskytechs.muhallinewuserapp.Models.Order
+import com.hiskytechs.muhallinewuserapp.Ui.OrderDetailsActivity
 import com.hiskytechs.muhallinewuserapp.databinding.FragmentOrdersBinding
 
 class OrdersFragment : Fragment() {
@@ -29,26 +31,27 @@ class OrdersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
-        loadDummyData()
+        loadOrders()
         setupFilters()
     }
 
     private fun setupRecyclerView() {
         orderAdapter = OrderAdapter(allOrders) { order ->
-            // Handle view details
+            startActivity(android.content.Intent(requireContext(), OrderDetailsActivity::class.java).apply {
+                putExtra(OrderDetailsActivity.EXTRA_ORDER_ID, order.orderId)
+            })
         }
         binding.rvOrders.layoutManager = LinearLayoutManager(requireContext())
         binding.rvOrders.adapter = orderAdapter
     }
 
-    private fun loadDummyData() {
-        allOrders = mutableListOf(
-            Order("ORD-12345", "March 14, 2026", "Delivered", "Al-Hamd Wholesale", 3, 231.97),
-            Order("ORD-12344", "March 12, 2026", "In Transit", "Al-Sadiqa Company", 2, 269.98, "March 17, 2026"),
-            Order("ORD-12343", "March 10, 2026", "Processing", "Al-Far Imports", 5, 445.50),
-            Order("ORD-12342", "March 8, 2026", "Delivered", "Premium Foods LLC", 4, 389.99),
-            Order("ORD-12341", "March 5, 2026", "Cancelled", "Global Trade Supplies", 2, 178.00)
-        )
+    override fun onResume() {
+        super.onResume()
+        loadOrders()
+    }
+
+    private fun loadOrders() {
+        allOrders = AppData.getOrders().toMutableList()
         orderAdapter.updateOrders(allOrders)
     }
 

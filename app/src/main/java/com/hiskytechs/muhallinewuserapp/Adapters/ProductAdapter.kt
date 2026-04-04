@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hiskytechs.muhallinewuserapp.Models.Product
 import com.hiskytechs.muhallinewuserapp.databinding.ItemProductBinding
+import java.util.Locale
 
 class ProductAdapter(private val products: List<Product>, private val onAddClick: (Product) -> Unit) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
@@ -26,7 +27,7 @@ class ProductAdapter(private val products: List<Product>, private val onAddClick
         holder.binding.apply {
             tvProductName.text = product.name
             tvProductUnit.text = product.unit
-            tvProductPrice.text = product.price
+            tvProductPrice.text = String.format(Locale.getDefault(), "$%.2f", product.price)
             ivProduct.setImageResource(product.imageResId)
             
             btnAddToCart.setOnClickListener {

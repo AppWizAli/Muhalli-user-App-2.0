@@ -12,10 +12,19 @@
         android:orientation="vertical"
         android:padding="24dp">
 
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_arrow_back_24"
+            app:tint="@color/text_dark" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="20dp"
             android:text="Create Account"
             android:textColor="#1A1C1E"
             android:textSize="28sp"
@@ -45,7 +54,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_edittext"
-            android:drawableStart="@android:drawable/ic_menu_myplaces"
+            android:drawableStart="@drawable/ic_storefront_24"
             android:drawablePadding="12dp"
             android:hint="Enter your business name"
             android:inputType="textPersonName"
@@ -67,7 +76,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_edittext"
-            android:drawableStart="@android:drawable/ic_menu_call"
+            android:drawableStart="@drawable/ic_call_24"
             android:drawablePadding="12dp"
             android:hint="Enter your phone number"
             android:inputType="phone"
@@ -89,7 +98,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_edittext"
-            android:drawableStart="@android:drawable/ic_dialog_email"
+            android:drawableStart="@drawable/ic_mail_24"
             android:drawablePadding="12dp"
             android:hint="Enter your email"
             android:inputType="textEmailAddress"
@@ -117,7 +126,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
-                android:src="@android:drawable/ic_lock_idle_lock" />
+                android:src="@drawable/ic_lock_24" />
 
             <EditText
                 android:id="@+id/etPassword"
@@ -152,7 +161,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
-                android:src="@android:drawable/ic_lock_idle_lock" />
+                android:src="@drawable/ic_lock_24" />
 
             <EditText
                 android:id="@+id/etConfirmPassword"
@@ -201,3 +210,5 @@
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+
+

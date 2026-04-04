@@ -1,4 +1,4 @@
-package com.hiskytechs.muhallinewuserapp.ui
+package com.hiskytechs.muhallinewuserapp.Ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,9 +8,9 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
-import com.hiskytechs.muhallinewuserapp.adapters.OnboardingAdapter
+import com.hiskytechs.muhallinewuserapp.Adapters.OnboardingAdapter
 import com.hiskytechs.muhallinewuserapp.MainActivity
-import com.hiskytechs.muhallinewuserapp.models.OnboardingItem
+import com.hiskytechs.muhallinewuserapp.Models.OnboardingItem
 import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityOnboardingBinding
 

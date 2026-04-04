@@ -16,7 +16,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_centerVertical="true"
-            android:src="@android:drawable/ic_menu_revert"
+            android:src="@drawable/ic_arrow_back_24"
             app:tint="#1A1C1E" />
 
         <TextView
@@ -37,3 +37,4 @@
         android:padding="8dp" />
 
 </LinearLayout>
+

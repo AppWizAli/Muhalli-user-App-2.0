@@ -39,7 +39,7 @@
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@android:drawable/ic_menu_agenda"
+                android:src="@drawable/ic_storefront_24"
                 app:tint="@color/primary" />
         </LinearLayout>
 
@@ -58,7 +58,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_edittext"
-            android:drawableStart="@android:drawable/ic_dialog_email"
+            android:drawableStart="@drawable/ic_mail_24"
             android:drawablePadding="12dp"
             android:hint="Enter your email or phone"
             android:inputType="textEmailAddress"
@@ -85,7 +85,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
-                android:src="@android:drawable/ic_lock_idle_lock" />
+                android:src="@drawable/ic_lock_24" />
 
             <EditText
                 android:id="@+id/etPassword"
@@ -104,7 +104,7 @@
                 android:layout_height="24dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:src="@android:drawable/ic_menu_view" />
+                android:src="@drawable/ic_visibility_24" />
         </RelativeLayout>
 
         <TextView
@@ -153,3 +153,5 @@
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+
+

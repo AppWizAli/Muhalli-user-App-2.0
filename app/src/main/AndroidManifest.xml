@@ -38,6 +38,46 @@
             android:exported="false" />
 
         <activity
+            android:name=".Ui.CartActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.ChatConversationActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.ChatsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.AccountDetailsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.AboutAppActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.OrderDetailsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.OrderSuccessActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.CheckoutReviewActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.CheckoutAddressActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.SuppliersActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="false"
             android:launchMode="singleTop" />

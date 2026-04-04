@@ -1,4 +1,4 @@
-package com.hiskytechs.muhallinewuserapp.models
+package com.hiskytechs.muhallinewuserapp.Models
 
 data class OnboardingItem(
     val image: Int,

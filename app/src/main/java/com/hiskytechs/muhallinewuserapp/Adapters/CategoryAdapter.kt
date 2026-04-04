@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hiskytechs.muhallinewuserapp.Models.Category
 import com.hiskytechs.muhallinewuserapp.databinding.ItemCategoryBinding
 
-class CategoryAdapter(private val categories: List<Category>) :
+class CategoryAdapter(
+    private val categories: List<Category>,
+    private val onCategoryClick: (Category) -> Unit
+) :
     RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder>() {
 
     class CategoryViewHolder(val binding: ItemCategoryBinding) :
@@ -29,6 +32,7 @@ class CategoryAdapter(private val categories: List<Category>) :
             tvProductCount.text = category.productCount
             ivCategoryIcon.setImageResource(category.iconResId)
             cvIcon.setCardBackgroundColor(Color.parseColor(category.backgroundColor))
+            root.setOnClickListener { onCategoryClick(category) }
         }
     }
 

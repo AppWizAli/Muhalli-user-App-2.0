@@ -2,13 +2,16 @@ package com.hiskytechs.muhallinewuserapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.hiskytechs.muhallinewuserapp.Fragments.CartFragment
 import com.hiskytechs.muhallinewuserapp.Fragments.CategoriesFragment
+import com.hiskytechs.muhallinewuserapp.Fragments.ChatsFragment
 import com.hiskytechs.muhallinewuserapp.Fragments.HomeFragment
 import com.hiskytechs.muhallinewuserapp.Fragments.OrdersFragment
 import com.hiskytechs.muhallinewuserapp.Fragments.ProfileFragment
+import com.hiskytechs.muhallinewuserapp.Ui.CartActivity
+import com.hiskytechs.muhallinewuserapp.Utill.CartManager
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -25,6 +28,10 @@ class MainActivity : AppCompatActivity() {
             handleNavigation(intent)
         }
 
+        binding.layoutCartEntry.setOnClickListener {
+            startActivity(Intent(this, CartActivity::class.java))
+        }
+
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
@@ -35,8 +42,8 @@ class MainActivity : AppCompatActivity() {
                      loadFragment(CategoriesFragment())
                     true
                 }
-                R.id.nav_cart -> {
-                     loadFragment(CartFragment())
+                R.id.nav_chats -> {
+                     loadFragment(ChatsFragment())
                     true
                 }
                 R.id.nav_orders -> {
@@ -52,6 +59,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateCartBadge()
+    }
+
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         handleNavigation(intent)
@@ -59,17 +71,41 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleNavigation(intent: Intent?) {
         val navigateTo = intent?.getStringExtra("navigate_to")
-        if (navigateTo == "cart") {
-            binding.bottomNavigation.selectedItemId = R.id.nav_cart
-            loadFragment(CartFragment())
-        } else {
-            loadFragment(HomeFragment())
+        when (navigateTo) {
+            "home" -> navigateToTab(R.id.nav_home)
+            "cart" -> {
+                startActivity(Intent(this, CartActivity::class.java))
+                navigateToTab(R.id.nav_home)
+            }
+            "chats" -> navigateToTab(R.id.nav_chats)
+            "orders" -> navigateToTab(R.id.nav_orders)
+            "profile" -> navigateToTab(R.id.nav_profile)
+            "categories" -> navigateToTab(R.id.nav_categories)
+            else -> navigateToTab(R.id.nav_home)
         }
+    }
+
+    fun navigateToTab(itemId: Int) {
+        binding.bottomNavigation.selectedItemId = itemId
+        val fragment = when (itemId) {
+            R.id.nav_categories -> CategoriesFragment()
+            R.id.nav_chats -> ChatsFragment()
+            R.id.nav_orders -> OrdersFragment()
+            R.id.nav_profile -> ProfileFragment()
+            else -> HomeFragment()
+        }
+        loadFragment(fragment)
     }
 
     private fun loadFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, fragment)
             .commit()
+    }
+
+    private fun updateCartBadge() {
+        val count = CartManager.getCartCount()
+        binding.tvCartBadge.visibility = if (count > 0) View.VISIBLE else View.GONE
+        binding.tvCartBadge.text = count.toString()
     }
 }

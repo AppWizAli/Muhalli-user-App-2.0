@@ -1,4 +1,4 @@
-package com.hiskytechs.muhallinewuserapp.ui
+package com.hiskytechs.muhallinewuserapp.Ui
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +15,6 @@ class ActivitySplash : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             startActivity(Intent(this, ActivityOnboarding::class.java))
             finish()
-        }, 2000)
+        }, 3000)
     }
 }

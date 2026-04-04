@@ -38,25 +38,25 @@ class OrderAdapter(
                 "delivered" -> {
                     tvStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_delivered_bg))
                     tvStatus.setTextColor(ContextCompat.getColor(context, R.color.status_delivered_text))
-                    ivStatusIcon.setImageResource(android.R.drawable.checkbox_on_background)
+                    ivStatusIcon.setImageResource(R.drawable.ic_check_circle_24)
                     ivStatusIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_delivered_text))
                 }
                 "in transit" -> {
                     tvStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_transit_bg))
                     tvStatus.setTextColor(ContextCompat.getColor(context, R.color.status_transit_text))
-                    ivStatusIcon.setImageResource(android.R.drawable.ic_dialog_info)
+                    ivStatusIcon.setImageResource(R.drawable.ic_local_shipping_24)
                     ivStatusIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_transit_text))
                 }
                 "processing" -> {
                     tvStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_processing_bg))
                     tvStatus.setTextColor(ContextCompat.getColor(context, R.color.status_processing_text))
-                    ivStatusIcon.setImageResource(android.R.drawable.ic_menu_recent_history)
+                    ivStatusIcon.setImageResource(R.drawable.ic_schedule_24)
                     ivStatusIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_processing_text))
                 }
                 "cancelled" -> {
                     tvStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_cancelled_bg))
                     tvStatus.setTextColor(ContextCompat.getColor(context, R.color.status_cancelled_text))
-                    ivStatusIcon.setImageResource(android.R.drawable.ic_delete)
+                    ivStatusIcon.setImageResource(R.drawable.ic_delete_24)
                     ivStatusIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_cancelled_text))
                 }
             }

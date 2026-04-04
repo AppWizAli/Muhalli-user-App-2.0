@@ -1,4 +1,4 @@
-package com.hiskytechs.muhallinewuserapp.adapters
+package com.hiskytechs.muhallinewuserapp.Adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.hiskytechs.muhallinewuserapp.models.OnboardingItem
+import com.hiskytechs.muhallinewuserapp.Models.OnboardingItem
 import com.hiskytechs.muhallinewuserapp.R
 
 class OnboardingAdapter(private val onboardingItems: List<OnboardingItem>) :

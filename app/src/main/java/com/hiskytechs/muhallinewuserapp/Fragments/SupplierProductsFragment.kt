@@ -8,9 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hiskytechs.muhallinewuserapp.Adapters.SupplierProductAdapter
-import com.hiskytechs.muhallinewuserapp.MainActivity
 import com.hiskytechs.muhallinewuserapp.Models.Product
-import com.hiskytechs.muhallinewuserapp.R
+import com.hiskytechs.muhallinewuserapp.Ui.CartActivity
 import com.hiskytechs.muhallinewuserapp.Utill.CartManager
 import com.hiskytechs.muhallinewuserapp.databinding.FragmentSupplierProductsBinding
 
@@ -55,14 +54,11 @@ class SupplierProductsFragment : Fragment() {
         )
 
         binding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.rvProducts.isNestedScrollingEnabled = false
         binding.rvProducts.adapter = SupplierProductAdapter(products, supplierName) { cartItem ->
             CartManager.addItem(cartItem)
-            
-            // Navigate to Cart Screen
-            val intent = Intent(requireContext(), MainActivity::class.java)
-            intent.putExtra("navigate_to", "cart")
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            startActivity(intent)
+
+            startActivity(Intent(requireContext(), CartActivity::class.java))
         }
     }
 

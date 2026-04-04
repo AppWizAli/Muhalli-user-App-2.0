@@ -74,7 +74,7 @@
                             android:layout_height="40dp"
                             android:background="@drawable/bg_icon_circle"
                             android:padding="8dp"
-                            android:src="@android:drawable/ic_menu_sort_alphabetically"
+                            android:src="@drawable/ic_shopping_cart_24"
                             app:tint="@color/white" />
 
                         <LinearLayout
@@ -111,7 +111,7 @@
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@android:drawable/ic_menu_send"
+                            android:src="@drawable/ic_attach_money_24"
                             app:tint="@color/primary" />
 
                         <TextView
@@ -125,6 +125,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvAmountProgress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="$481.95 / $500.00"
@@ -142,6 +143,7 @@
                         android:progressDrawable="@drawable/custom_progress_bar" />
 
                     <TextView
+                        android:id="@+id/tvAmountRemaining"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -159,7 +161,7 @@
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@android:drawable/ic_menu_send"
+                            android:src="@drawable/ic_grid_view_24"
                             app:tint="@color/primary" />
 
                         <TextView
@@ -173,6 +175,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvQuantityProgress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="6 / 20 items"
@@ -190,6 +193,7 @@
                         android:progressDrawable="@drawable/custom_progress_bar" />
 
                     <TextView
+                        android:id="@+id/tvQuantityRemaining"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
@@ -206,59 +210,6 @@
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="false"
                 tools:listitem="@layout/item_cart" />
-
-            <!-- Promo Code Card -->
-            <androidx.cardview.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="8dp"
-                        android:text="Promo Code"
-                        android:textColor="@color/text_dark"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        app:drawableStartCompat="@android:drawable/ic_menu_send" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:id="@+id/etPromoCode"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/bg_quantity_selector"
-                            android:hint="Enter promo code"
-                            android:padding="12dp"
-                            android:textSize="14sp" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/btnApply"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:text="Apply"
-                            android:textAllCaps="false"
-                            app:cornerRadius="12dp" />
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.cardview.widget.CardView>
 
             <!-- Order Summary Card -->
             <androidx.cardview.widget.CardView
@@ -362,7 +313,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_marginTop="24dp"
-                        android:text="Proceed to Checkout"
+                        android:text="Continue to Address"
                         android:textAllCaps="false"
                         app:cornerRadius="12dp" />
                 </LinearLayout>

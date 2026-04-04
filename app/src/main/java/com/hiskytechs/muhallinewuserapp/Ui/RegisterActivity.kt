@@ -14,6 +14,10 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.ivBack.setOnClickListener {
+            finish()
+        }
+
         binding.tvSignIn.setOnClickListener {
             finish()
         }

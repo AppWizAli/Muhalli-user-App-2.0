@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="12dp"
-                android:src="@android:drawable/ic_menu_edit"
+                android:src="@drawable/ic_edit_24"
                 app:tint="@color/primary" />
         </androidx.cardview.widget.CardView>
 
@@ -61,7 +61,9 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@android:drawable/ic_media_next"
+            android:src="@drawable/ic_chevron_right_24"
             app:tint="#9E9E9E" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
+
+

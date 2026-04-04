@@ -23,9 +23,10 @@ class SupplierDetailsActivity : AppCompatActivity() {
         val deliveryTime = intent.getStringExtra("delivery_time")
         val minAmount = intent.getStringExtra("min_amount")
         val minQty = intent.getStringExtra("min_qty")
+        val location = intent.getStringExtra("location")
 
         binding.tvSupplierName.text = supplierName
-        // In a real app, you'd set other fields too
+        binding.tvLocation.text = location ?: binding.tvLocation.text
 
         binding.toolbar.setNavigationOnClickListener { finish() }
 

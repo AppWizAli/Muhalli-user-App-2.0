@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hiskytechs.muhallinewuserapp.Adapters.SupplierAdapter
-import com.hiskytechs.muhallinewuserapp.Models.Supplier
+import com.hiskytechs.muhallinewuserapp.Data.AppData
 import com.hiskytechs.muhallinewuserapp.databinding.FragmentHomeBinding
 
 class HomeFragment : Fragment() {
@@ -29,16 +29,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        val suppliers = listOf(
-            Supplier("Al-Hamd Wholesale", "250 products", "1-2 days", "$500", "20 items"),
-            Supplier("Al-Sadiqa Company", "180 products", "Same day", "$300", "15 items"),
-            Supplier("Al-Far Imports", "320 products", "2-3 days", "$1000", "50 items"),
-            Supplier("Premium Foods LLC", "210 products", "1-2 days", "$400", "25 items"),
-            Supplier("Global Trade Supplies", "290 products", "Same day", "$600", "30 items")
-        )
-
         binding.rvSuppliers.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvSuppliers.adapter = SupplierAdapter(suppliers)
+        binding.rvSuppliers.adapter = SupplierAdapter(AppData.suppliers.take(5))
     }
 
     override fun onDestroyView() {

@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_light">
+    android:background="@color/bg_light"
+    android:fillViewport="true">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:elevation="0dp">
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:navigationIcon="@android:drawable/ic_menu_revert">
+            android:background="@color/white"
+            app:navigationIcon="@drawable/ic_arrow_back_24">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -28,13 +29,14 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/ic_menu_share" />
+                    android:src="@drawable/ic_share_24" />
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             android:padding="16dp">
 
             <androidx.cardview.widget.CardView
@@ -52,7 +54,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:padding="12dp"
-                    android:src="@android:drawable/ic_menu_agenda" />
+                    android:src="@drawable/ic_storefront_24" />
             </androidx.cardview.widget.CardView>
 
             <TextView
@@ -76,7 +78,7 @@
                 android:text="Dubai, UAE"
                 android:textColor="@color/text_grey"
                 android:textSize="14sp"
-                app:drawableStartCompat="@android:drawable/ic_menu_mylocation"
+                app:drawableStartCompat="@drawable/ic_location_on_24"
                 app:layout_constraintStart_toStartOf="@id/tvSupplierName"
                 app:layout_constraintTop_toBottomOf="@id/tvSupplierName" />
 
@@ -115,7 +117,7 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@android:drawable/ic_menu_recent_history"
+                        android:src="@drawable/ic_schedule_24"
                         app:tint="@color/primary" />
 
                     <TextView
@@ -148,7 +150,7 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@android:drawable/ic_menu_gallery"
+                        android:src="@drawable/ic_attach_money_24"
                         app:tint="@color/primary" />
 
                     <TextView
@@ -181,7 +183,7 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:src="@android:drawable/ic_menu_sort_by_size"
+                        android:src="@drawable/ic_grid_view_24"
                         app:tint="@color/primary" />
 
                     <TextView
@@ -207,6 +209,7 @@
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/white"
             app:tabIndicatorColor="@color/primary"
             app:tabIndicatorHeight="3dp"
             app:tabSelectedTextColor="@color/primary"
@@ -222,17 +225,13 @@
                 android:layout_height="wrap_content"
                 android:text="Info" />
         </com.google.android.material.tabs.TabLayout>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </androidx.core.widget.NestedScrollView>
+    </LinearLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.core.widget.NestedScrollView>
+
+
