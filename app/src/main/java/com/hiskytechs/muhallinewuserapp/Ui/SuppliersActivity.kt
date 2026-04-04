@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hiskytechs.muhallinewuserapp.Adapters.SupplierAdapter
 import com.hiskytechs.muhallinewuserapp.Data.AppData
+import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.databinding.ActivitySuppliersBinding
 
 class SuppliersActivity : AppCompatActivity() {
@@ -25,21 +26,23 @@ class SuppliersActivity : AppCompatActivity() {
         }
 
         binding.tvSelectedCategory.text = if (selectedCategory.isBlank()) {
-            "Showing all verified suppliers"
+            getString(R.string.showing_all_verified_suppliers)
         } else {
             selectedCategory
         }
-        binding.tvResultsCount.text = "${suppliers.size} suppliers found"
+        binding.tvResultsCount.text = getString(R.string.suppliers_found_count, suppliers.size)
 
         binding.rvSuppliers.layoutManager = LinearLayoutManager(this)
         binding.rvSuppliers.adapter = SupplierAdapter(suppliers, selectedCategory)
 
         binding.ivBack.setOnClickListener { finish() }
         binding.layoutFilter.setOnClickListener {
-            Toast.makeText(this, "Filter options coming soon", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.filter_options_coming_soon), Toast.LENGTH_SHORT)
+                .show()
         }
         binding.layoutSort.setOnClickListener {
-            Toast.makeText(this, "Sort options coming soon", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.sort_options_coming_soon), Toast.LENGTH_SHORT)
+                .show()
         }
     }
 

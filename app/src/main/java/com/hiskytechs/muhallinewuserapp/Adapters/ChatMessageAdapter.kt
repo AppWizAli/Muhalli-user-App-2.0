@@ -40,7 +40,7 @@ class ChatMessageAdapter(
             (layoutBubbleContainer.layoutParams as FrameLayout.LayoutParams).gravity =
                 if (isBuyer) Gravity.END else Gravity.START
 
-            tvSenderRole.text = if (isBuyer) "You" else supplierName
+            tvSenderRole.text = if (isBuyer) context.getString(R.string.you_label) else supplierName
             tvSenderRole.textAlignment = if (isBuyer) {
                 View.TEXT_ALIGNMENT_TEXT_END
             } else {

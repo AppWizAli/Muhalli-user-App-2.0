@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Snacks"
+            android:text="@string/snacks"
             android:textColor="#1A1C1E"
             android:textSize="16sp"
             android:textStyle="bold" />
@@ -44,10 +44,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="245 products"
+            android:text="@string/value_245_products"
             android:textColor="#6C7278"
             android:textSize="12sp" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
+
 

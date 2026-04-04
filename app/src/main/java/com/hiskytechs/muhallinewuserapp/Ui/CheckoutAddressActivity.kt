@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.hiskytechs.muhallinewuserapp.Models.Address
+import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Utill.AddressManager
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityCheckoutAddressBinding
 
@@ -31,8 +32,8 @@ class CheckoutAddressActivity : AppCompatActivity() {
         }
 
         if (!continueToReview) {
-            binding.btnUseSavedAddress.text = "Done"
-            binding.btnSaveAddress.text = "Save Address"
+            binding.btnUseSavedAddress.text = getString(R.string.done)
+            binding.btnSaveAddress.text = getString(R.string.save_address)
         }
 
         renderSavedAddress()
@@ -73,10 +74,11 @@ class CheckoutAddressActivity : AppCompatActivity() {
         val city = binding.etCity.text?.toString()?.trim().orEmpty()
         val note = binding.etAddressNote.text?.toString()?.trim().orEmpty()
 
-        binding.etFullName.error = if (fullName.isBlank()) "Required" else null
-        binding.etPhoneNumber.error = if (phoneNumber.isBlank()) "Required" else null
-        binding.etStreetAddress.error = if (streetAddress.isBlank()) "Required" else null
-        binding.etCity.error = if (city.isBlank()) "Required" else null
+        val requiredField = getString(R.string.required_field)
+        binding.etFullName.error = if (fullName.isBlank()) requiredField else null
+        binding.etPhoneNumber.error = if (phoneNumber.isBlank()) requiredField else null
+        binding.etStreetAddress.error = if (streetAddress.isBlank()) requiredField else null
+        binding.etCity.error = if (city.isBlank()) requiredField else null
 
         if (fullName.isBlank() || phoneNumber.isBlank() || streetAddress.isBlank() || city.isBlank()) {
             return

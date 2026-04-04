@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
-            android:text="Premium Potato Chips"
+            android:text="@string/premium_potato_chips"
             android:textColor="@color/text_dark"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -52,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:text="Al-Hamd Wholesale"
+            android:text="@string/al_hamd_wholesale"
             android:textColor="@color/text_grey"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="@id/tvProductName"
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="$45.99"
+            android:text="@string/value_45_99"
             android:textColor="@color/primary"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -104,7 +104,7 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="2"
+                android:text="@string/value_2"
                 android:textColor="@color/text_dark"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -121,7 +121,7 @@
             android:id="@+id/tvItemSubtotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="$91.98"
+            android:text="@string/value_91_98"
             android:textColor="@color/text_dark"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -130,4 +130,5 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
+
 

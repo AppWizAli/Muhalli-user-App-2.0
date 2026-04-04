@@ -27,7 +27,11 @@ class ProductAdapter(private val products: List<Product>, private val onAddClick
         holder.binding.apply {
             tvProductName.text = product.name
             tvProductUnit.text = product.unit
-            tvProductPrice.text = String.format(Locale.getDefault(), "$%.2f", product.price)
+            tvProductPrice.text = String.format(
+                Locale.getDefault(),
+                root.context.getString(com.hiskytechs.muhallinewuserapp.R.string.currency_amount_format),
+                product.price
+            )
             ivProduct.setImageResource(product.imageResId)
             
             btnAddToCart.setOnClickListener {

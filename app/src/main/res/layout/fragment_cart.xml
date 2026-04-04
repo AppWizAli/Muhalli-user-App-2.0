@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Shopping Cart"
+        android:text="@string/shopping_cart"
         android:textColor="@color/text_dark"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -27,7 +27,7 @@
         android:background="@drawable/bg_badge"
         android:paddingHorizontal="12dp"
         android:paddingVertical="4dp"
-        android:text="3 items"
+        android:text="@string/value_3_items"
         android:textColor="@color/white"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="@id/tvTitle"
@@ -87,7 +87,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Order Progress"
+                                android:text="@string/order_progress"
                                 android:textColor="@color/text_dark"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
@@ -95,7 +95,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Complete minimum order requirements"
+                                android:text="@string/complete_minimum_order_requirements"
                                 android:textColor="@color/text_grey"
                                 android:textSize="11sp" />
                         </LinearLayout>
@@ -119,7 +119,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:text="Minimum Amount"
+                            android:text="@string/minimum_amount"
                             android:textColor="@color/text_dark"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -128,7 +128,7 @@
                             android:id="@+id/tvAmountProgress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$481.95 / $500.00"
+                            android:text="@string/value_481_95_500_00"
                             android:textColor="@color/text_grey"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -147,7 +147,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Add $18.05 more to meet minimum"
+                        android:text="@string/add_18_05_more_to_meet_minimum"
                         android:textColor="#FFA000"
                         android:textSize="11sp" />
 
@@ -169,7 +169,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_weight="1"
-                            android:text="Minimum Quantity"
+                            android:text="@string/minimum_quantity"
                             android:textColor="@color/text_dark"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -178,7 +178,7 @@
                             android:id="@+id/tvQuantityProgress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="6 / 20 items"
+                            android:text="@string/value_6_20_items"
                             android:textColor="@color/text_grey"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -197,7 +197,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Add 14 more items to meet minimum"
+                        android:text="@string/add_14_more_items_to_meet_minimum"
                         android:textColor="#FFA000"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -229,7 +229,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Order Summary"
+                        android:text="@string/order_summary"
                         android:textColor="@color/text_dark"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -244,14 +244,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Subtotal"
+                            android:text="@string/subtotal"
                             android:textColor="@color/text_grey" />
 
                         <TextView
                             android:id="@+id/tvSubtotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$481.95"
+                            android:text="@string/value_481_95"
                             android:textColor="@color/text_dark"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -266,14 +266,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Shipping"
+                            android:text="@string/shipping"
                             android:textColor="@color/text_grey" />
 
                         <TextView
                             android:id="@+id/tvShipping"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$25.00"
+                            android:text="@string/value_25_00"
                             android:textColor="@color/text_dark"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -293,7 +293,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Total"
+                            android:text="@string/total"
                             android:textColor="@color/text_dark"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -302,7 +302,7 @@
                             android:id="@+id/tvTotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$506.95"
+                            android:text="@string/value_506_95"
                             android:textColor="@color/primary"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -313,7 +313,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_marginTop="24dp"
-                        android:text="Continue to Address"
+                        android:text="@string/continue_to_address"
                         android:textAllCaps="false"
                         app:cornerRadius="12dp" />
                 </LinearLayout>
@@ -321,3 +321,4 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
+

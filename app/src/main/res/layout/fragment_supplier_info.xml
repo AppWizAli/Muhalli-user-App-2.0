@@ -20,7 +20,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="About Supplier"
+                android:text="@string/about_supplier"
                 android:textColor="@color/text_dark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:lineSpacingExtra="4dp"
-                android:text="Al-Hamd Wholesale is a leading supplier of quality food products and beverages in the UAE. With over 10 years of experience, we provide competitive prices and reliable delivery."
+                android:text="@string/al_hamd_wholesale_is_a_leading_supplier_of_quality_food"
                 android:textColor="@color/text_grey"
                 android:textSize="14sp" />
 
@@ -51,7 +51,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="+971 50 123 4567"
+                    android:text="@string/value_971_50_123_4567"
                     android:textColor="@color/text_dark"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -73,7 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="info@alhamdwholesale.ae"
+                    android:text="@string/info_alhamdwholesale_ae"
                     android:textColor="@color/text_dark"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -95,7 +95,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
-                    android:text="Al Quoz Industrial Area, Dubai"
+                    android:text="@string/al_quoz_industrial_area_dubai"
                     android:textColor="@color/text_dark"
                     android:textSize="14sp" />
             </LinearLayout>
@@ -103,5 +103,6 @@
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>
+
 
 

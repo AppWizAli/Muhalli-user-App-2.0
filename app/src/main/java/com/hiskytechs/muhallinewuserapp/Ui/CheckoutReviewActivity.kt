@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.hiskytechs.muhallinewuserapp.Data.AppData
+import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Utill.AddressManager
 import com.hiskytechs.muhallinewuserapp.Utill.CartManager
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityCheckoutReviewBinding
@@ -45,11 +46,23 @@ class CheckoutReviewActivity : AppCompatActivity() {
         binding.tvAddressName.text = address.fullName
         binding.tvAddressPhone.text = address.phoneNumber
         binding.tvAddressLine.text = address.formattedAddress
-        binding.tvAddressNote.text = address.note.ifBlank { "No delivery note added" }
+        binding.tvAddressNote.text = address.note.ifBlank { getString(R.string.no_delivery_note_added) }
 
-        binding.tvItemsValue.text = "${CartManager.getCartCount()} items"
-        binding.tvSubtotalValue.text = String.format(Locale.getDefault(), "$%.2f", CartManager.getSubtotal())
-        binding.tvShippingValue.text = String.format(Locale.getDefault(), "$%.2f", CartManager.getShipping())
-        binding.tvTotalValue.text = String.format(Locale.getDefault(), "$%.2f", CartManager.getTotal())
+        binding.tvItemsValue.text = getString(R.string.items_count_format, CartManager.getCartCount())
+        binding.tvSubtotalValue.text = String.format(
+            Locale.getDefault(),
+            getString(R.string.currency_amount_format),
+            CartManager.getSubtotal()
+        )
+        binding.tvShippingValue.text = String.format(
+            Locale.getDefault(),
+            getString(R.string.currency_amount_format),
+            CartManager.getShipping()
+        )
+        binding.tvTotalValue.text = String.format(
+            Locale.getDefault(),
+            getString(R.string.currency_amount_format),
+            CartManager.getTotal()
+        )
     }
 }

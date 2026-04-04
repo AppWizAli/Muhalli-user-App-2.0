@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:text="Create Account"
+            android:text="@string/create_account"
             android:textColor="#1A1C1E"
             android:textSize="28sp"
             android:textStyle="bold" />
@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Register your business to get started"
+            android:text="@string/register_your_business_to_get_started"
             android:textColor="#6C7278"
             android:textSize="16sp" />
 
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Business Name"
+            android:text="@string/business_name"
             android:textColor="#1A1C1E"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -56,7 +56,7 @@
             android:background="@drawable/bg_edittext"
             android:drawableStart="@drawable/ic_storefront_24"
             android:drawablePadding="12dp"
-            android:hint="Enter your business name"
+            android:hint="@string/enter_your_business_name"
             android:inputType="textPersonName"
             android:paddingHorizontal="16dp" />
 
@@ -65,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Phone Number"
+            android:text="@string/phone_number"
             android:textColor="#1A1C1E"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -78,7 +78,7 @@
             android:background="@drawable/bg_edittext"
             android:drawableStart="@drawable/ic_call_24"
             android:drawablePadding="12dp"
-            android:hint="Enter your phone number"
+            android:hint="@string/enter_your_phone_number"
             android:inputType="phone"
             android:paddingHorizontal="16dp" />
 
@@ -87,7 +87,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Email Address"
+            android:text="@string/email_address"
             android:textColor="#1A1C1E"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -100,7 +100,7 @@
             android:background="@drawable/bg_edittext"
             android:drawableStart="@drawable/ic_mail_24"
             android:drawablePadding="12dp"
-            android:hint="Enter your email"
+            android:hint="@string/enter_your_email"
             android:inputType="textEmailAddress"
             android:paddingHorizontal="16dp" />
 
@@ -109,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Password"
+            android:text="@string/password"
             android:textColor="#1A1C1E"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -134,7 +134,7 @@
                 android:layout_height="match_parent"
                 android:layout_toEndOf="@id/ivLock1"
                 android:background="@android:color/transparent"
-                android:hint="Create a password"
+                android:hint="@string/create_a_password"
                 android:inputType="textPassword"
                 android:paddingHorizontal="12dp" />
         </RelativeLayout>
@@ -144,7 +144,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Confirm Password"
+            android:text="@string/confirm_password"
             android:textColor="#1A1C1E"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -169,7 +169,7 @@
                 android:layout_height="match_parent"
                 android:layout_toEndOf="@id/ivLock2"
                 android:background="@android:color/transparent"
-                android:hint="Re-enter your password"
+                android:hint="@string/re_enter_your_password"
                 android:inputType="textPassword"
                 android:paddingHorizontal="12dp" />
         </RelativeLayout>
@@ -180,7 +180,7 @@
             android:layout_height="60dp"
             android:layout_marginTop="32dp"
             android:backgroundTint="@color/primary"
-            android:text="Create Account"
+            android:text="@string/create_account"
             android:textAllCaps="false"
             android:textSize="16sp"
             app:cornerRadius="12dp" />
@@ -196,19 +196,20 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Already have an account? "
+                android:text="@string/already_have_an_account"
                 android:textColor="#6C7278" />
 
             <TextView
                 android:id="@+id/tvSignIn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign In"
+                android:text="@string/sign_in"
                 android:textColor="@color/primary"
                 android:textStyle="bold" />
         </LinearLayout>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+
 
 

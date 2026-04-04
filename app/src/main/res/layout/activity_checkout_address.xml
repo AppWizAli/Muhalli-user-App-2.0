@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Delivery Address"
+                android:text="@string/delivery_address"
                 android:textColor="@color/text_dark"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Add your delivery details before checkout. If you already saved an address, you can keep using it or edit it."
+            android:text="@string/add_your_delivery_details_before_checkout_if_you_alread"
             android:textColor="@color/text_grey"
             android:textSize="13sp" />
     </LinearLayout>
@@ -76,7 +76,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Saved Address"
+                        android:text="@string/saved_address"
                         android:textColor="@color/text_dark"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -86,7 +86,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
-                        android:text="John Doe"
+                        android:text="@string/john_doe"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -96,7 +96,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="+92 300 1234567"
+                        android:text="@string/value_92_300_1234567"
                         android:textColor="@color/text_grey"
                         android:textSize="13sp" />
 
@@ -105,7 +105,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Office 12, Main Boulevard, Lahore"
+                        android:text="@string/office_12_main_boulevard_lahore"
                         android:textColor="@color/text_dark"
                         android:textSize="14sp" />
 
@@ -114,7 +114,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Ring the bell at the front desk."
+                        android:text="@string/ring_the_bell_at_the_front_desk"
                         android:textColor="@color/text_grey"
                         android:textSize="13sp" />
 
@@ -130,7 +130,7 @@
                             android:layout_height="52dp"
                             android:layout_marginEnd="8dp"
                             android:layout_weight="1"
-                            android:text="Use This Address"
+                            android:text="@string/use_this_address"
                             android:textAllCaps="false"
                             app:cornerRadius="14dp" />
 
@@ -142,7 +142,7 @@
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext"
                             android:gravity="center"
-                            android:text="Edit Address"
+                            android:text="@string/edit_address"
                             android:textColor="@color/text_dark"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -168,7 +168,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Address Details"
+                        android:text="@string/address_details"
                         android:textColor="@color/text_dark"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -179,7 +179,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:background="@drawable/bg_edittext"
-                        android:hint="Full name"
+                        android:hint="@string/full_name"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="14dp"
                         android:textColor="@color/text_dark"
@@ -191,7 +191,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_edittext"
-                        android:hint="Phone number"
+                        android:hint="@string/phone_number"
                         android:inputType="phone"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="14dp"
@@ -204,7 +204,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_edittext"
-                        android:hint="Street address"
+                        android:hint="@string/street_address"
                         android:minLines="2"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="14dp"
@@ -217,7 +217,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_edittext"
-                        android:hint="City"
+                        android:hint="@string/city"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="14dp"
                         android:textColor="@color/text_dark"
@@ -229,7 +229,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_edittext"
-                        android:hint="Delivery note (optional)"
+                        android:hint="@string/delivery_note_optional"
                         android:minLines="2"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="14dp"
@@ -241,7 +241,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="54dp"
                         android:layout_marginTop="20dp"
-                        android:text="Save Address &amp; Continue"
+                        android:text="@string/save_address_and_continue"
                         android:textAllCaps="false"
                         app:cornerRadius="14dp" />
                 </LinearLayout>
@@ -249,4 +249,5 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>
+
 

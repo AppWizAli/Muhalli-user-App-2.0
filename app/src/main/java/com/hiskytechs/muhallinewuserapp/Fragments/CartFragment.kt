@@ -39,7 +39,11 @@ class CartFragment : Fragment() {
         updateSummary()
         binding.btnCheckout.setOnClickListener {
             if (CartManager.getItems().isEmpty()) {
-                Toast.makeText(requireContext(), "Your cart is empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.cart_empty_message),
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 startActivity(Intent(requireContext(), CheckoutAddressActivity::class.java))
             }
@@ -84,26 +88,46 @@ class CartFragment : Fragment() {
         val remainingAmount = (minimumAmount - subtotal).coerceAtLeast(0.0)
         val remainingQuantity = (minimumQuantity - totalQuantity).coerceAtLeast(0)
 
-        binding.tvSubtotal.text = String.format(Locale.getDefault(), "$%.2f", subtotal)
-        binding.tvShipping.text = String.format(Locale.getDefault(), "$%.2f", shipping)
-        binding.tvTotal.text = String.format(Locale.getDefault(), "$%.2f", total)
-        binding.tvItemCountBadge.text = "${items.size} items"
+        binding.tvSubtotal.text = String.format(
+            Locale.getDefault(),
+            getString(R.string.currency_amount_format),
+            subtotal
+        )
+        binding.tvShipping.text = String.format(
+            Locale.getDefault(),
+            getString(R.string.currency_amount_format),
+            shipping
+        )
+        binding.tvTotal.text = String.format(
+            Locale.getDefault(),
+            getString(R.string.currency_amount_format),
+            total
+        )
+        binding.tvItemCountBadge.text = getString(R.string.items_count_format, items.size)
         binding.tvAmountProgress.text = String.format(
             Locale.getDefault(),
-            "$%.2f / $%.2f",
+            getString(R.string.cart_progress_amount_format),
             subtotal,
             minimumAmount
         )
-        binding.tvQuantityProgress.text = "$totalQuantity / $minimumQuantity items"
+        binding.tvQuantityProgress.text = getString(
+            R.string.cart_quantity_progress_format,
+            totalQuantity,
+            minimumQuantity
+        )
         binding.tvAmountRemaining.text = if (remainingAmount > 0.0) {
-            String.format(Locale.getDefault(), "Add $%.2f more to meet minimum", remainingAmount)
+            String.format(
+                Locale.getDefault(),
+                getString(R.string.cart_add_more_amount_format),
+                remainingAmount
+            )
         } else {
-            "Minimum amount reached"
+            getString(R.string.minimum_amount_reached)
         }
         binding.tvQuantityRemaining.text = if (remainingQuantity > 0) {
-            "Add $remainingQuantity more items to meet minimum"
+            getString(R.string.cart_add_more_quantity_format, remainingQuantity)
         } else {
-            "Minimum quantity reached"
+            getString(R.string.minimum_quantity_reached)
         }
 
         val statusColor = if (remainingAmount > 0.0 || remainingQuantity > 0) {
@@ -115,7 +139,8 @@ class CartFragment : Fragment() {
         binding.tvQuantityRemaining.setTextColor(statusColor)
 
         binding.pbAmount.progress = ((subtotal / minimumAmount) * 100).toInt().coerceAtMost(100)
-        binding.pbQuantity.progress = ((totalQuantity / minimumQuantity.toDouble()) * 100).toInt().coerceAtMost(100)
+        binding.pbQuantity.progress =
+            ((totalQuantity / minimumQuantity.toDouble()) * 100).toInt().coerceAtMost(100)
         binding.btnCheckout.isEnabled = items.isNotEmpty()
         binding.btnCheckout.alpha = if (items.isEmpty()) 0.6f else 1f
     }

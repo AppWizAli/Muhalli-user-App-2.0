@@ -62,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="Al-Hamd Wholesale"
+                android:text="@string/al_hamd_wholesale"
                 android:textColor="@color/text_dark"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:drawablePadding="4dp"
-                android:text="Dubai, UAE"
+                android:text="@string/dubai_uae"
                 android:textColor="@color/text_grey"
                 android:textSize="14sp"
                 app:drawableStartCompat="@drawable/ic_location_on_24"
@@ -90,7 +90,7 @@
                 android:background="@drawable/bg_status_delivered"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="2dp"
-                android:text="✓ Verified Supplier"
+                android:text="@string/verified_supplier"
                 android:textColor="@color/status_delivered_text"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@id/tvSupplierName"
@@ -124,7 +124,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="1-2 days"
+                        android:text="@string/value_1_2_days"
                         android:textColor="@color/text_dark"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -132,7 +132,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Delivery"
+                        android:text="@string/delivery"
                         android:textColor="@color/text_grey"
                         android:textSize="10sp" />
                 </LinearLayout>
@@ -157,7 +157,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="$500"
+                        android:text="@string/value_500"
                         android:textColor="@color/text_dark"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -165,7 +165,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Min Amount"
+                        android:text="@string/min_amount"
                         android:textColor="@color/text_grey"
                         android:textSize="10sp" />
                 </LinearLayout>
@@ -190,7 +190,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="20 items"
+                        android:text="@string/value_20_items"
                         android:textColor="@color/text_dark"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -198,7 +198,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Min Qty"
+                        android:text="@string/min_qty"
                         android:textColor="@color/text_grey"
                         android:textSize="10sp" />
                 </LinearLayout>
@@ -218,12 +218,12 @@
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Products" />
+                android:text="@string/products" />
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Info" />
+                android:text="@string/info" />
         </com.google.android.material.tabs.TabLayout>
 
         <FrameLayout
@@ -233,5 +233,6 @@
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
+
 
 

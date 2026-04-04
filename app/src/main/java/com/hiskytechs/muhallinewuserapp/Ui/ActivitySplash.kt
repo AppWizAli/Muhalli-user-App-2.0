@@ -13,7 +13,7 @@ class ActivitySplash : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, ActivityOnboarding::class.java))
+            startActivity(Intent(this, LanguageSelectionActivity::class.java))
             finish()
         }, 3000)
     }

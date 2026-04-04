@@ -17,7 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Title"
+        android:text="@string/title"
         android:textColor="@color/primary"
         android:textSize="23sp"
         android:textStyle="bold"
@@ -29,8 +29,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:text="Description"
+        android:text="@string/description"
         android:textColor="#757575"
         android:textSize="16sp" />
 
 </LinearLayout>
+

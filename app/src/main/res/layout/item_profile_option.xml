@@ -43,7 +43,7 @@
                 android:id="@+id/tvOptionTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Edit Profile"
+                android:text="@string/edit_profile"
                 android:textColor="#1A1C1E"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Update your personal information"
+                android:text="@string/update_your_personal_information"
                 android:textColor="#6C7278"
                 android:textSize="13sp" />
         </LinearLayout>
@@ -65,5 +65,6 @@
             app:tint="#9E9E9E" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>
+
 
 

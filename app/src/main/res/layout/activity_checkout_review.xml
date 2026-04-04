@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Review Order"
+                android:text="@string/review_order"
                 android:textColor="@color/text_dark"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Final review before placing your order."
+            android:text="@string/final_review_before_placing_your_order"
             android:textColor="@color/text_grey"
             android:textSize="13sp" />
     </LinearLayout>
@@ -81,7 +81,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Delivery Address"
+                            android:text="@string/delivery_address"
                             android:textColor="@color/text_dark"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -90,7 +90,7 @@
                             android:id="@+id/tvEditAddress"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Edit"
+                            android:text="@string/edit"
                             android:textColor="@color/primary"
                             android:textSize="13sp"
                             android:textStyle="bold" />
@@ -101,7 +101,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="14dp"
-                        android:text="John Doe"
+                        android:text="@string/john_doe"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -111,7 +111,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="+92 300 1234567"
+                        android:text="@string/value_92_300_1234567"
                         android:textColor="@color/text_grey"
                         android:textSize="13sp" />
 
@@ -120,7 +120,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Office 12, Main Boulevard, Lahore"
+                        android:text="@string/office_12_main_boulevard_lahore"
                         android:textColor="@color/text_dark"
                         android:textSize="14sp" />
 
@@ -129,7 +129,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="Call on arrival."
+                        android:text="@string/call_on_arrival"
                         android:textColor="@color/text_grey"
                         android:textSize="13sp" />
                 </LinearLayout>
@@ -152,7 +152,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Order Summary"
+                        android:text="@string/order_summary"
                         android:textColor="@color/text_dark"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -167,7 +167,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Items"
+                            android:text="@string/items"
                             android:textColor="@color/text_grey"
                             android:textSize="14sp" />
 
@@ -175,7 +175,7 @@
                             android:id="@+id/tvItemsValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="3 items"
+                            android:text="@string/value_3_items"
                             android:textColor="@color/text_dark"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -191,7 +191,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Subtotal"
+                            android:text="@string/subtotal"
                             android:textColor="@color/text_grey"
                             android:textSize="14sp" />
 
@@ -199,7 +199,7 @@
                             android:id="@+id/tvSubtotalValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$120.00"
+                            android:text="@string/value_120_00"
                             android:textColor="@color/text_dark"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -215,7 +215,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Shipping"
+                            android:text="@string/shipping"
                             android:textColor="@color/text_grey"
                             android:textSize="14sp" />
 
@@ -223,7 +223,7 @@
                             android:id="@+id/tvShippingValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$25.00"
+                            android:text="@string/value_25_00"
                             android:textColor="@color/text_dark"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -244,7 +244,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Total"
+                            android:text="@string/total"
                             android:textColor="@color/text_dark"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -253,7 +253,7 @@
                             android:id="@+id/tvTotalValue"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$145.00"
+                            android:text="@string/value_145_00"
                             android:textColor="@color/primary"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -266,10 +266,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="24dp"
-                android:text="Place Order"
+                android:text="@string/place_order"
                 android:textAllCaps="false"
                 app:cornerRadius="14dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>
+
 

@@ -14,7 +14,7 @@
         android:minHeight="?attr/actionBarSize"
         android:paddingHorizontal="8dp"
         app:navigationIcon="@drawable/ic_arrow_back_24"
-        app:title="Chats"
+        app:title="@string/nav_chats"
         app:titleTextColor="@color/text_dark" />
 
     <FrameLayout

@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Profile"
+            android:text="@string/profile"
             android:textColor="@color/text_dark"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -60,7 +60,7 @@
                         android:id="@+id/tvStoreName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="My Retail Store"
+                        android:text="@string/my_retail_store"
                         android:textColor="@color/white"
                         android:textSize="24sp"
                         android:textStyle="bold" />
@@ -70,7 +70,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Sana Ahmed • Verified Buyer"
+                        android:text="@string/sana_ahmed_verified_buyer"
                         android:textColor="#DCE6FF"
                         android:textSize="13sp" />
                 </LinearLayout>
@@ -83,7 +83,7 @@
                 android:layout_marginTop="18dp"
                 android:background="@drawable/bg_profile_banner_button"
                 android:gravity="center"
-                android:text="Edit Profile"
+                android:text="@string/edit_profile"
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold" />
@@ -125,7 +125,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Phone"
+                            android:text="@string/phone"
                             android:textColor="@color/text_grey"
                             android:textSize="12sp" />
 
@@ -134,7 +134,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="+971 50 123 4567"
+                            android:text="@string/value_971_50_123_4567"
                             android:textColor="@color/text_dark"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -169,7 +169,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Email"
+                            android:text="@string/email"
                             android:textColor="@color/text_grey"
                             android:textSize="12sp" />
 
@@ -178,7 +178,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="mystore@email.com"
+                            android:text="@string/mystore_email_com"
                             android:textColor="@color/text_dark"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -223,7 +223,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="14dp"
                         android:layout_weight="1"
-                        android:text="My Orders"
+                        android:text="@string/my_orders"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -264,7 +264,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="14dp"
                         android:layout_weight="1"
-                        android:text="Saved Addresses"
+                        android:text="@string/saved_addresses"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -305,7 +305,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="14dp"
                         android:layout_weight="1"
-                        android:text="Chat With Suppliers"
+                        android:text="@string/chat_with_suppliers"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -346,7 +346,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="14dp"
                         android:layout_weight="1"
-                        android:text="Account Details"
+                        android:text="@string/account_details"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -387,7 +387,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="14dp"
                         android:layout_weight="1"
-                        android:text="About App"
+                        android:text="@string/about_app"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -409,11 +409,12 @@
             android:layout_marginTop="18dp"
             android:background="@drawable/bg_edittext"
             android:gravity="center"
-            android:text="Logout"
+            android:text="@string/logout"
             android:textColor="@color/status_cancelled_text"
             android:textSize="15sp"
             android:textStyle="bold" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+
 
 

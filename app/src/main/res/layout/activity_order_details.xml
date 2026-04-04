@@ -14,7 +14,7 @@
         android:minHeight="?attr/actionBarSize"
         android:paddingHorizontal="8dp"
         app:navigationIcon="@drawable/ic_arrow_back_24"
-        app:title="Track Order"
+        app:title="@string/track_order"
         app:titleTextColor="@color/text_dark" />
 
     <androidx.core.widget.NestedScrollView
@@ -73,7 +73,7 @@
                                 android:id="@+id/tvSupplierName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Al-Hamd Wholes"
+                                android:text="@string/al_hamd_wholes"
                                 android:textColor="@color/text_dark"
                                 android:textSize="18sp"
                                 android:textStyle="bold" />
@@ -83,7 +83,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="3dp"
-                                android:text="Jebel Ali"
+                                android:text="@string/jebel_ali"
                                 android:textColor="@color/text_grey"
                                 android:textSize="12sp" />
 
@@ -92,7 +92,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="WM-2024-03-1-67823"
+                                android:text="@string/wm_2024_03_1_67823"
                                 android:textColor="@color/text_grey"
                                 android:textSize="12sp" />
                         </LinearLayout>
@@ -107,7 +107,7 @@
                                 android:id="@+id/tvTotal"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="$211.98"
+                                android:text="@string/value_211_98"
                                 android:textColor="@color/primary"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
@@ -117,7 +117,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="March 16, 2024"
+                                android:text="@string/march_16_2024"
                                 android:textColor="@color/text_grey"
                                 android:textSize="12sp" />
 
@@ -129,7 +129,7 @@
                                 android:background="@drawable/bg_status_processing"
                                 android:paddingHorizontal="12dp"
                                 android:paddingVertical="5dp"
-                                android:text="Processing"
+                                android:text="@string/processing"
                                 android:textColor="@color/status_processing_text"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
@@ -154,7 +154,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Estimated Delivery"
+                                android:text="@string/estimated_delivery"
                                 android:textColor="@color/text_grey"
                                 android:textSize="12sp" />
 
@@ -163,7 +163,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="6dp"
-                                android:text="March 18-19, 2024"
+                                android:text="@string/march_18_19_2024"
                                 android:textColor="@color/status_transit_text"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -173,7 +173,7 @@
                             android:id="@+id/tvItems"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="3 items"
+                            android:text="@string/value_3_items"
                             android:textColor="@color/text_dark"
                             android:textSize="14sp"
                             android:textStyle="bold" />
@@ -185,7 +185,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="18dp"
-                android:text="Order Status"
+                android:text="@string/order_status"
                 android:textColor="@color/text_dark"
                 android:textSize="22sp"
                 android:textStyle="bold" />
@@ -195,7 +195,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="Your supplier is processing this order and preparing the requested items."
+                android:text="@string/your_supplier_is_processing_this_order_and_preparing_th"
                 android:textColor="@color/text_grey"
                 android:textSize="13sp" />
 
@@ -251,7 +251,7 @@
                                 android:id="@+id/tvStepOneTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Order Placed"
+                                android:text="@string/order_placed"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -261,7 +261,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="Your order has been confirmed"
+                                android:text="@string/your_order_has_been_confirmed"
                                 android:textColor="@color/text_grey"
                                 android:textSize="13sp" />
 
@@ -270,7 +270,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="March 16, 2024 - 10:30 AM"
+                                android:text="@string/march_16_2024_10_30_am"
                                 android:textColor="@color/status_delivered_text"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
@@ -315,7 +315,7 @@
                                 android:id="@+id/tvStepTwoTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Order Confirmed"
+                                android:text="@string/order_confirmed"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -325,7 +325,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="Supplier confirmed your order"
+                                android:text="@string/supplier_confirmed_your_order"
                                 android:textColor="@color/text_grey"
                                 android:textSize="13sp" />
 
@@ -334,7 +334,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="March 16, 2024 - 11:15 AM"
+                                android:text="@string/march_16_2024_11_15_am"
                                 android:textColor="@color/status_delivered_text"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
@@ -379,7 +379,7 @@
                                 android:id="@+id/tvStepThreeTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Preparing Order"
+                                android:text="@string/preparing_order"
                                 android:textColor="@color/text_dark"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -389,7 +389,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="Your items are being prepared"
+                                android:text="@string/your_items_are_being_prepared"
                                 android:textColor="@color/text_grey"
                                 android:textSize="13sp" />
 
@@ -398,7 +398,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="March 16, 2024 - 2:45 PM"
+                                android:text="@string/march_16_2024_2_45_pm"
                                 android:textColor="@color/status_transit_text"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
@@ -443,7 +443,7 @@
                                 android:id="@+id/tvStepFourTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Out for Delivery"
+                                android:text="@string/out_for_delivery"
                                 android:textColor="@color/text_grey"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -453,7 +453,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="Order is on the way"
+                                android:text="@string/order_is_on_the_way"
                                 android:textColor="@color/text_grey"
                                 android:textSize="13sp" />
 
@@ -462,7 +462,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="Estimated next business day"
+                                android:text="@string/estimated_next_business_day"
                                 android:textColor="@color/text_grey"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
@@ -501,7 +501,7 @@
                                 android:id="@+id/tvStepFiveTitle"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Delivered"
+                                android:text="@string/delivered"
                                 android:textColor="@color/text_grey"
                                 android:textSize="16sp"
                                 android:textStyle="bold" />
@@ -511,7 +511,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="Order delivered successfully"
+                                android:text="@string/order_delivered_successfully"
                                 android:textColor="@color/text_grey"
                                 android:textSize="13sp" />
 
@@ -520,7 +520,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="Estimated after dispatch"
+                                android:text="@string/estimated_after_dispatch"
                                 android:textColor="@color/text_grey"
                                 android:textSize="12sp"
                                 android:textStyle="bold" />
@@ -546,7 +546,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Delivery Address:"
+                        android:text="@string/delivery_address_2"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -556,7 +556,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="123 Commerce Street, Industrial Area, Dubai"
+                        android:text="@string/value_123_commerce_street_industrial_area_dubai"
                         android:textColor="@color/text_grey"
                         android:textSize="14sp" />
                 </LinearLayout>
@@ -567,7 +567,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="20dp"
-                android:text="Contact Supplier"
+                android:text="@string/contact_supplier"
                 android:textAllCaps="false"
                 app:cornerRadius="14dp"
                 app:icon="@drawable/ic_chat_bubble_24"
@@ -581,12 +581,13 @@
                 android:layout_height="56dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginBottom="16dp"
-                android:text="View All Orders"
+                android:text="@string/view_all_orders"
                 android:textAllCaps="false"
                 app:cornerRadius="14dp"
                 app:strokeColor="@color/primary" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>
+
 
 

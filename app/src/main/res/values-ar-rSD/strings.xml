@@ -1,0 +1,89 @@
+<resources>
+    <string name="app_name">تطبيق محلي الجديد للمستخدم 2.0</string>
+
+    <string name="select_language">اختيار اللغة</string>
+    <string name="select_language_description">اختار اللغة البتستخدمها في تطبيق المشتري قبل ما تواصل.</string>
+    <string name="language_short_en">EN</string>
+    <string name="language_english">English</string>
+    <string name="language_english_helper">استخدم التطبيق بالإنجليزية</string>
+    <string name="language_short_ar">AR</string>
+    <string name="language_arabic_sudan">العربية السودانية</string>
+    <string name="language_arabic_sudan_helper">استخدم التطبيق بالعربية للسودان</string>
+    <string name="continue_label">متابعة</string>
+
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_categories">التصنيفات</string>
+    <string name="nav_chats">الدردشات</string>
+    <string name="nav_orders">الطلبات</string>
+    <string name="track_order">تتبع الطلب</string>
+
+    <string name="currency_amount_format">$%1$.2f</string>
+    <string name="items_count_format">%1$d عنصر</string>
+    <string name="products_count_format">%1$d منتج</string>
+    <string name="cart_progress_amount_format">$%1$.2f / $%2$.2f</string>
+    <string name="cart_quantity_progress_format">%1$d / %2$d عنصر</string>
+    <string name="cart_add_more_amount_format">أضف $%1$.2f زيادة للوصول للحد الأدنى</string>
+    <string name="cart_add_more_quantity_format">أضف %1$d عناصر زيادة للوصول للحد الأدنى</string>
+    <string name="minimum_amount_reached">تم الوصول للحد الأدنى للمبلغ</string>
+    <string name="minimum_quantity_reached">تم الوصول للحد الأدنى للكمية</string>
+    <string name="cart_empty_message">السلة فارغة</string>
+
+    <string name="profile_member_since_format">%1$s - %2$s</string>
+    <string name="account_details_updated">تم تحديث تفاصيل الحساب</string>
+    <string name="done">تم</string>
+    <string name="save_address">حفظ العنوان</string>
+    <string name="required_field">مطلوب</string>
+    <string name="no_delivery_note_added">ما في ملاحظة توصيل مضافة</string>
+    <string name="showing_all_verified_suppliers">عرض كل الموردين الموثقين</string>
+    <string name="suppliers_found_count">تم العثور على %1$d مورد</string>
+    <string name="filter_options_coming_soon">خيارات التصفية قريباً</string>
+    <string name="sort_options_coming_soon">خيارات الترتيب قريباً</string>
+
+    <string name="get_started">ابدأ الآن</string>
+    <string name="onboarding_title_discover">اكتشف الموردين الموثقين</string>
+    <string name="onboarding_desc_discover">تصفح بين عدة موردي جملة موثقين واعثر على أفضل المنتجات لاحتياجات عملك.</string>
+    <string name="onboarding_title_bulk_order">اطلب بالجملة بسهولة</string>
+    <string name="onboarding_desc_bulk_order">تسوق الوجبات الخفيفة والمشروبات والبقالة وغيرها بكميات كبيرة وبأسعار جملة منافسة.</string>
+    <string name="onboarding_title_tracking">توصيل سريع وتتبع سهل</string>
+    <string name="onboarding_desc_tracking">استلم طلباتك بسرعة مع تتبع مباشر لراحة بال كاملة.</string>
+
+    <string name="you_label">أنت</string>
+    <string name="supplier_fallback">المورد</string>
+    <string name="buyer_media_confirmation">أرفقت صورة منتج للتأكيد.</string>
+    <string name="buyer_media_attachment">مرفق وسائط من المشتري</string>
+    <string name="buyer_media_subtitle">صورة JPG - 2.1 MB</string>
+    <string name="buyer_voice_note_body">سجلت رسالة صوتية سريعة بخصوص تغيير الكمية.</string>
+    <string name="buyer_voice_note_status">رسالة صوتية من المشتري</string>
+
+    <string name="delivery_days_range_format">%1$d-%2$d يوم</string>
+    <string name="delivery_same_day">نفس اليوم</string>
+    <string name="delivery_one_day">يوم واحد</string>
+    <string name="delivery_next_day">اليوم التالي</string>
+    <string name="delivery_two_days">يومين</string>
+
+    <string name="wholesale_supplier">مورد جملة</string>
+    <string name="default_delivery_address">123 شارع التجارة، المنطقة الصناعية، دبي</string>
+    <string name="order_meta_format">%1$s - %2$s</string>
+    <string name="order_time_placed">10:30 ص</string>
+    <string name="order_time_confirmed">11:15 ص</string>
+    <string name="order_time_cancelled">1:05 م</string>
+    <string name="order_time_preparing">2:45 م</string>
+    <string name="order_cancelled">تم إلغاء الطلب</string>
+    <string name="order_cancelled_before_dispatch">تم إلغاء هذا الطلب قبل الشحن</string>
+    <string name="dispatch_skipped">تم تخطي الشحن</string>
+    <string name="delivery_did_not_start">لم يبدأ التوصيل لهذا الطلب</string>
+    <string name="cancelled_before_dispatch">أُلغي قبل الشحن</string>
+    <string name="tracking_closed">تم إغلاق التتبع</string>
+    <string name="order_not_delivered">لم يتم تسليم الطلب</string>
+    <string name="waiting_for_final_delivery">في انتظار التسليم النهائي</string>
+    <string name="no_further_delivery_updates">لا توجد تحديثات توصيل أخرى</string>
+    <string name="status_in_transit">في الطريق</string>
+    <string name="status_cancelled">ملغي</string>
+    <string name="arriving_soon">سيصل قريباً</string>
+    <string name="delivered_to_saved_address">تم تسليم هذا الطلب بنجاح إلى عنوانك المحفوظ.</string>
+    <string name="supplier_dispatched_order">المورد شحن هذا الطلب وهو الآن في الطريق.</string>
+    <string name="order_cancelled_summary">تم إلغاء هذا الطلب قبل الشحن. تواصل مع المورد إذا كنت تريد طلبه مرة أخرى.</string>
+    <string name="preparing_for_dispatch">جاري التجهيز للشحن</string>
+    <string name="supplier_preparing_items">أكد المورد طلبك وهو الآن يجهز المنتجات المطلوبة.</string>
+    <string name="multiple_suppliers">عدة موردين</string>
+</resources>

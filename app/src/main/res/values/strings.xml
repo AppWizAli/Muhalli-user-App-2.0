@@ -1,3 +1,89 @@
 <resources>
-    <string name="app_name">Muhalli New user App 2.0</string>
+    <string name="app_name">Muhalli New User App 2.0</string>
+
+    <string name="select_language">Select Language</string>
+    <string name="select_language_description">Choose the language you want to use in the buyer app before you continue.</string>
+    <string name="language_short_en">EN</string>
+    <string name="language_english">English</string>
+    <string name="language_english_helper">Use the app in English</string>
+    <string name="language_short_ar">AR</string>
+    <string name="language_arabic_sudan">Sudanese Arabic</string>
+    <string name="language_arabic_sudan_helper">Use the app in Arabic for Sudan</string>
+    <string name="continue_label">Continue</string>
+
+    <string name="nav_home">Home</string>
+    <string name="nav_categories">Categories</string>
+    <string name="nav_chats">Chats</string>
+    <string name="nav_orders">Orders</string>
+    <string name="track_order">Track Order</string>
+
+    <string name="currency_amount_format">$%1$.2f</string>
+    <string name="items_count_format">%1$d items</string>
+    <string name="products_count_format">%1$d products</string>
+    <string name="cart_progress_amount_format">$%1$.2f / $%2$.2f</string>
+    <string name="cart_quantity_progress_format">%1$d / %2$d items</string>
+    <string name="cart_add_more_amount_format">Add $%1$.2f more to meet minimum</string>
+    <string name="cart_add_more_quantity_format">Add %1$d more items to meet minimum</string>
+    <string name="minimum_amount_reached">Minimum amount reached</string>
+    <string name="minimum_quantity_reached">Minimum quantity reached</string>
+    <string name="cart_empty_message">Your cart is empty</string>
+
+    <string name="profile_member_since_format">%1$s - %2$s</string>
+    <string name="account_details_updated">Account details updated</string>
+    <string name="done">Done</string>
+    <string name="save_address">Save Address</string>
+    <string name="required_field">Required</string>
+    <string name="no_delivery_note_added">No delivery note added</string>
+    <string name="showing_all_verified_suppliers">Showing all verified suppliers</string>
+    <string name="suppliers_found_count">%1$d suppliers found</string>
+    <string name="filter_options_coming_soon">Filter options coming soon</string>
+    <string name="sort_options_coming_soon">Sort options coming soon</string>
+
+    <string name="get_started">Get Started</string>
+    <string name="onboarding_title_discover">Discover Trusted Suppliers</string>
+    <string name="onboarding_desc_discover">Browse through multiple verified wholesalers and find the best products for your business needs.</string>
+    <string name="onboarding_title_bulk_order">Order in Bulk Easily</string>
+    <string name="onboarding_desc_bulk_order">Shop snacks, drinks, groceries and more in bulk quantities with competitive wholesale prices.</string>
+    <string name="onboarding_title_tracking">Fast Delivery and Easy Tracking</string>
+    <string name="onboarding_desc_tracking">Get your orders delivered quickly with real-time tracking for complete peace of mind.</string>
+
+    <string name="you_label">You</string>
+    <string name="supplier_fallback">Supplier</string>
+    <string name="buyer_media_confirmation">Attached a product photo for confirmation.</string>
+    <string name="buyer_media_attachment">Buyer media attachment</string>
+    <string name="buyer_media_subtitle">JPG image - 2.1 MB</string>
+    <string name="buyer_voice_note_body">Recorded a quick voice note for quantity changes.</string>
+    <string name="buyer_voice_note_status">Buyer voice note</string>
+
+    <string name="delivery_days_range_format">%1$d-%2$d days</string>
+    <string name="delivery_same_day">Same day</string>
+    <string name="delivery_one_day">1 day</string>
+    <string name="delivery_next_day">Next day</string>
+    <string name="delivery_two_days">2 days</string>
+
+    <string name="wholesale_supplier">Wholesale Supplier</string>
+    <string name="default_delivery_address">123 Commerce Street, Industrial Area, Dubai</string>
+    <string name="order_meta_format">%1$s - %2$s</string>
+    <string name="order_time_placed">10:30 AM</string>
+    <string name="order_time_confirmed">11:15 AM</string>
+    <string name="order_time_cancelled">1:05 PM</string>
+    <string name="order_time_preparing">2:45 PM</string>
+    <string name="order_cancelled">Order Cancelled</string>
+    <string name="order_cancelled_before_dispatch">This order was cancelled before dispatch</string>
+    <string name="dispatch_skipped">Dispatch Skipped</string>
+    <string name="delivery_did_not_start">Delivery did not start for this order</string>
+    <string name="cancelled_before_dispatch">Cancelled before dispatch</string>
+    <string name="tracking_closed">Tracking Closed</string>
+    <string name="order_not_delivered">Order was not delivered</string>
+    <string name="waiting_for_final_delivery">Waiting for final delivery</string>
+    <string name="no_further_delivery_updates">No further delivery updates</string>
+    <string name="status_in_transit">In Transit</string>
+    <string name="status_cancelled">Cancelled</string>
+    <string name="arriving_soon">Arriving soon</string>
+    <string name="delivered_to_saved_address">This order has been delivered successfully to your saved address.</string>
+    <string name="supplier_dispatched_order">The supplier has dispatched this order and it is currently on the way.</string>
+    <string name="order_cancelled_summary">This order was cancelled before dispatch. Contact the supplier if you want to place it again.</string>
+    <string name="preparing_for_dispatch">Preparing for dispatch</string>
+    <string name="supplier_preparing_items">The supplier confirmed your order and is preparing the requested items.</string>
+    <string name="multiple_suppliers">Multiple Suppliers</string>
 </resources>

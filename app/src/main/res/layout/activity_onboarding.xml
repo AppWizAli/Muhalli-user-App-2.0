@@ -36,7 +36,7 @@
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="16dp"
             android:backgroundTint="@color/primary"
-            android:text="Next"
+            android:text="@string/next"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="18sp"
@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="8dp"
-                android:text="Skip"
+                android:text="@string/skip"
                 android:textColor="#667085"
                 android:textSize="16sp" />
 
@@ -68,7 +68,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Already have an account? "
+                    android:text="@string/already_have_an_account"
                     android:textColor="#667085"
                     android:textSize="14sp" />
 
@@ -76,7 +76,7 @@
                     android:id="@+id/tvSignIn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sign In"
+                    android:text="@string/sign_in"
                     android:textColor="@color/primary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
@@ -86,3 +86,4 @@
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
+

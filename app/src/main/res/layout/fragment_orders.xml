@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="My Orders"
+        android:text="@string/my_orders"
         android:textColor="@color/text_dark"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -35,7 +35,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="All"
+            android:text="@string/all"
             android:textAllCaps="false" />
 
         <com.google.android.material.button.MaterialButton
@@ -44,7 +44,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Processing"
+            android:text="@string/processing"
             android:textAllCaps="false" />
 
         <com.google.android.material.button.MaterialButton
@@ -53,7 +53,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Delivered"
+            android:text="@string/delivered"
             android:textAllCaps="false" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
@@ -68,3 +68,4 @@
         tools:listitem="@layout/item_order" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

@@ -53,18 +53,18 @@ class ActivityOnboarding : AppCompatActivity() {
         val items = listOf(
             OnboardingItem(
                 R.drawable.onboard1,
-                "Discover Trusted Suppliers",
-                "Browse through multiple verified wholesalers and find the best products for your business needs"
+                getString(R.string.onboarding_title_discover),
+                getString(R.string.onboarding_desc_discover)
             ),
             OnboardingItem(
                 R.drawable.onboard2,
-                "Order in Bulk Easily",
-                "Shop snacks, drinks, groceries and more in bulk quantities with competitive wholesale prices"
+                getString(R.string.onboarding_title_bulk_order),
+                getString(R.string.onboarding_desc_bulk_order)
             ),
             OnboardingItem(
                 R.drawable.onboard3,
-                "Fast Delivery and Easy Tracking",
-                "Get your orders delivered quickly with real-time tracking for complete peace of mind"
+                getString(R.string.onboarding_title_tracking),
+                getString(R.string.onboarding_desc_tracking)
             )
         )
         onboardingAdapter = OnboardingAdapter(items)
@@ -118,11 +118,11 @@ class ActivityOnboarding : AppCompatActivity() {
 
     private fun updateButtonText(position: Int) {
         if (position == onboardingAdapter.itemCount - 1) {
-            binding.btnNext.text = "Get Started"
+            binding.btnNext.text = getString(R.string.get_started)
             binding.tvSkip.visibility = android.view.View.GONE
             binding.layoutBottomText.visibility = android.view.View.VISIBLE
         } else {
-            binding.btnNext.text = "Next"
+            binding.btnNext.text = getString(R.string.next)
             binding.tvSkip.visibility = android.view.View.VISIBLE
             binding.layoutBottomText.visibility = android.view.View.GONE
         }

@@ -41,7 +41,11 @@ class ProfileFragment : Fragment() {
     private fun bindProfile() {
         val profile = AppData.buyerProfile
         binding.tvStoreName.text = profile.storeName
-        binding.tvBuyerMeta.text = "${profile.buyerName} - ${profile.memberSince}"
+        binding.tvBuyerMeta.text = getString(
+            R.string.profile_member_since_format,
+            profile.buyerName,
+            profile.memberSince
+        )
         binding.tvPhone.text = profile.phoneNumber
         binding.tvEmail.text = profile.email
     }

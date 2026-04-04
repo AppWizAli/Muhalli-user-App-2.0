@@ -30,7 +30,11 @@ class SupplierProductAdapter(
         val product = products[position]
         holder.binding.apply {
             tvProductName.text = product.name
-            tvPrice.text = String.format(Locale.getDefault(), "$%.2f", product.price)
+            tvPrice.text = String.format(
+                Locale.getDefault(),
+                root.context.getString(com.hiskytechs.muhallinewuserapp.R.string.currency_amount_format),
+                product.price
+            )
             
             btnAddToCart.setOnClickListener {
                 val cartItem = CartItem(

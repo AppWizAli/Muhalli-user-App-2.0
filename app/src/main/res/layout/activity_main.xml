@@ -28,7 +28,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Muhalli Buyer"
+                android:text="@string/muhalli_buyer"
                 android:textColor="@color/text_dark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
-                android:text="Wholesale shopping made easy"
+                android:text="@string/wholesale_shopping_made_easy"
                 android:textColor="@color/text_grey"
                 android:textSize="12sp" />
         </LinearLayout>
@@ -64,7 +64,7 @@
                 android:background="@drawable/bg_unread_badge"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="2dp"
-                android:text="2"
+                android:text="@string/value_2"
                 android:textColor="@color/white"
                 android:textSize="10sp"
                 android:textStyle="bold" />
@@ -90,4 +90,5 @@
         app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
 

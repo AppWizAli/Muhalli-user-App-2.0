@@ -14,7 +14,7 @@
         android:minHeight="?attr/actionBarSize"
         android:paddingHorizontal="8dp"
         app:navigationIcon="@drawable/ic_arrow_back_24"
-        app:title="Account Details"
+        app:title="@string/account_details"
         app:titleTextColor="@color/text_dark" />
 
     <androidx.core.widget.NestedScrollView
@@ -45,7 +45,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_edittext"
-                        android:hint="Store name"
+                        android:hint="@string/store_name"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="14dp" />
 
@@ -55,7 +55,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_edittext"
-                        android:hint="Buyer name"
+                        android:hint="@string/buyer_name"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="14dp" />
 
@@ -65,7 +65,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_edittext"
-                        android:hint="Email"
+                        android:hint="@string/email"
                         android:inputType="textEmailAddress"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="14dp" />
@@ -76,7 +76,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_edittext"
-                        android:hint="Phone number"
+                        android:hint="@string/phone_number"
                         android:inputType="phone"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="14dp" />
@@ -87,7 +87,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_edittext"
-                        android:hint="City"
+                        android:hint="@string/city"
                         android:paddingHorizontal="16dp"
                         android:paddingVertical="14dp" />
 
@@ -96,7 +96,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
                         android:layout_marginTop="20dp"
-                        android:text="Save Changes"
+                        android:text="@string/save_changes"
                         android:textAllCaps="false"
                         app:cornerRadius="14dp" />
                 </LinearLayout>
@@ -104,4 +104,5 @@
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>
+
 

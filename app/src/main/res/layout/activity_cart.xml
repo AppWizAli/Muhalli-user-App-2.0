@@ -14,7 +14,7 @@
         android:minHeight="?attr/actionBarSize"
         android:paddingHorizontal="8dp"
         app:navigationIcon="@drawable/ic_arrow_back_24"
-        app:title="Cart"
+        app:title="@string/shopping_cart"
         app:titleTextColor="@color/text_dark" />
 
     <FrameLayout

@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:text="All Categories"
+            android:text="@string/all_categories"
             android:textColor="#1A1C1E"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -37,4 +37,5 @@
         android:padding="8dp" />
 
 </LinearLayout>
+
 

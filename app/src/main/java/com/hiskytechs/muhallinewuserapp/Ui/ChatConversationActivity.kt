@@ -9,6 +9,7 @@ import com.hiskytechs.muhallinewuserapp.Data.AppData
 import com.hiskytechs.muhallinewuserapp.Models.ChatMessage
 import com.hiskytechs.muhallinewuserapp.Models.ChatMessageType
 import com.hiskytechs.muhallinewuserapp.Models.ChatParticipant
+import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityChatConversationBinding
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -31,7 +32,7 @@ class ChatConversationActivity : AppCompatActivity() {
 
         binding.toolbar.title = supplierName
         binding.tvSupplierLocation.text = supplierLocation
-        binding.tvSupplierStatus.text = "Online for media and voice updates"
+        binding.tvSupplierStatus.text = getString(R.string.online_for_media_and_voice_updates)
         binding.toolbar.setNavigationOnClickListener { finish() }
 
         setupMessages()
@@ -42,7 +43,7 @@ class ChatConversationActivity : AppCompatActivity() {
         messages.clear()
         messages.addAll(AppData.conversationForSupplier(supplierName))
         messageAdapter = ChatMessageAdapter(
-            supplierName = supplierName.ifBlank { "Supplier" },
+            supplierName = supplierName.ifBlank { getString(R.string.supplier_fallback) },
             messages = messages
         )
         binding.rvMessages.layoutManager = LinearLayoutManager(this)
@@ -79,11 +80,11 @@ class ChatConversationActivity : AppCompatActivity() {
                     id = "buyer-media-${System.currentTimeMillis()}",
                     participant = ChatParticipant.BUYER,
                     type = ChatMessageType.MEDIA,
-                    body = "Attached a product photo for confirmation.",
+                    body = getString(R.string.buyer_media_confirmation),
                     timeLabel = currentTimeLabel(),
-                    mediaLabel = "Photo",
-                    mediaTitle = "Buyer media attachment",
-                    mediaSubtitle = "JPG image - 2.1 MB"
+                    mediaLabel = getString(R.string.photo),
+                    mediaTitle = getString(R.string.buyer_media_attachment),
+                    mediaSubtitle = getString(R.string.buyer_media_subtitle)
                 )
             )
         }
@@ -94,10 +95,10 @@ class ChatConversationActivity : AppCompatActivity() {
                     id = "buyer-voice-${System.currentTimeMillis()}",
                     participant = ChatParticipant.BUYER,
                     type = ChatMessageType.VOICE,
-                    body = "Recorded a quick voice note for quantity changes.",
+                    body = getString(R.string.buyer_voice_note_body),
                     timeLabel = currentTimeLabel(),
                     voiceDuration = "0:24",
-                    voiceStatus = "Buyer voice note",
+                    voiceStatus = getString(R.string.buyer_voice_note_status),
                     voiceProgress = 76
                 )
             )

@@ -25,9 +25,17 @@ class CartAdapter(
         holder.binding.apply {
             tvProductName.text = item.name
             tvSupplier.text = item.supplier
-            tvPrice.text = String.format(Locale.getDefault(), "$%.2f", item.price)
+            tvPrice.text = String.format(
+                Locale.getDefault(),
+                root.context.getString(com.hiskytechs.muhallinewuserapp.R.string.currency_amount_format),
+                item.price
+            )
             tvQuantity.text = item.quantity.toString()
-            tvItemSubtotal.text = String.format(Locale.getDefault(), "$%.2f", item.subtotal)
+            tvItemSubtotal.text = String.format(
+                Locale.getDefault(),
+                root.context.getString(com.hiskytechs.muhallinewuserapp.R.string.currency_amount_format),
+                item.subtotal
+            )
 
             ivPlus.setOnClickListener {
                 item.quantity++

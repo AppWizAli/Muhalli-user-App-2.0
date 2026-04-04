@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.hiskytechs.muhallinewuserapp.Data.AppData
+import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityAccountDetailsBinding
 
 class AccountDetailsActivity : AppCompatActivity() {
@@ -29,7 +30,8 @@ class AccountDetailsActivity : AppCompatActivity() {
             profile.email = binding.etEmail.text?.toString()?.trim().orEmpty()
             profile.phoneNumber = binding.etPhone.text?.toString()?.trim().orEmpty()
             profile.city = binding.etCity.text?.toString()?.trim().orEmpty()
-            Toast.makeText(this, "Account details updated", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.account_details_updated), Toast.LENGTH_SHORT)
+                .show()
             finish()
         }
     }

@@ -25,15 +25,19 @@ class OrderAdapter(
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = orders[position]
         holder.binding.apply {
+            val context = root.context
             tvOrderId.text = order.orderId
             tvDate.text = order.date
-            tvStatus.text = order.status
+            tvStatus.text = localizedStatus(context, order.status)
             tvSupplierName.text = order.supplier
-            tvItemsCount.text = "${order.itemsCount} products"
-            tvTotalAmount.text = String.format(Locale.getDefault(), "$%.2f", order.totalAmount)
+            tvItemsCount.text = context.getString(R.string.products_count_format, order.itemsCount)
+            tvTotalAmount.text = String.format(
+                Locale.getDefault(),
+                context.getString(R.string.currency_amount_format),
+                order.totalAmount
+            )
 
             // Status styling
-            val context = root.context
             when (order.status.lowercase()) {
                 "delivered" -> {
                     tvStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_delivered_bg))
@@ -70,5 +74,14 @@ class OrderAdapter(
     fun updateOrders(newOrders: List<Order>) {
         orders = newOrders
         notifyDataSetChanged()
+    }
+
+    private fun localizedStatus(context: android.content.Context, status: String): String {
+        return when (status.lowercase()) {
+            "delivered" -> context.getString(R.string.delivered)
+            "in transit" -> context.getString(R.string.status_in_transit)
+            "cancelled" -> context.getString(R.string.status_cancelled)
+            else -> context.getString(R.string.processing)
+        }
     }
 }

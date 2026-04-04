@@ -25,14 +25,14 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Welcome back,"
+                    android:text="@string/welcome_back_2"
                     android:textColor="#6C7278"
                     android:textSize="14sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Your Business"
+                    android:text="@string/your_business"
                     android:textColor="#1A1C1E"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -55,7 +55,7 @@
             android:background="@drawable/bg_edittext"
             android:drawableStart="@drawable/ic_search_24"
             android:drawablePadding="12dp"
-            android:hint="Search products or suppliers..."
+            android:hint="@string/search_products_or_suppliers"
             android:paddingHorizontal="16dp"
             android:textSize="14sp" />
 
@@ -63,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Trusted Suppliers"
+            android:text="@string/trusted_suppliers"
             android:textColor="#1A1C1E"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -72,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Connect with verified wholesale suppliers for your business"
+            android:text="@string/connect_with_verified_wholesale_suppliers_for_your_busi"
             android:textColor="#6C7278"
             android:textSize="14sp" />
 
@@ -85,5 +85,6 @@
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
+
 
 

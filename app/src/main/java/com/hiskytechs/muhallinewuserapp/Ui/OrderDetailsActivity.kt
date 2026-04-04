@@ -64,11 +64,15 @@ class OrderDetailsActivity : AppCompatActivity() {
     private fun bindSummary(order: Order, statusUi: OrderStatusUi) {
         val supplier = AppData.findSupplierByName(order.supplier)
         binding.tvSupplierName.text = order.supplier
-        binding.tvSupplierLocation.text = supplier?.location ?: "Wholesale Supplier"
+        binding.tvSupplierLocation.text = supplier?.location ?: getString(R.string.wholesale_supplier)
         binding.tvOrderId.text = order.orderId
         binding.tvOrderDate.text = order.date
-        binding.tvTotal.text = String.format(Locale.getDefault(), "$%.2f", order.totalAmount)
-        binding.tvItems.text = "${order.itemsCount} items"
+        binding.tvTotal.text = String.format(
+            Locale.getDefault(),
+            getString(R.string.currency_amount_format),
+            order.totalAmount
+        )
+        binding.tvItems.text = getString(R.string.items_count_format, order.itemsCount)
         binding.tvEstimatedDate.text = statusUi.estimatedDeliveryText
         binding.tvOrderStatusBadge.text = statusUi.badgeText
         binding.tvOrderStatusBadge.setBackgroundResource(statusUi.badgeBackgroundRes)
@@ -81,7 +85,7 @@ class OrderDetailsActivity : AppCompatActivity() {
     private fun bindAddress() {
         val address = AddressManager.getAddress()
         binding.tvDeliveryAddress.text = address?.formattedAddress
-            ?: "123 Commerce Street, Industrial Area, Dubai"
+            ?: getString(R.string.default_delivery_address)
     }
 
     private fun bindTracking(order: Order, statusUi: OrderStatusUi) {
@@ -96,9 +100,9 @@ class OrderDetailsActivity : AppCompatActivity() {
             ),
             stepNumber = 1,
             currentStep = statusUi.currentStep,
-            title = "Order Placed",
-            subtitle = "Your order has been confirmed",
-            meta = "${order.date} - 10:30 AM",
+            title = getString(R.string.order_placed),
+            subtitle = getString(R.string.your_order_has_been_confirmed),
+            meta = getString(R.string.order_meta_format, order.date, getString(R.string.order_time_placed)),
             currentColorRes = statusUi.currentColorRes,
             currentBackgroundRes = statusUi.currentBackgroundRes,
             currentIconRes = R.drawable.ic_check_circle_24
@@ -113,9 +117,13 @@ class OrderDetailsActivity : AppCompatActivity() {
             ),
             stepNumber = 2,
             currentStep = statusUi.currentStep,
-            title = "Order Confirmed",
-            subtitle = "Supplier confirmed your order",
-            meta = "${order.date} - 11:15 AM",
+            title = getString(R.string.order_confirmed),
+            subtitle = getString(R.string.supplier_confirmed_your_order),
+            meta = getString(
+                R.string.order_meta_format,
+                order.date,
+                getString(R.string.order_time_confirmed)
+            ),
             currentColorRes = statusUi.currentColorRes,
             currentBackgroundRes = statusUi.currentBackgroundRes,
             currentIconRes = R.drawable.ic_check_circle_24
@@ -130,13 +138,21 @@ class OrderDetailsActivity : AppCompatActivity() {
             ),
             stepNumber = 3,
             currentStep = statusUi.currentStep,
-            title = if (isCancelled) "Order Cancelled" else "Preparing Order",
-            subtitle = if (isCancelled) {
-                "This order was cancelled before dispatch"
+            title = if (isCancelled) {
+                getString(R.string.order_cancelled)
             } else {
-                "Your items are being prepared"
+                getString(R.string.preparing_order)
             },
-            meta = if (isCancelled) "${order.date} - 1:05 PM" else "${order.date} - 2:45 PM",
+            subtitle = if (isCancelled) {
+                getString(R.string.order_cancelled_before_dispatch)
+            } else {
+                getString(R.string.your_items_are_being_prepared)
+            },
+            meta = if (isCancelled) {
+                getString(R.string.order_meta_format, order.date, getString(R.string.order_time_cancelled))
+            } else {
+                getString(R.string.order_meta_format, order.date, getString(R.string.order_time_preparing))
+            },
             currentColorRes = statusUi.currentColorRes,
             currentBackgroundRes = statusUi.currentBackgroundRes,
             currentIconRes = if (isCancelled) {
@@ -155,16 +171,16 @@ class OrderDetailsActivity : AppCompatActivity() {
             ),
             stepNumber = 4,
             currentStep = statusUi.currentStep,
-            title = if (isCancelled) "Dispatch Skipped" else "Out for Delivery",
+            title = if (isCancelled) getString(R.string.dispatch_skipped) else getString(R.string.out_for_delivery),
             subtitle = if (isCancelled) {
-                "Delivery did not start for this order"
+                getString(R.string.delivery_did_not_start)
             } else {
-                "Order is on the way"
+                getString(R.string.order_is_on_the_way)
             },
             meta = if (isCancelled) {
-                "Cancelled before dispatch"
+                getString(R.string.cancelled_before_dispatch)
             } else {
-                order.deliveryDate ?: "Estimated next business day"
+                order.deliveryDate ?: getString(R.string.estimated_next_business_day)
             },
             currentColorRes = statusUi.currentColorRes,
             currentBackgroundRes = statusUi.currentBackgroundRes,
@@ -181,18 +197,18 @@ class OrderDetailsActivity : AppCompatActivity() {
             ),
             stepNumber = 5,
             currentStep = statusUi.currentStep,
-            title = if (isCancelled) "Tracking Closed" else "Delivered",
+            title = if (isCancelled) getString(R.string.tracking_closed) else getString(R.string.delivered),
             subtitle = if (isCancelled) {
-                "Order was not delivered"
+                getString(R.string.order_not_delivered)
             } else if (statusUi.currentStep >= 5) {
-                "Order delivered successfully"
+                getString(R.string.order_delivered_successfully)
             } else {
-                "Waiting for final delivery"
+                getString(R.string.waiting_for_final_delivery)
             },
             meta = if (isCancelled) {
-                "No further delivery updates"
+                getString(R.string.no_further_delivery_updates)
             } else {
-                order.deliveryDate ?: "Estimated after dispatch"
+                order.deliveryDate ?: getString(R.string.estimated_after_dispatch)
             },
             currentColorRes = statusUi.currentColorRes,
             currentBackgroundRes = statusUi.currentBackgroundRes,
@@ -256,41 +272,41 @@ class OrderDetailsActivity : AppCompatActivity() {
     private fun buildStatusUi(order: Order): OrderStatusUi {
         return when (order.status.lowercase()) {
             "delivered" -> OrderStatusUi(
-                badgeText = "Delivered",
+                badgeText = getString(R.string.delivered),
                 badgeBackgroundRes = R.drawable.bg_status_delivered,
                 badgeTextColorRes = R.color.status_delivered_text,
-                estimatedDeliveryText = order.deliveryDate ?: "Delivered",
-                trackingSummary = "This order has been delivered successfully to your saved address.",
+                estimatedDeliveryText = order.deliveryDate ?: getString(R.string.delivered),
+                trackingSummary = getString(R.string.delivered_to_saved_address),
                 currentStep = 5,
                 currentColorRes = R.color.status_delivered_text,
                 currentBackgroundRes = R.drawable.bg_tracking_done
             )
             "in transit" -> OrderStatusUi(
-                badgeText = "In Transit",
+                badgeText = getString(R.string.status_in_transit),
                 badgeBackgroundRes = R.drawable.bg_status_transit,
                 badgeTextColorRes = R.color.status_transit_text,
-                estimatedDeliveryText = order.deliveryDate ?: "Arriving soon",
-                trackingSummary = "The supplier has dispatched this order and it is currently on the way.",
+                estimatedDeliveryText = order.deliveryDate ?: getString(R.string.arriving_soon),
+                trackingSummary = getString(R.string.supplier_dispatched_order),
                 currentStep = 4,
                 currentColorRes = R.color.status_transit_text,
                 currentBackgroundRes = R.drawable.bg_tracking_current
             )
             "cancelled" -> OrderStatusUi(
-                badgeText = "Cancelled",
+                badgeText = getString(R.string.status_cancelled),
                 badgeBackgroundRes = R.drawable.bg_status_cancelled,
                 badgeTextColorRes = R.color.status_cancelled_text,
-                estimatedDeliveryText = "Cancelled",
-                trackingSummary = "This order was cancelled before dispatch. Contact the supplier if you want to place it again.",
+                estimatedDeliveryText = getString(R.string.status_cancelled),
+                trackingSummary = getString(R.string.order_cancelled_summary),
                 currentStep = 3,
                 currentColorRes = R.color.status_cancelled_text,
                 currentBackgroundRes = R.drawable.bg_tracking_cancelled
             )
             else -> OrderStatusUi(
-                badgeText = "Processing",
+                badgeText = getString(R.string.processing),
                 badgeBackgroundRes = R.drawable.bg_status_processing,
                 badgeTextColorRes = R.color.status_processing_text,
-                estimatedDeliveryText = order.deliveryDate ?: "Preparing for dispatch",
-                trackingSummary = "The supplier confirmed your order and is preparing the requested items.",
+                estimatedDeliveryText = order.deliveryDate ?: getString(R.string.preparing_for_dispatch),
+                trackingSummary = getString(R.string.supplier_preparing_items),
                 currentStep = 3,
                 currentColorRes = R.color.status_processing_text,
                 currentBackgroundRes = R.drawable.bg_tracking_processing
