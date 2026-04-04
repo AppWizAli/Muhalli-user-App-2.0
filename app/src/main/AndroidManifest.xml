@@ -11,15 +11,36 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MuhalliNewUserApp20">
+
         <activity
-            android:name=".MainActivity"
+            android:name=".Ui.ActivityOnboarding"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.ActivitySplash"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".Ui.LoginActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.RegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".Ui.SupplierDetailsActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>
