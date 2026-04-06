@@ -19,7 +19,51 @@
             android:exported="false" />
 
         <activity
+            android:name=".Ui.ChooseAppActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".Ui.ActivityOnboarding"
+            android:exported="false" />
+
+        <activity
+            android:name=".supplier.Ui.ActivitySupplierOnboarding"
+            android:exported="false" />
+
+        <activity
+            android:name=".supplier.Ui.SupplierLoginActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".supplier.Ui.SupplierRegisterActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".supplier.Ui.SupplierMainActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".supplier.Ui.SupplierAddProductActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".supplier.Ui.SupplierMessagesActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".supplier.Ui.SupplierChatConversationActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".supplier.Ui.SupplierInventoryManagementActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".supplier.Ui.SupplierEditProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".supplier.Ui.SupplierOrderStatusActivity"
             android:exported="false" />
 
         <activity

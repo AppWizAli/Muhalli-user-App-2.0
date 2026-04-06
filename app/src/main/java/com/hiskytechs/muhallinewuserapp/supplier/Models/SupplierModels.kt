@@ -1,0 +1,158 @@
+package com.hiskytechs.muhallinewuserapp.supplier.Models
+
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
+
+data class SupplierIntroPage(
+    @DrawableRes val iconRes: Int,
+    val title: String,
+    val description: String
+)
+
+data class SupplierCategory(
+    val id: String,
+    val name: String,
+    val productCount: Int,
+    @ColorRes val accentColorRes: Int
+)
+
+data class SupplierCatalogProduct(
+    val id: String,
+    val categoryId: String,
+    val name: String,
+    val unitLabel: String,
+    val packaging: String,
+    @ColorRes val accentColorRes: Int
+)
+
+data class SupplierProduct(
+    val id: String,
+    val catalogProductId: String,
+    val name: String,
+    val categoryName: String,
+    val unitLabel: String,
+    var pricePkr: Int,
+    var stock: Int,
+    var deliveryDays: String,
+    var isActive: Boolean,
+    @ColorRes val accentColorRes: Int
+) {
+    val stockState: SupplierStockState
+        get() = when {
+            stock <= 0 -> SupplierStockState.OUT_OF_STOCK
+            stock <= 10 -> SupplierStockState.LOW_STOCK
+            else -> SupplierStockState.IN_STOCK
+        }
+}
+
+enum class SupplierStockState {
+    IN_STOCK,
+    LOW_STOCK,
+    OUT_OF_STOCK
+}
+
+enum class SupplierProductFilter {
+    ALL,
+    ACTIVE,
+    INACTIVE,
+    LOW_STOCK
+}
+
+enum class SupplierOrderStatus(val label: String) {
+    PENDING("Pending"),
+    CONFIRMED("Confirmed"),
+    SHIPPED("Shipped"),
+    DELIVERED("Delivered")
+}
+
+data class SupplierOrder(
+    val id: String,
+    val retailerName: String,
+    val orderDate: String,
+    val expectedDeliveryDate: String,
+    val itemsCount: Int,
+    val amountPkr: Int,
+    val status: SupplierOrderStatus
+)
+
+data class SupplierDashboardStats(
+    val todayOrders: Int,
+    val pendingOrders: Int,
+    val thisMonthRevenuePkr: Int,
+    val totalProducts: Int
+)
+
+enum class SupplierHomeAction {
+    ADD_PRODUCT,
+    VIEW_ORDERS,
+    OPEN_MESSAGES,
+    OPEN_INVENTORY
+}
+
+data class SupplierQuickAction(
+    val title: String,
+    val subtitle: String,
+    @DrawableRes val iconRes: Int,
+    val action: SupplierHomeAction
+)
+
+enum class SupplierEarningsPeriod {
+    ALL,
+    THIS_MONTH,
+    LAST_MONTH
+}
+
+data class SupplierTransaction(
+    val retailerName: String,
+    val orderId: String,
+    val date: String,
+    val amountPkr: Int,
+    val period: SupplierEarningsPeriod
+)
+
+data class SupplierProfile(
+    var businessName: String,
+    var ownerName: String,
+    var phoneNumber: String,
+    var emailAddress: String,
+    var city: String,
+    var businessAddress: String,
+    var minimumOrderQuantity: Int,
+    var minimumOrderAmountPkr: Int
+)
+
+enum class SupplierProfileAction {
+    PRODUCTS,
+    ORDERS,
+    EARNINGS,
+    BUSINESS_ADDRESS,
+    NOTIFICATIONS,
+    CHANGE_PASSWORD,
+    HELP_SUPPORT,
+    ABOUT,
+    LOGOUT
+}
+
+data class SupplierProfileOption(
+    val title: String,
+    @DrawableRes val iconRes: Int,
+    val action: SupplierProfileAction,
+    val isDanger: Boolean = false
+)
+
+data class SupplierConversation(
+    val id: String,
+    val retailerName: String,
+    val lastMessage: String,
+    val timeLabel: String,
+    val unreadCount: Int,
+    @ColorRes val accentColorRes: Int
+)
+
+data class SupplierChatMessage(
+    val id: String,
+    val conversationId: String,
+    val message: String,
+    val timeLabel: String,
+    val isMine: Boolean
+)

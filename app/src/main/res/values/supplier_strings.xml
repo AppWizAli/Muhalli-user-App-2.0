@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="choose_experience">Choose Experience</string>
+    <string name="choose_experience_description">Select which side of Muhalli you want to open in this project.</string>
+    <string name="buyer_app">Buyer App</string>
+    <string name="buyer_app_description">Browse suppliers, order in bulk, and manage purchases.</string>
+    <string name="supplier_app">Supplier App</string>
+    <string name="supplier_app_description">List products, manage inventory, and receive retailer orders.</string>
+    <string name="open_buyer_app">Open Buyer App</string>
+    <string name="open_supplier_app">Open Supplier App</string>
+
+    <string name="supplier_home">Home</string>
+    <string name="supplier_products">Products</string>
+    <string name="supplier_orders">Orders</string>
+    <string name="supplier_earnings">Earnings</string>
+    <string name="supplier_profile">Profile</string>
+
+    <string name="supplier_welcome_back">Welcome Back</string>
+    <string name="supplier_manage_business">Login to manage your business</string>
+    <string name="supplier_phone_or_email">Phone Number or Email</string>
+    <string name="supplier_enter_phone_or_email">Enter your phone or email</string>
+    <string name="supplier_enter_password">Enter your password</string>
+    <string name="supplier_forgot_password">Forgot Password?</string>
+    <string name="supplier_new_here">New Supplier?</string>
+    <string name="supplier_register_here">Register here</string>
+
+    <string name="supplier_create_account">Create Account</string>
+    <string name="supplier_register_as_supplier">Register as a supplier</string>
+    <string name="supplier_owner_full_name">Owner Full Name</string>
+    <string name="supplier_enter_owner_name">Enter owner name</string>
+    <string name="supplier_create_supplier_account">Create Supplier Account</string>
+    <string name="supplier_enter_business_name">Enter business name</string>
+    <string name="supplier_enter_city">Enter city</string>
+    <string name="supplier_confirm_password">Confirm password</string>
+    <string name="supplier_already_have_account">Already have an account?</string>
+    <string name="supplier_sign_in">Sign in</string>
+
+    <string name="good_morning">Good Morning</string>
+    <string name="supplier_business_name_value">Fresh Foods Wholesale</string>
+    <string name="supplier_owner_name_value">Ahmed Khan</string>
+    <string name="supplier_verified_chip">Verified Supplier</string>
+    <string name="supplier_todays_orders">Today\'s Orders</string>
+    <string name="supplier_pending_orders">Pending Orders</string>
+    <string name="supplier_this_month_revenue">This Month Revenue</string>
+    <string name="supplier_total_products">Total Products</string>
+    <string name="supplier_quick_actions">Quick Actions</string>
+    <string name="supplier_low_stock_alert_title">Low Stock Alert</string>
+    <string name="supplier_low_stock_alert_message">1 product running low on stock</string>
+    <string name="supplier_recent_orders">Recent Orders</string>
+    <string name="supplier_view_all">View All</string>
+
+    <string name="supplier_my_products">My Products</string>
+    <string name="supplier_search_products">Search products...</string>
+    <string name="supplier_all">All</string>
+    <string name="supplier_active">Active</string>
+    <string name="supplier_inactive">Inactive</string>
+    <string name="supplier_low_stock">Low Stock</string>
+    <string name="supplier_in_stock">In Stock</string>
+    <string name="supplier_out_of_stock">Out of Stock</string>
+    <string name="supplier_stock_label">Stock: %1$d</string>
+    <string name="supplier_delivery_label">Delivery: %1$s</string>
+    <string name="supplier_price_format">PKR %1$d / %2$s</string>
+    <string name="supplier_pkr_format">PKR %1$d</string>
+    <string name="supplier_amount_positive_format">+ PKR %1$d</string>
+
+    <string name="supplier_add_product">Add Product</string>
+    <string name="supplier_step_format">Step %1$d of 3</string>
+    <string name="supplier_select_category">Select Category</string>
+    <string name="supplier_select_category_description">Choose the category your product belongs to</string>
+    <string name="supplier_choose_product">Choose Product</string>
+    <string name="supplier_search_catalog">Search products...</string>
+    <string name="supplier_change">Change</string>
+    <string name="supplier_pricing_stock">Pricing &amp; Stock</string>
+    <string name="supplier_price_per_unit">Price Per Unit (PKR)</string>
+    <string name="supplier_enter_price">Enter price</string>
+    <string name="supplier_stock_quantity">Stock Quantity</string>
+    <string name="supplier_enter_stock_quantity">Enter stock quantity</string>
+    <string name="supplier_delivery_days">Delivery Days (e.g. 2-3)</string>
+    <string name="supplier_enter_delivery_days">Enter delivery days</string>
+    <string name="supplier_available_for_orders">Available for Orders</string>
+    <string name="supplier_available_for_orders_desc">Make this product visible to retailers</string>
+    <string name="supplier_next_choose_product">Next: Choose Product</string>
+    <string name="supplier_next_set_pricing">Next: Set Pricing &amp; Stock</string>
+    <string name="supplier_save_to_store">Save to My Store</string>
+
+    <string name="supplier_orders_title">Orders</string>
+    <string name="supplier_order_status_title">Order Status</string>
+    <string name="supplier_order_status_subtitle">Review the order and update its current stage</string>
+    <string name="supplier_update_order_status">Update Order Status</string>
+    <string name="supplier_choose_order_status">Choose the latest stage for this retailer order</string>
+    <string name="supplier_retailer">Retailer</string>
+    <string name="supplier_order_amount">Order Amount</string>
+    <string name="supplier_items_count_format">%1$d items</string>
+    <string name="supplier_status_pending_desc">Retailer placed the order and it is waiting for confirmation.</string>
+    <string name="supplier_status_confirmed_desc">You accepted the order and started preparing it.</string>
+    <string name="supplier_status_shipped_desc">The order has left your store and is on the way.</string>
+    <string name="supplier_status_delivered_desc">Retailer received the order successfully.</string>
+    <string name="supplier_save_status">Save Status</string>
+    <string name="supplier_order_status_updated">Order status updated</string>
+    <string name="supplier_expected_delivery">Expected Delivery</string>
+    <string name="supplier_order_date">Order Date</string>
+    <string name="supplier_total_items">Total Items</string>
+    <string name="supplier_pending">Pending</string>
+    <string name="supplier_confirmed">Confirmed</string>
+    <string name="supplier_shipped">Shipped</string>
+    <string name="supplier_delivered">Delivered</string>
+
+    <string name="supplier_earnings_title">Earnings</string>
+    <string name="supplier_total_earnings">Total Earnings</string>
+    <string name="supplier_all_time_earnings">All time earnings</string>
+    <string name="supplier_this_month">This Month</string>
+    <string name="supplier_last_month">Last Month</string>
+    <string name="supplier_transaction_history">Transaction History</string>
+    <string name="supplier_no_transactions">No transactions yet for this period.</string>
+
+    <string name="supplier_profile_title">Profile</string>
+    <string name="supplier_phone">Phone</string>
+    <string name="supplier_email">Email</string>
+    <string name="supplier_city">City</string>
+    <string name="supplier_min_order_qty">Min Order Qty</string>
+    <string name="supplier_min_order_amount">Min Order Amount</string>
+    <string name="supplier_business_address">Business Address</string>
+    <string name="supplier_notification_settings">Notification Settings</string>
+    <string name="supplier_change_password">Change Password</string>
+    <string name="supplier_help_support">Help &amp; Support</string>
+    <string name="supplier_about_app">About App</string>
+    <string name="supplier_logout">Logout</string>
+    <string name="supplier_edit_profile">Edit Profile</string>
+
+    <string name="supplier_messages_title">Messages</string>
+    <string name="supplier_search_conversations">Search conversations...</string>
+    <string name="supplier_active_now">Active now</string>
+    <string name="supplier_type_message">Type a message...</string>
+
+    <string name="supplier_inventory_management">Inventory Management</string>
+    <string name="supplier_update">Update</string>
+    <string name="supplier_cartons">Cartons</string>
+    <string name="supplier_bags">Bags</string>
+    <string name="supplier_total_products_count">Total Products</string>
+    <string name="supplier_low_stock_count">Low Stock</string>
+    <string name="supplier_out_of_stock_count">Out of Stock</string>
+
+    <string name="supplier_edit_profile_title">Edit Profile</string>
+    <string name="supplier_business_name">Business Name</string>
+    <string name="supplier_owner_name">Owner Name</string>
+    <string name="supplier_phone_number">Phone Number</string>
+    <string name="supplier_email_address">Email</string>
+    <string name="supplier_minimum_order_quantity">Minimum Order Quantity</string>
+    <string name="supplier_minimum_order_amount_pkr">Minimum Order Amount (PKR)</string>
+
+    <string name="supplier_coming_soon">This action will be connected with backend APIs later.</string>
+    <string name="supplier_profile_updated">Profile updated</string>
+    <string name="supplier_product_saved">Product saved to supplier store</string>
+    <string name="supplier_stock_updated">Stock updated</string>
+    <string name="supplier_select_category_first">Select a category first</string>
+    <string name="supplier_select_product_first">Select a product first</string>
+    <string name="supplier_fill_all_fields">Fill all fields to continue</string>
+</resources>

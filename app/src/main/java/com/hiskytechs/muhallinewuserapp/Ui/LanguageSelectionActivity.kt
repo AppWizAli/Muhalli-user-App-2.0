@@ -32,7 +32,7 @@ class LanguageSelectionActivity : AppCompatActivity() {
 
         binding.btnContinue.setOnClickListener {
             LocaleManager.updateLanguage(this, selectedLanguageTag)
-            startActivity(Intent(this, ActivityOnboarding::class.java))
+            startActivity(Intent(this, ChooseAppActivity::class.java))
             finish()
         }
 
