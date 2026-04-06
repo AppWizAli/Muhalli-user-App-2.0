@@ -5,8 +5,8 @@ data class Supplier(
     val location: String,
     val productCount: String,
     val deliveryTime: String,
-    val minAmount: String,
-    val minQty: String,
+    val minimumAmount: Double,
+    val minimumQuantity: Int,
     val categories: List<String>,
     val isVerified: Boolean = true,
     val headerColor: String = "#EAF2FF"

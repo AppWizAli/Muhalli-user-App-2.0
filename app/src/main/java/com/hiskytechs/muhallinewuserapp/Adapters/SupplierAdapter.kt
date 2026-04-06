@@ -7,8 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hiskytechs.muhallinewuserapp.Models.Supplier
+import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Ui.SupplierDetailsActivity
 import com.hiskytechs.muhallinewuserapp.databinding.ItemSupplierBinding
+import java.util.Locale
 
 class SupplierAdapter(
     private val suppliers: List<Supplier>,
@@ -35,8 +37,12 @@ class SupplierAdapter(
             tvLocation.text = supplier.location
             tvProductCount.text = supplier.productCount
             tvDeliveryTime.text = supplier.deliveryTime
-            tvMinAmount.text = supplier.minAmount
-            tvMinQty.text = supplier.minQty
+            tvMinAmount.text = String.format(
+                Locale.getDefault(),
+                root.context.getString(R.string.currency_amount_format),
+                supplier.minimumAmount
+            )
+            tvMinQty.text = supplier.minimumQuantity.toString()
             tvVerified.visibility = if (supplier.isVerified) View.VISIBLE else View.GONE
 
             val orderedCategories = supplier.categories.sortedByDescending { category ->
@@ -54,8 +60,15 @@ class SupplierAdapter(
                     putExtra("supplier_name", supplier.name)
                     putExtra("location", supplier.location)
                     putExtra("delivery_time", supplier.deliveryTime)
-                    putExtra("min_amount", supplier.minAmount)
-                    putExtra("min_qty", supplier.minQty)
+                    putExtra(
+                        "min_amount",
+                        String.format(
+                            Locale.getDefault(),
+                            it.context.getString(R.string.currency_amount_format),
+                            supplier.minimumAmount
+                        )
+                    )
+                    putExtra("min_qty", supplier.minimumQuantity.toString())
                 }
                 it.context.startActivity(intent)
             }

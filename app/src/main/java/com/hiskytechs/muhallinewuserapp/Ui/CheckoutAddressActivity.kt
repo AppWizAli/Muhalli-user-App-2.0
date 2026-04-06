@@ -97,10 +97,15 @@ class CheckoutAddressActivity : AppCompatActivity() {
     }
 
     private fun openReviewScreen() {
-        startActivity(Intent(this, CheckoutReviewActivity::class.java))
+        startActivity(
+            Intent(this, CheckoutReviewActivity::class.java).apply {
+                putExtra(EXTRA_SUPPLIER_NAME, intent.getStringExtra(EXTRA_SUPPLIER_NAME))
+            }
+        )
     }
 
     companion object {
         const val EXTRA_CONTINUE_TO_REVIEW = "continue_to_review"
+        const val EXTRA_SUPPLIER_NAME = "supplier_name"
     }
 }

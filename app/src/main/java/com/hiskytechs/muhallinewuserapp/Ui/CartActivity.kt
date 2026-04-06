@@ -19,8 +19,18 @@ class CartActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.cart_fragment_container, CartFragment.newInstance(false))
+                .replace(
+                    R.id.cart_fragment_container,
+                    CartFragment.newInstance(
+                        showHeader = false,
+                        initialSupplierName = intent.getStringExtra(EXTRA_SUPPLIER_NAME)
+                    )
+                )
                 .commit()
         }
+    }
+
+    companion object {
+        const val EXTRA_SUPPLIER_NAME = "supplier_name"
     }
 }

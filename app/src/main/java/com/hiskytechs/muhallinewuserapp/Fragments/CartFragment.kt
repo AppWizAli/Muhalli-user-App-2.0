@@ -10,9 +10,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hiskytechs.muhallinewuserapp.Adapters.CartAdapter
+import com.hiskytechs.muhallinewuserapp.Adapters.CartSupplierAdapter
 import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Ui.CheckoutAddressActivity
 import com.hiskytechs.muhallinewuserapp.Utill.CartManager
+import com.hiskytechs.muhallinewuserapp.Utill.SupplierCart
 import com.hiskytechs.muhallinewuserapp.databinding.FragmentCartBinding
 import java.util.Locale
 
@@ -21,7 +23,10 @@ class CartFragment : Fragment() {
     private var _binding: FragmentCartBinding? = null
     private val binding get() = _binding!!
     private lateinit var cartAdapter: CartAdapter
+    private lateinit var supplierAdapter: CartSupplierAdapter
     private var showHeader: Boolean = true
+    private var selectedSupplierName: String? = null
+    private var initialSupplierName: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,23 +34,43 @@ class CartFragment : Fragment() {
     ): View {
         _binding = FragmentCartBinding.inflate(inflater, container, false)
         showHeader = arguments?.getBoolean(ARG_SHOW_HEADER) ?: true
+        initialSupplierName = arguments?.getString(ARG_INITIAL_SUPPLIER)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setupRecyclerView()
-        updateSummary()
+        setupSupplierRecyclerView()
+        setupCartRecyclerView()
+        refreshCartUi(initialSupplierName)
+
         binding.btnCheckout.setOnClickListener {
-            if (CartManager.getItems().isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.cart_empty_message),
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                startActivity(Intent(requireContext(), CheckoutAddressActivity::class.java))
+            val activeSupplierName = selectedSupplierName
+            val selectedCart = activeSupplierName?.let { CartManager.getSupplierCart(it) }
+
+            when {
+                selectedCart == null -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.cart_empty_message),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                !selectedCart.isMinimumMet -> {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.cart_checkout_requirements_message),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                else -> {
+                    startActivity(
+                        Intent(requireContext(), CheckoutAddressActivity::class.java).apply {
+                            putExtra(CheckoutAddressActivity.EXTRA_SUPPLIER_NAME, activeSupplierName)
+                        }
+                    )
+                }
             }
         }
 
@@ -57,92 +82,142 @@ class CartFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (_binding != null && this::cartAdapter.isInitialized) {
-            cartAdapter.updateItems(CartManager.getItems().toMutableList())
-            updateSummary()
+        if (_binding != null && this::cartAdapter.isInitialized && this::supplierAdapter.isInitialized) {
+            refreshCartUi(selectedSupplierName)
         }
     }
 
-    private fun setupRecyclerView() {
+    private fun setupSupplierRecyclerView() {
+        supplierAdapter = CartSupplierAdapter(
+            supplierCarts = emptyList(),
+            selectedSupplierName = null
+        ) { supplierName ->
+            refreshCartUi(supplierName)
+        }
+        binding.rvSuppliers.layoutManager = LinearLayoutManager(
+            requireContext(),
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
+        binding.rvSuppliers.adapter = supplierAdapter
+    }
+
+    private fun setupCartRecyclerView() {
         cartAdapter = CartAdapter(
-            CartManager.getItems().toMutableList(),
-            onQuantityChanged = { updateSummary() },
+            emptyList(),
+            onQuantityChanged = {
+                refreshCartUi(selectedSupplierName)
+            },
             onDeleteItem = { item ->
                 CartManager.removeItem(item)
-                cartAdapter.updateItems(CartManager.getItems().toMutableList())
-                updateSummary()
+                refreshCartUi(selectedSupplierName)
             }
         )
         binding.rvCartItems.layoutManager = LinearLayoutManager(requireContext())
         binding.rvCartItems.adapter = cartAdapter
     }
 
-    private fun updateSummary() {
-        val items = CartManager.getItems()
-        val subtotal = CartManager.getSubtotal()
-        val shipping = CartManager.getShipping()
-        val total = CartManager.getTotal()
-        val totalQuantity = items.sumOf { it.quantity }
-        val minimumAmount = 500.0
-        val minimumQuantity = 20
-        val remainingAmount = (minimumAmount - subtotal).coerceAtLeast(0.0)
-        val remainingQuantity = (minimumQuantity - totalQuantity).coerceAtLeast(0)
+    private fun refreshCartUi(preferredSupplierName: String? = selectedSupplierName) {
+        val supplierCarts = CartManager.getSupplierCarts()
+        selectedSupplierName = supplierCarts
+            .firstOrNull { it.supplierName.equals(preferredSupplierName, ignoreCase = true) }
+            ?.supplierName
+            ?: supplierCarts.firstOrNull()?.supplierName
+        initialSupplierName = null
 
-        binding.tvSubtotal.text = String.format(
-            Locale.getDefault(),
-            getString(R.string.currency_amount_format),
-            subtotal
+        val selectedCart = selectedSupplierName?.let { CartManager.getSupplierCart(it) }
+        supplierAdapter.updateItems(supplierCarts, selectedSupplierName)
+        cartAdapter.updateItems(selectedCart?.items.orEmpty())
+        updateSummary(selectedCart, supplierCarts.isNotEmpty())
+    }
+
+    private fun updateSummary(selectedCart: SupplierCart?, hasSuppliers: Boolean) {
+        binding.rvSuppliers.visibility = if (hasSuppliers) View.VISIBLE else View.GONE
+
+        if (selectedCart == null) {
+            binding.tvOrderProgressSubtitle.text = getString(R.string.complete_minimum_order_requirements)
+            binding.tvItemCountBadge.text = getString(R.string.items_count_format, 0)
+            binding.tvSubtotal.text = formatCurrency(0.0)
+            binding.tvShipping.text = formatCurrency(0.0)
+            binding.tvTotal.text = formatCurrency(0.0)
+            binding.tvAmountProgress.text = getString(R.string.cart_progress_amount_format, 0.0, 0.0)
+            binding.tvQuantityProgress.text = getString(R.string.cart_quantity_progress_format, 0, 0)
+            binding.tvAmountRemaining.text = getString(R.string.cart_empty_message)
+            binding.tvQuantityRemaining.text = getString(R.string.cart_empty_message)
+            binding.tvAmountRemaining.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.status_processing_text)
+            )
+            binding.tvQuantityRemaining.setTextColor(
+                ContextCompat.getColor(requireContext(), R.color.status_processing_text)
+            )
+            binding.pbAmount.progress = 0
+            binding.pbQuantity.progress = 0
+            binding.btnCheckout.isEnabled = false
+            binding.btnCheckout.alpha = 0.6f
+            return
+        }
+
+        binding.tvOrderProgressSubtitle.text = selectedCart.supplierName
+        binding.tvItemCountBadge.text = getString(
+            R.string.items_count_format,
+            selectedCart.lineItemCount
         )
-        binding.tvShipping.text = String.format(
-            Locale.getDefault(),
-            getString(R.string.currency_amount_format),
-            shipping
-        )
-        binding.tvTotal.text = String.format(
-            Locale.getDefault(),
-            getString(R.string.currency_amount_format),
-            total
-        )
-        binding.tvItemCountBadge.text = getString(R.string.items_count_format, items.size)
-        binding.tvAmountProgress.text = String.format(
-            Locale.getDefault(),
-            getString(R.string.cart_progress_amount_format),
-            subtotal,
-            minimumAmount
+        binding.tvSubtotal.text = formatCurrency(selectedCart.subtotal)
+        binding.tvShipping.text = formatCurrency(selectedCart.shipping)
+        binding.tvTotal.text = formatCurrency(selectedCart.total)
+        binding.tvAmountProgress.text = getString(
+            R.string.cart_progress_amount_format,
+            selectedCart.subtotal,
+            selectedCart.minimumAmount
         )
         binding.tvQuantityProgress.text = getString(
             R.string.cart_quantity_progress_format,
-            totalQuantity,
-            minimumQuantity
+            selectedCart.totalQuantity,
+            selectedCart.minimumQuantity
         )
-        binding.tvAmountRemaining.text = if (remainingAmount > 0.0) {
-            String.format(
-                Locale.getDefault(),
-                getString(R.string.cart_add_more_amount_format),
-                remainingAmount
-            )
+        binding.tvAmountRemaining.text = if (selectedCart.remainingAmount > 0.0) {
+            getString(R.string.cart_add_more_amount_format, selectedCart.remainingAmount)
         } else {
             getString(R.string.minimum_amount_reached)
         }
-        binding.tvQuantityRemaining.text = if (remainingQuantity > 0) {
-            getString(R.string.cart_add_more_quantity_format, remainingQuantity)
+        binding.tvQuantityRemaining.text = if (selectedCart.remainingQuantity > 0) {
+            getString(R.string.cart_add_more_quantity_format, selectedCart.remainingQuantity)
         } else {
             getString(R.string.minimum_quantity_reached)
         }
 
-        val statusColor = if (remainingAmount > 0.0 || remainingQuantity > 0) {
-            ContextCompat.getColor(requireContext(), R.color.status_processing_text)
-        } else {
-            ContextCompat.getColor(requireContext(), R.color.status_delivered_text)
-        }
+        val statusColor = ContextCompat.getColor(
+            requireContext(),
+            if (selectedCart.isMinimumMet) R.color.status_delivered_text else R.color.status_processing_text
+        )
         binding.tvAmountRemaining.setTextColor(statusColor)
         binding.tvQuantityRemaining.setTextColor(statusColor)
 
-        binding.pbAmount.progress = ((subtotal / minimumAmount) * 100).toInt().coerceAtMost(100)
-        binding.pbQuantity.progress =
-            ((totalQuantity / minimumQuantity.toDouble()) * 100).toInt().coerceAtMost(100)
-        binding.btnCheckout.isEnabled = items.isNotEmpty()
-        binding.btnCheckout.alpha = if (items.isEmpty()) 0.6f else 1f
+        binding.pbAmount.progress = calculateProgress(
+            currentValue = selectedCart.subtotal,
+            minimumValue = selectedCart.minimumAmount
+        )
+        binding.pbQuantity.progress = calculateProgress(
+            currentValue = selectedCart.totalQuantity.toDouble(),
+            minimumValue = selectedCart.minimumQuantity.toDouble()
+        )
+        binding.btnCheckout.isEnabled = selectedCart.isMinimumMet
+        binding.btnCheckout.alpha = if (selectedCart.isMinimumMet) 1f else 0.6f
+    }
+
+    private fun calculateProgress(currentValue: Double, minimumValue: Double): Int {
+        if (minimumValue <= 0.0) {
+            return if (currentValue > 0.0) 100 else 0
+        }
+        return ((currentValue / minimumValue) * 100).toInt().coerceIn(0, 100)
+    }
+
+    private fun formatCurrency(amount: Double): String {
+        return String.format(
+            Locale.getDefault(),
+            getString(R.string.currency_amount_format),
+            amount
+        )
     }
 
     override fun onDestroyView() {
@@ -152,11 +227,13 @@ class CartFragment : Fragment() {
 
     companion object {
         private const val ARG_SHOW_HEADER = "show_header"
+        private const val ARG_INITIAL_SUPPLIER = "initial_supplier"
 
-        fun newInstance(showHeader: Boolean): CartFragment {
+        fun newInstance(showHeader: Boolean, initialSupplierName: String? = null): CartFragment {
             return CartFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(ARG_SHOW_HEADER, showHeader)
+                    putString(ARG_INITIAL_SUPPLIER, initialSupplierName)
                 }
             }
         }

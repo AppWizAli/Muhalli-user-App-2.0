@@ -60,7 +60,11 @@ class SupplierProductsFragment : Fragment() {
         binding.rvProducts.adapter = SupplierProductAdapter(products, supplierName) { cartItem ->
             CartManager.addItem(cartItem)
 
-            startActivity(Intent(requireContext(), CartActivity::class.java))
+            startActivity(
+                Intent(requireContext(), CartActivity::class.java).apply {
+                    putExtra(CartActivity.EXTRA_SUPPLIER_NAME, supplierName)
+                }
+            )
         }
     }
 

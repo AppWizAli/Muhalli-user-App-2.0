@@ -13,6 +13,7 @@ import java.util.Locale
 class CheckoutReviewActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCheckoutReviewBinding
+    private var supplierName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,16 +26,29 @@ class CheckoutReviewActivity : AppCompatActivity() {
             return
         }
 
+        supplierName = intent.getStringExtra(CheckoutAddressActivity.EXTRA_SUPPLIER_NAME)
+            ?.takeIf { CartManager.getSupplierCart(it) != null }
+            ?: CartManager.getSupplierCarts().firstOrNull()?.supplierName.orEmpty()
+        val supplierCart = CartManager.getSupplierCart(supplierName)
+        if (supplierCart == null) {
+            finish()
+            return
+        }
+
         binding.ivBack.setOnClickListener { finish() }
         binding.tvEditAddress.setOnClickListener {
-            startActivity(Intent(this, CheckoutAddressActivity::class.java))
+            startActivity(
+                Intent(this, CheckoutAddressActivity::class.java).apply {
+                    putExtra(CheckoutAddressActivity.EXTRA_SUPPLIER_NAME, supplierName)
+                }
+            )
         }
         binding.btnPlaceOrder.setOnClickListener {
             val createdOrder = AppData.addOrderFromCart(
-                items = CartManager.getItems(),
-                totalAmount = CartManager.getTotal()
+                items = supplierCart.items,
+                totalAmount = supplierCart.total
             )
-            CartManager.clearCart()
+            CartManager.clearSupplierCart(supplierName)
             val intent = Intent(this, OrderSuccessActivity::class.java).apply {
                 putExtra(OrderSuccessActivity.EXTRA_ORDER_ID, createdOrder.orderId)
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -47,22 +61,23 @@ class CheckoutReviewActivity : AppCompatActivity() {
         binding.tvAddressPhone.text = address.phoneNumber
         binding.tvAddressLine.text = address.formattedAddress
         binding.tvAddressNote.text = address.note.ifBlank { getString(R.string.no_delivery_note_added) }
+        binding.tvSupplierValue.text = supplierCart.supplierName
 
-        binding.tvItemsValue.text = getString(R.string.items_count_format, CartManager.getCartCount())
+        binding.tvItemsValue.text = getString(R.string.items_count_format, supplierCart.totalQuantity)
         binding.tvSubtotalValue.text = String.format(
             Locale.getDefault(),
             getString(R.string.currency_amount_format),
-            CartManager.getSubtotal()
+            supplierCart.subtotal
         )
         binding.tvShippingValue.text = String.format(
             Locale.getDefault(),
             getString(R.string.currency_amount_format),
-            CartManager.getShipping()
+            supplierCart.shipping
         )
         binding.tvTotalValue.text = String.format(
             Locale.getDefault(),
             getString(R.string.currency_amount_format),
-            CartManager.getTotal()
+            supplierCart.total
         )
     }
 }

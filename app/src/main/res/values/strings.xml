@@ -27,6 +27,10 @@
     <string name="minimum_amount_reached">Minimum amount reached</string>
     <string name="minimum_quantity_reached">Minimum quantity reached</string>
     <string name="cart_empty_message">Your cart is empty</string>
+    <string name="cart_checkout_requirements_message">Meet the selected supplier minimums before checkout</string>
+    <string name="cart_supplier_item_meta_format">%1$d products - %2$d items</string>
+    <string name="cart_supplier_item_meta_preview">2 products - 6 items</string>
+    <string name="supplier_label">Supplier</string>
 
     <string name="profile_member_since_format">%1$s - %2$s</string>
     <string name="account_details_updated">Account details updated</string>

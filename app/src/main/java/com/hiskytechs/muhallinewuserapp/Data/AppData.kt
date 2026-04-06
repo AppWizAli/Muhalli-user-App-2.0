@@ -57,8 +57,8 @@ object AppData {
                 location = string(R.string.data_location_jebel_ali),
                 productCount = products(250),
                 deliveryTime = deliveryRange(1, 2),
-                minAmount = currency(500.0),
-                minQty = "20",
+                minimumAmount = 500.0,
+                minimumQuantity = 20,
                 categories = listOf(
                     string(R.string.data_category_snacks),
                     string(R.string.data_category_groceries)
@@ -70,8 +70,8 @@ object AppData {
                 location = string(R.string.data_location_sharjah),
                 productCount = products(180),
                 deliveryTime = string(R.string.delivery_same_day),
-                minAmount = currency(300.0),
-                minQty = "15",
+                minimumAmount = 300.0,
+                minimumQuantity = 15,
                 categories = listOf(
                     string(R.string.data_category_drinks),
                     string(R.string.data_category_mineral_water)
@@ -83,8 +83,8 @@ object AppData {
                 location = string(R.string.data_location_dubai),
                 productCount = products(320),
                 deliveryTime = deliveryRange(2, 3),
-                minAmount = currency(1000.0),
-                minQty = "50",
+                minimumAmount = 1000.0,
+                minimumQuantity = 50,
                 categories = listOf(
                     string(R.string.data_category_chips),
                     string(R.string.data_category_snacks)
@@ -96,8 +96,8 @@ object AppData {
                 location = string(R.string.data_location_dubai),
                 productCount = products(215),
                 deliveryTime = deliveryRange(1, 2),
-                minAmount = currency(400.0),
-                minQty = "25",
+                minimumAmount = 400.0,
+                minimumQuantity = 25,
                 categories = listOf(
                     string(R.string.data_category_groceries),
                     string(R.string.data_category_coffee_tea)
@@ -109,8 +109,8 @@ object AppData {
                 location = string(R.string.data_location_abu_dhabi),
                 productCount = products(298),
                 deliveryTime = string(R.string.delivery_same_day),
-                minAmount = currency(600.0),
-                minQty = "30",
+                minimumAmount = 600.0,
+                minimumQuantity = 30,
                 categories = listOf(
                     string(R.string.data_category_fresh_fruits),
                     string(R.string.data_category_drinks)
@@ -122,8 +122,8 @@ object AppData {
                 location = string(R.string.data_location_ajman),
                 productCount = products(164),
                 deliveryTime = string(R.string.delivery_one_day),
-                minAmount = currency(350.0),
-                minQty = "18",
+                minimumAmount = 350.0,
+                minimumQuantity = 18,
                 categories = listOf(
                     string(R.string.data_category_mineral_water),
                     string(R.string.data_category_drinks)
@@ -135,8 +135,8 @@ object AppData {
                 location = string(R.string.data_location_lahore),
                 productCount = products(104),
                 deliveryTime = string(R.string.delivery_next_day),
-                minAmount = currency(850.0),
-                minQty = "12",
+                minimumAmount = 850.0,
+                minimumQuantity = 12,
                 categories = listOf(
                     string(R.string.data_category_meat),
                     string(R.string.data_category_groceries)
@@ -148,8 +148,8 @@ object AppData {
                 location = string(R.string.data_location_karachi),
                 productCount = products(142),
                 deliveryTime = string(R.string.delivery_two_days),
-                minAmount = currency(450.0),
-                minQty = "22",
+                minimumAmount = 450.0,
+                minimumQuantity = 22,
                 categories = listOf(
                     string(R.string.data_category_coffee_tea),
                     string(R.string.data_category_snacks)
@@ -400,10 +400,6 @@ object AppData {
 
     private fun deliveryRange(start: Int, end: Int): String {
         return string(R.string.delivery_days_range_format, start, end)
-    }
-
-    private fun currency(amount: Double): String {
-        return String.format(Locale.getDefault(), string(R.string.currency_amount_format), amount)
     }
 
     private fun timeLabel(hour24: Int, minute: Int): String {
