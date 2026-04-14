@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.hiskytechs.muhallinewuserapp.Data.AppData
@@ -19,6 +20,7 @@ import java.util.Locale
 class OrderDetailsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOrderDetailsBinding
+    private var requestedOrderId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,13 +29,34 @@ class OrderDetailsActivity : AppCompatActivity() {
 
         binding.toolbar.setNavigationOnClickListener { finish() }
 
-        val orderId = intent.getStringExtra(EXTRA_ORDER_ID).orEmpty()
-        val order = AppData.findOrder(orderId)
-        if (order == null) {
-            finish()
+        requestedOrderId = intent.getStringExtra(EXTRA_ORDER_ID).orEmpty()
+        loadOrder()
+    }
+
+    private fun loadOrder() {
+        val cachedOrder = AppData.findOrder(requestedOrderId)
+        if (cachedOrder != null) {
+            bindOrder(cachedOrder)
             return
         }
 
+        AppData.loadOrders(
+            onSuccess = {
+                val loadedOrder = AppData.findOrder(requestedOrderId)
+                if (loadedOrder == null) {
+                    finish()
+                } else {
+                    bindOrder(loadedOrder)
+                }
+            },
+            onError = { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        )
+    }
+
+    private fun bindOrder(order: Order) {
         val statusUi = buildStatusUi(order)
         bindSummary(order, statusUi)
         bindTracking(order, statusUi)
@@ -41,8 +64,10 @@ class OrderDetailsActivity : AppCompatActivity() {
 
         binding.btnContactSupplier.setOnClickListener {
             val supplier = AppData.findSupplierByName(order.supplier)
+            val thread = AppData.findThreadBySupplierName(order.supplier)
             val targetIntent = if (supplier != null) {
                 Intent(this, ChatConversationActivity::class.java).apply {
+                    putExtra(ChatConversationActivity.EXTRA_THREAD_ID, thread?.threadId ?: 0)
                     putExtra(ChatConversationActivity.EXTRA_SUPPLIER_NAME, supplier.name)
                     putExtra(ChatConversationActivity.EXTRA_SUPPLIER_LOCATION, supplier.location)
                 }
@@ -281,7 +306,7 @@ class OrderDetailsActivity : AppCompatActivity() {
                 currentColorRes = R.color.status_delivered_text,
                 currentBackgroundRes = R.drawable.bg_tracking_done
             )
-            "in transit" -> OrderStatusUi(
+            "in transit", "shipped" -> OrderStatusUi(
                 badgeText = getString(R.string.status_in_transit),
                 badgeBackgroundRes = R.drawable.bg_status_transit,
                 badgeTextColorRes = R.color.status_transit_text,
@@ -290,6 +315,16 @@ class OrderDetailsActivity : AppCompatActivity() {
                 currentStep = 4,
                 currentColorRes = R.color.status_transit_text,
                 currentBackgroundRes = R.drawable.bg_tracking_current
+            )
+            "pending" -> OrderStatusUi(
+                badgeText = getString(R.string.pending),
+                badgeBackgroundRes = R.drawable.bg_status_processing,
+                badgeTextColorRes = R.color.status_processing_text,
+                estimatedDeliveryText = order.deliveryDate ?: getString(R.string.preparing_for_dispatch),
+                trackingSummary = getString(R.string.your_order_has_been_confirmed),
+                currentStep = 2,
+                currentColorRes = R.color.status_processing_text,
+                currentBackgroundRes = R.drawable.bg_tracking_processing
             )
             "cancelled" -> OrderStatusUi(
                 badgeText = getString(R.string.status_cancelled),

@@ -12,28 +12,21 @@ import com.hiskytechs.muhallinewuserapp.databinding.ActivitySuppliersBinding
 class SuppliersActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySuppliersBinding
+    private lateinit var selectedCategory: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySuppliersBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val selectedCategory = intent.getStringExtra(EXTRA_CATEGORY_NAME).orEmpty()
-        val suppliers = if (selectedCategory.isBlank()) {
-            AppData.suppliers
-        } else {
-            AppData.suppliersForCategory(selectedCategory)
-        }
-
+        selectedCategory = intent.getStringExtra(EXTRA_CATEGORY_NAME).orEmpty()
         binding.tvSelectedCategory.text = if (selectedCategory.isBlank()) {
             getString(R.string.showing_all_verified_suppliers)
         } else {
             selectedCategory
         }
-        binding.tvResultsCount.text = getString(R.string.suppliers_found_count, suppliers.size)
 
         binding.rvSuppliers.layoutManager = LinearLayoutManager(this)
-        binding.rvSuppliers.adapter = SupplierAdapter(suppliers, selectedCategory)
 
         binding.ivBack.setOnClickListener { finish() }
         binding.layoutFilter.setOnClickListener {
@@ -44,6 +37,26 @@ class SuppliersActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.sort_options_coming_soon), Toast.LENGTH_SHORT)
                 .show()
         }
+
+        loadSuppliers()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadSuppliers()
+    }
+
+    private fun loadSuppliers() {
+        AppData.loadSuppliers(
+            categoryName = selectedCategory,
+            onSuccess = { suppliers ->
+                binding.tvResultsCount.text = getString(R.string.suppliers_found_count, suppliers.size)
+                binding.rvSuppliers.adapter = SupplierAdapter(suppliers, selectedCategory)
+            },
+            onError = { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
     companion object {

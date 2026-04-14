@@ -2,8 +2,10 @@ package com.hiskytechs.muhallinewuserapp.Ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityLoginBinding
+import com.hiskytechs.muhallinewuserapp.MainActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -19,7 +21,14 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.btnLogin.setOnClickListener {
-            // Logic for login
+            val email = binding.etEmail.text?.toString()?.trim().orEmpty()
+            val password = binding.etPassword.text?.toString()?.trim().orEmpty()
+            if (email.isBlank() || password.isBlank()) {
+                Toast.makeText(this, "Enter email and password", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
         }
         
         binding.tvForgotPassword.setOnClickListener {

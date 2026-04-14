@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hiskytechs.muhallinewuserapp.Adapters.CategoryAdapter
@@ -27,17 +28,26 @@ class CategoriesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerView()
+        binding.rvCategories.layoutManager = GridLayoutManager(requireContext(), 2)
+        loadCategories()
     }
 
-    private fun setupRecyclerView() {
-        binding.rvCategories.layoutManager = GridLayoutManager(requireContext(), 2)
-        binding.rvCategories.adapter = CategoryAdapter(AppData.categories) { category ->
-            val intent = Intent(requireContext(), SuppliersActivity::class.java).apply {
-                putExtra(SuppliersActivity.EXTRA_CATEGORY_NAME, category.name)
+    private fun loadCategories() {
+        AppData.loadCategories(
+            onSuccess = { categories ->
+                if (_binding == null) return@loadCategories
+                binding.rvCategories.adapter = CategoryAdapter(categories) { category ->
+                    val intent = Intent(requireContext(), SuppliersActivity::class.java).apply {
+                        putExtra(SuppliersActivity.EXTRA_CATEGORY_NAME, category.name)
+                    }
+                    startActivity(intent)
+                }
+            },
+            onError = { message ->
+                if (_binding == null) return@loadCategories
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
-            startActivity(intent)
-        }
+        )
     }
 
     override fun onDestroyView() {

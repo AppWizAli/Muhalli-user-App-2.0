@@ -2,7 +2,6 @@ package com.hiskytechs.muhallinewuserapp.Data
 
 import androidx.annotation.StringRes
 import com.hiskytechs.muhallinewuserapp.MuhalliApplication
-import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Models.BuyerProfile
 import com.hiskytechs.muhallinewuserapp.Models.CartItem
 import com.hiskytechs.muhallinewuserapp.Models.Category
@@ -11,403 +10,520 @@ import com.hiskytechs.muhallinewuserapp.Models.ChatMessageType
 import com.hiskytechs.muhallinewuserapp.Models.ChatParticipant
 import com.hiskytechs.muhallinewuserapp.Models.ChatThread
 import com.hiskytechs.muhallinewuserapp.Models.Order
+import com.hiskytechs.muhallinewuserapp.Models.Product
 import com.hiskytechs.muhallinewuserapp.Models.Supplier
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
+import com.hiskytechs.muhallinewuserapp.R
+import com.hiskytechs.muhallinewuserapp.network.ApiClient
+import com.hiskytechs.muhallinewuserapp.network.ApiException
+import com.hiskytechs.muhallinewuserapp.network.ApiFormatting
+import com.hiskytechs.muhallinewuserapp.network.AppSession
+import com.hiskytechs.muhallinewuserapp.network.BackgroundWork
+import org.json.JSONArray
+import org.json.JSONObject
 import java.util.Locale
 
 object AppData {
 
-    private const val STATUS_DELIVERED = "Delivered"
-    private const val STATUS_IN_TRANSIT = "In Transit"
-    private const val STATUS_PROCESSING = "Processing"
-    private const val STATUS_CANCELLED = "Cancelled"
-
     private val context
         get() = MuhalliApplication.instance
 
-    val buyerProfile: BuyerProfile by lazy {
-        BuyerProfile(
-            storeName = string(R.string.data_store_name),
-            buyerName = string(R.string.data_buyer_name),
-            email = string(R.string.mystore_email_com),
-            phoneNumber = string(R.string.value_971_50_123_4567),
-            city = string(R.string.data_buyer_city),
-            memberSince = string(R.string.data_buyer_member_since)
-        )
-    }
+    var buyerProfile: BuyerProfile = BuyerProfile("", "", "", "", "", "")
+        private set
 
+    private var categoriesCache: List<Category> = emptyList()
     val categories: List<Category>
-        get() = listOf(
-            Category(string(R.string.data_category_snacks), products(245), R.drawable.ic_grid_view_24, "#FFF8E1"),
-            Category(string(R.string.data_category_chips), products(189), R.drawable.ic_grid_view_24, "#E3F2FD"),
-            Category(string(R.string.data_category_mineral_water), products(158), R.drawable.ic_grid_view_24, "#E0F2F1"),
-            Category(string(R.string.data_category_groceries), products(567), R.drawable.ic_grid_view_24, "#FCE4EC"),
-            Category(string(R.string.data_category_drinks), products(234), R.drawable.ic_grid_view_24, "#E8EAF6"),
-            Category(string(R.string.data_category_fresh_fruits), products(145), R.drawable.ic_grid_view_24, "#FFEBEE"),
-            Category(string(R.string.data_category_meat), products(98), R.drawable.ic_grid_view_24, "#FFF3E0"),
-            Category(string(R.string.data_category_coffee_tea), products(123), R.drawable.ic_grid_view_24, "#F3E5F5")
-        )
+        get() = categoriesCache
 
+    private var suppliersCache: List<Supplier> = emptyList()
     val suppliers: List<Supplier>
-        get() = listOf(
-            Supplier(
-                name = string(R.string.data_supplier_al_hamd_wholes),
-                location = string(R.string.data_location_jebel_ali),
-                productCount = products(250),
-                deliveryTime = deliveryRange(1, 2),
-                minimumAmount = 500.0,
-                minimumQuantity = 20,
-                categories = listOf(
-                    string(R.string.data_category_snacks),
-                    string(R.string.data_category_groceries)
-                ),
-                headerColor = "#EEF4FF"
-            ),
-            Supplier(
-                name = string(R.string.data_supplier_al_sadiqa_company),
-                location = string(R.string.data_location_sharjah),
-                productCount = products(180),
-                deliveryTime = string(R.string.delivery_same_day),
-                minimumAmount = 300.0,
-                minimumQuantity = 15,
-                categories = listOf(
-                    string(R.string.data_category_drinks),
-                    string(R.string.data_category_mineral_water)
-                ),
-                headerColor = "#EFFBF3"
-            ),
-            Supplier(
-                name = string(R.string.data_supplier_al_far_imports),
-                location = string(R.string.data_location_dubai),
-                productCount = products(320),
-                deliveryTime = deliveryRange(2, 3),
-                minimumAmount = 1000.0,
-                minimumQuantity = 50,
-                categories = listOf(
-                    string(R.string.data_category_chips),
-                    string(R.string.data_category_snacks)
-                ),
-                headerColor = "#FFF6EC"
-            ),
-            Supplier(
-                name = string(R.string.data_supplier_premium_foods),
-                location = string(R.string.data_location_dubai),
-                productCount = products(215),
-                deliveryTime = deliveryRange(1, 2),
-                minimumAmount = 400.0,
-                minimumQuantity = 25,
-                categories = listOf(
-                    string(R.string.data_category_groceries),
-                    string(R.string.data_category_coffee_tea)
-                ),
-                headerColor = "#F5F2FF"
-            ),
-            Supplier(
-                name = string(R.string.data_supplier_global_trade),
-                location = string(R.string.data_location_abu_dhabi),
-                productCount = products(298),
-                deliveryTime = string(R.string.delivery_same_day),
-                minimumAmount = 600.0,
-                minimumQuantity = 30,
-                categories = listOf(
-                    string(R.string.data_category_fresh_fruits),
-                    string(R.string.data_category_drinks)
-                ),
-                headerColor = "#FFF1F6"
-            ),
-            Supplier(
-                name = string(R.string.data_supplier_pure_spring),
-                location = string(R.string.data_location_ajman),
-                productCount = products(164),
-                deliveryTime = string(R.string.delivery_one_day),
-                minimumAmount = 350.0,
-                minimumQuantity = 18,
-                categories = listOf(
-                    string(R.string.data_category_mineral_water),
-                    string(R.string.data_category_drinks)
-                ),
-                headerColor = "#EAF9F8"
-            ),
-            Supplier(
-                name = string(R.string.data_supplier_prime_cuts),
-                location = string(R.string.data_location_lahore),
-                productCount = products(104),
-                deliveryTime = string(R.string.delivery_next_day),
-                minimumAmount = 850.0,
-                minimumQuantity = 12,
-                categories = listOf(
-                    string(R.string.data_category_meat),
-                    string(R.string.data_category_groceries)
-                ),
-                headerColor = "#FFF3EE"
-            ),
-            Supplier(
-                name = string(R.string.data_supplier_desert_brew),
-                location = string(R.string.data_location_karachi),
-                productCount = products(142),
-                deliveryTime = string(R.string.delivery_two_days),
-                minimumAmount = 450.0,
-                minimumQuantity = 22,
-                categories = listOf(
-                    string(R.string.data_category_coffee_tea),
-                    string(R.string.data_category_snacks)
-                ),
-                headerColor = "#F4EEFF"
-            )
-        )
+        get() = suppliersCache
 
-    private val orderHistory by lazy {
-        mutableListOf(
-            Order(
-                orderId = "ORD-12345",
-                date = string(R.string.data_date_march_14_2026),
-                status = STATUS_DELIVERED,
-                supplier = string(R.string.data_supplier_al_hamd_wholes),
-                itemsCount = 3,
-                totalAmount = 231.97
-            ),
-            Order(
-                orderId = "ORD-12344",
-                date = string(R.string.data_date_march_12_2026),
-                status = STATUS_IN_TRANSIT,
-                supplier = string(R.string.data_supplier_al_sadiqa_company),
-                itemsCount = 2,
-                totalAmount = 269.98,
-                deliveryDate = string(R.string.data_date_march_17_2026)
-            ),
-            Order(
-                orderId = "ORD-12343",
-                date = string(R.string.data_date_march_10_2026),
-                status = STATUS_PROCESSING,
-                supplier = string(R.string.data_supplier_al_far_imports),
-                itemsCount = 5,
-                totalAmount = 445.50
-            ),
-            Order(
-                orderId = "ORD-12342",
-                date = string(R.string.data_date_march_8_2026),
-                status = STATUS_DELIVERED,
-                supplier = string(R.string.data_supplier_premium_foods),
-                itemsCount = 4,
-                totalAmount = 389.99
-            ),
-            Order(
-                orderId = "ORD-12341",
-                date = string(R.string.data_date_march_5_2026),
-                status = STATUS_CANCELLED,
-                supplier = string(R.string.data_supplier_global_trade),
-                itemsCount = 2,
-                totalAmount = 178.00
-            )
-        )
-    }
+    private var productsCache: List<Product> = emptyList()
+    private var ordersCache: MutableList<Order> = mutableListOf()
+    private var chatThreadsCache: List<ChatThread> = emptyList()
 
     val chatThreads: List<ChatThread>
-        get() = listOf(
-            ChatThread(
-                supplierName = string(R.string.data_supplier_al_hamd_wholes),
-                supplierLocation = string(R.string.data_location_jebel_ali),
-                lastMessage = string(R.string.data_chat_thread_message_1),
-                lastSeen = string(R.string.data_last_seen_2_min_ago),
-                unreadCount = 2
-            ),
-            ChatThread(
-                supplierName = string(R.string.data_supplier_premium_foods),
-                supplierLocation = string(R.string.data_location_dubai),
-                lastMessage = string(R.string.data_chat_thread_message_2),
-                lastSeen = string(R.string.data_last_seen_15_min_ago)
-            ),
-            ChatThread(
-                supplierName = string(R.string.data_supplier_global_trade),
-                supplierLocation = string(R.string.data_location_abu_dhabi),
-                lastMessage = string(R.string.data_chat_thread_message_3),
-                lastSeen = string(R.string.data_last_seen_1_hr_ago),
-                unreadCount = 1
-            ),
-            ChatThread(
-                supplierName = string(R.string.data_supplier_pure_spring),
-                supplierLocation = string(R.string.data_location_ajman),
-                lastMessage = string(R.string.data_chat_thread_message_4),
-                lastSeen = string(R.string.data_last_seen_yesterday)
-            )
+        get() = chatThreadsCache
+
+    private val supplierByName = linkedMapOf<String, Supplier>()
+    private val supplierIdToCategories = linkedMapOf<Int, List<String>>()
+    private val threadMessagesCache = linkedMapOf<Int, MutableList<ChatMessage>>()
+
+    fun loadHomeSuppliers(
+        onSuccess: (List<Supplier>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                ensureMarketplaceData(forceRefresh = true)
+                suppliersCache.take(5)
+            },
+            onSuccess = onSuccess,
+            onError = onError
         )
+    }
+
+    fun loadCategories(
+        onSuccess: (List<Category>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                categoriesCache = parseCategories(ApiClient.getDataArray("buyer/categories"))
+                categoriesCache
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun loadSuppliers(
+        categoryName: String = "",
+        onSuccess: (List<Supplier>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                ensureMarketplaceData(forceRefresh = true)
+                if (categoryName.isBlank()) {
+                    suppliersCache
+                } else {
+                    suppliersCache.filter { supplier ->
+                        supplier.categories.any { it.equals(categoryName, ignoreCase = true) }
+                    }
+                }
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun loadSupplierProducts(
+        supplierName: String,
+        onSuccess: (List<Product>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                ensureMarketplaceData()
+                val supplier = supplierByName.values.firstOrNull {
+                    it.name.equals(supplierName, ignoreCase = true)
+                } ?: throw ApiException("Supplier not found.")
+
+                val productArray = ApiClient.getDataArray(
+                    endpoint = "buyer/products",
+                    queryParams = mapOf("supplier_id" to supplier.id)
+                )
+                parseProducts(productArray, supplier.name)
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun loadOrders(
+        onSuccess: (List<Order>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                val orders = parseOrders(
+                    ApiClient.getDataArray(
+                        endpoint = "buyer/orders",
+                        queryParams = mapOf("buyer_id" to AppSession.buyerId)
+                    )
+                ).toMutableList()
+                ordersCache = orders
+                ordersCache.toList()
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun loadChats(
+        onSuccess: (List<ChatThread>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                ensureMarketplaceData()
+                chatThreadsCache = parseThreads(
+                    ApiClient.getDataArray(
+                        endpoint = "buyer/chats",
+                        queryParams = mapOf("buyer_id" to AppSession.buyerId)
+                    )
+                )
+                chatThreadsCache
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun loadConversation(
+        threadId: Int,
+        onSuccess: (List<ChatMessage>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                val payload = ApiClient.getDataObject(
+                    endpoint = "buyer/chats/thread",
+                    queryParams = mapOf(
+                        "buyer_id" to AppSession.buyerId,
+                        "thread_id" to threadId
+                    )
+                )
+                val messages = parseMessages(payload.optJSONArray("messages"))
+                threadMessagesCache[threadId] = messages.toMutableList()
+                messages
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun sendMessage(
+        threadId: Int,
+        message: String,
+        onSuccess: (List<ChatMessage>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                val payload = ApiClient.postDataObject(
+                    endpoint = "buyer/chats/send",
+                    bodyParams = mapOf(
+                        "buyer_id" to AppSession.buyerId,
+                        "thread_id" to threadId,
+                        "message_body" to message,
+                        "message_type" to "text"
+                    )
+                )
+                val messages = parseMessages(payload.optJSONArray("messages"))
+                threadMessagesCache[threadId] = messages.toMutableList()
+                chatThreadsCache = chatThreadsCache.map { thread ->
+                    if (thread.threadId == threadId) {
+                        thread.copy(
+                            lastMessage = message,
+                            lastSeen = string(R.string.just_now),
+                            unreadCount = 0
+                        )
+                    } else {
+                        thread
+                    }
+                }
+                messages
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun loadBuyerProfile(
+        onSuccess: (BuyerProfile) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                val payload = ApiClient.getDataObject(
+                    endpoint = "buyer/profile",
+                    queryParams = mapOf("buyer_id" to AppSession.buyerId)
+                )
+                buyerProfile = parseBuyerProfile(payload)
+                buyerProfile
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun updateBuyerProfile(
+        updatedProfile: BuyerProfile,
+        onSuccess: (BuyerProfile) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                ApiClient.postDataObject(
+                    endpoint = "buyer/profile/update",
+                    bodyParams = mapOf(
+                        "buyer_id" to AppSession.buyerId,
+                        "store_name" to updatedProfile.storeName,
+                        "buyer_name" to updatedProfile.buyerName,
+                        "email" to updatedProfile.email,
+                        "phone" to updatedProfile.phoneNumber,
+                        "city" to updatedProfile.city
+                    )
+                )
+                buyerProfile = updatedProfile
+                buyerProfile
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun createOrder(
+        items: List<CartItem>,
+        totalAmount: Double,
+        onSuccess: (Order) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                ensureMarketplaceData()
+                val firstSupplierName = items.firstOrNull()?.supplier ?: throw ApiException("Cart is empty.")
+                val supplier = supplierByName.values.firstOrNull {
+                    it.name.equals(firstSupplierName, ignoreCase = true)
+                } ?: throw ApiException("Supplier not found for this cart.")
+
+                val subtotal = items.sumOf { it.subtotal }
+                val deliveryFee = (totalAmount - subtotal).coerceAtLeast(0.0)
+                val createdOrder = parseOrder(
+                    ApiClient.postDataObject(
+                        endpoint = "buyer/orders/create",
+                        bodyParams = mapOf(
+                            "buyer_id" to AppSession.buyerId,
+                            "supplier_id" to supplier.id,
+                            "delivery_fee" to deliveryFee,
+                            "items" to items.map { item ->
+                                mapOf(
+                                    "supplier_product_id" to (item.id.toIntOrNull() ?: 0),
+                                    "quantity" to item.quantity
+                                )
+                            }
+                        )
+                    )
+                )
+                ordersCache.removeAll { it.orderId.equals(createdOrder.orderId, ignoreCase = true) }
+                ordersCache.add(0, createdOrder)
+                createdOrder
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
 
     fun suppliersForCategory(categoryName: String): List<Supplier> {
-        return suppliers.filter { supplier ->
+        return suppliersCache.filter { supplier ->
             supplier.categories.any { it.equals(categoryName, ignoreCase = true) }
         }
     }
 
-    fun getOrders(): List<Order> = orderHistory.toList()
+    fun getOrders(): List<Order> = ordersCache.toList()
 
-    fun findOrder(orderId: String): Order? = orderHistory.find { it.orderId == orderId }
+    fun findOrder(orderId: String): Order? {
+        return ordersCache.firstOrNull { it.orderId.equals(orderId, ignoreCase = true) }
+    }
 
     fun findSupplierByName(name: String): Supplier? {
-        return suppliers.find { supplier ->
+        return supplierByName.values.firstOrNull { supplier ->
             supplier.name.equals(name, ignoreCase = true)
         }
     }
 
-    fun conversationForSupplier(supplierName: String): List<ChatMessage> {
-        return when (normalizedSupplierKey(supplierName)) {
-            "al_hamd" -> alHamdConversation()
-            "premium_foods" -> premiumFoodsConversation()
-            else -> defaultConversation(supplierName)
+    fun findThreadBySupplierName(name: String): ChatThread? {
+        return chatThreadsCache.firstOrNull { thread ->
+            thread.supplierName.equals(name, ignoreCase = true)
         }
     }
 
-    fun addOrderFromCart(items: List<CartItem>, totalAmount: Double): Order {
-        val dateFormat = SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
-        val supplierName = items.map { it.supplier }.distinct().let { names ->
-            if (names.size == 1) names.first() else string(R.string.multiple_suppliers)
+    fun cachedConversation(threadId: Int): List<ChatMessage> {
+        return threadMessagesCache[threadId].orEmpty()
+    }
+
+    private fun ensureMarketplaceData(forceRefresh: Boolean = false) {
+        if (!forceRefresh && suppliersCache.isNotEmpty() && productsCache.isNotEmpty()) {
+            return
         }
-        val order = Order(
-            orderId = "ORD-${13000 + orderHistory.size}",
-            date = dateFormat.format(Date()),
-            status = STATUS_PROCESSING,
-            supplier = supplierName,
-            itemsCount = items.sumOf { it.quantity },
-            totalAmount = totalAmount
-        )
-        orderHistory.add(0, order)
-        return order
-    }
 
-    private fun alHamdConversation(): List<ChatMessage> {
-        return listOf(
-            ChatMessage(
-                id = "alhamd-1",
-                participant = ChatParticipant.SUPPLIER,
-                type = ChatMessageType.TEXT,
-                body = string(R.string.data_chat_alhamd_text_1),
-                timeLabel = timeLabel(9, 10)
-            ),
-            ChatMessage(
-                id = "alhamd-2",
-                participant = ChatParticipant.BUYER,
-                type = ChatMessageType.MEDIA,
-                body = string(R.string.data_chat_alhamd_media_body),
-                timeLabel = timeLabel(9, 12),
-                mediaLabel = string(R.string.photo),
-                mediaTitle = string(R.string.data_chat_alhamd_media_title),
-                mediaSubtitle = string(R.string.data_chat_alhamd_media_subtitle)
-            ),
-            ChatMessage(
-                id = "alhamd-3",
-                participant = ChatParticipant.SUPPLIER,
-                type = ChatMessageType.VOICE,
-                body = string(R.string.data_chat_alhamd_voice_body),
-                timeLabel = timeLabel(9, 15),
-                voiceDuration = string(R.string.value_0_18),
-                voiceStatus = string(R.string.data_chat_alhamd_voice_status),
-                voiceProgress = 48
-            ),
-            ChatMessage(
-                id = "alhamd-4",
-                participant = ChatParticipant.SUPPLIER,
-                type = ChatMessageType.MEDIA,
-                body = string(R.string.data_chat_alhamd_invoice_body),
-                timeLabel = timeLabel(9, 18),
-                mediaLabel = string(R.string.data_chat_alhamd_invoice_label),
-                mediaTitle = string(R.string.data_chat_alhamd_invoice_title),
-                mediaSubtitle = string(R.string.data_chat_alhamd_invoice_subtitle)
-            ),
-            ChatMessage(
-                id = "alhamd-5",
-                participant = ChatParticipant.BUYER,
-                type = ChatMessageType.TEXT,
-                body = string(R.string.data_chat_alhamd_buyer_reply),
-                timeLabel = timeLabel(9, 20)
-            )
-        )
-    }
+        val productArray = ApiClient.getDataArray("buyer/products")
+        val categoriesBySupplier = linkedMapOf<Int, LinkedHashSet<String>>()
+        repeat(productArray.length()) { index ->
+            val item = productArray.optJSONObject(index) ?: return@repeat
+            val supplierId = item.optInt("supplier_id")
+            val categoryName = item.optString("category_name")
+            if (supplierId > 0 && categoryName.isNotBlank()) {
+                categoriesBySupplier.getOrPut(supplierId) { linkedSetOf() }.add(categoryName)
+            }
+        }
 
-    private fun premiumFoodsConversation(): List<ChatMessage> {
-        return listOf(
-            ChatMessage(
-                id = "premium-1",
-                participant = ChatParticipant.SUPPLIER,
-                type = ChatMessageType.TEXT,
-                body = string(R.string.data_chat_premium_text_1),
-                timeLabel = timeLabel(11, 5)
-            ),
-            ChatMessage(
-                id = "premium-2",
-                participant = ChatParticipant.BUYER,
-                type = ChatMessageType.VOICE,
-                body = string(R.string.data_chat_premium_voice_body),
-                timeLabel = timeLabel(11, 9),
-                voiceDuration = "0:22",
-                voiceStatus = string(R.string.buyer_voice_note_status),
-                voiceProgress = 70
-            ),
-            ChatMessage(
-                id = "premium-3",
-                participant = ChatParticipant.SUPPLIER,
-                type = ChatMessageType.MEDIA,
-                body = string(R.string.data_chat_premium_media_body),
-                timeLabel = timeLabel(11, 14),
-                mediaLabel = string(R.string.data_chat_premium_media_label),
-                mediaTitle = string(R.string.data_chat_premium_media_title),
-                mediaSubtitle = string(R.string.data_chat_premium_media_subtitle)
-            )
-        )
-    }
+        productsCache = parseProducts(productArray)
+        supplierIdToCategories.clear()
+        categoriesBySupplier.forEach { (supplierId, names) ->
+            supplierIdToCategories[supplierId] = names.toList()
+        }
 
-    private fun defaultConversation(supplierName: String): List<ChatMessage> {
-        return listOf(
-            ChatMessage(
-                id = "${supplierName}-1",
-                participant = ChatParticipant.SUPPLIER,
-                type = ChatMessageType.TEXT,
-                body = string(R.string.data_chat_default_text_1),
-                timeLabel = timeLabel(8, 45)
-            ),
-            ChatMessage(
-                id = "${supplierName}-2",
-                participant = ChatParticipant.BUYER,
-                type = ChatMessageType.MEDIA,
-                body = string(R.string.data_chat_default_media_body),
-                timeLabel = timeLabel(8, 49),
-                mediaLabel = string(R.string.data_chat_default_media_label),
-                mediaTitle = string(R.string.data_chat_default_media_title),
-                mediaSubtitle = string(R.string.data_chat_default_media_subtitle)
-            ),
-            ChatMessage(
-                id = "${supplierName}-3",
-                participant = ChatParticipant.SUPPLIER,
-                type = ChatMessageType.VOICE,
-                body = string(R.string.data_chat_default_voice_body),
-                timeLabel = timeLabel(8, 52),
-                voiceDuration = "0:16",
-                voiceStatus = string(R.string.data_chat_default_voice_status),
-                voiceProgress = 42
-            )
+        suppliersCache = parseSuppliers(
+            supplierArray = ApiClient.getDataArray("buyer/suppliers"),
+            categoriesBySupplier = supplierIdToCategories
         )
-    }
-
-    private fun normalizedSupplierKey(name: String): String {
-        return when (name.trim().lowercase(Locale.ROOT)) {
-            string(R.string.data_supplier_al_hamd_wholes).lowercase(Locale.ROOT) -> "al_hamd"
-            string(R.string.data_supplier_premium_foods).lowercase(Locale.ROOT) -> "premium_foods"
-            else -> "default"
+        supplierByName.clear()
+        suppliersCache.forEach { supplier ->
+            supplierByName[supplier.name.lowercase(Locale.getDefault())] = supplier
         }
     }
 
-    private fun products(count: Int): String = string(R.string.products_count_format, count)
-
-    private fun deliveryRange(start: Int, end: Int): String {
-        return string(R.string.delivery_days_range_format, start, end)
+    private fun parseBuyerProfile(payload: JSONObject): BuyerProfile {
+        return BuyerProfile(
+            storeName = payload.optString("store_name"),
+            buyerName = payload.optString("buyer_name"),
+            email = payload.optString("email"),
+            phoneNumber = payload.optString("phone"),
+            city = payload.optString("city"),
+            memberSince = ApiFormatting.displayDate(payload.optString("member_since"))
+        )
     }
 
-    private fun timeLabel(hour24: Int, minute: Int): String {
-        val calendar = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, hour24)
-            set(Calendar.MINUTE, minute)
+    private fun parseCategories(array: JSONArray): List<Category> {
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                add(
+                    Category(
+                        id = item.optInt("id"),
+                        name = item.optString("name"),
+                        productCount = string(
+                            R.string.products_count_format,
+                            item.optInt("listing_count", item.optInt("catalog_count"))
+                        ),
+                        iconResId = R.drawable.ic_grid_view_24,
+                        backgroundColor = item.optString("accent_color").ifBlank {
+                            ApiFormatting.supplierHeaderColor(index)
+                        },
+                        description = item.optString("description")
+                    )
+                )
+            }
         }
-        return SimpleDateFormat("hh:mm a", Locale.getDefault()).format(calendar.time)
+    }
+
+    private fun parseSuppliers(
+        supplierArray: JSONArray,
+        categoriesBySupplier: Map<Int, List<String>>
+    ): List<Supplier> {
+        return buildList {
+            repeat(supplierArray.length()) { index ->
+                val item = supplierArray.optJSONObject(index) ?: return@repeat
+                val supplierId = item.optInt("id")
+                add(
+                    Supplier(
+                        id = supplierId,
+                        name = item.optString("business_name"),
+                        location = item.optString("city"),
+                        productCount = string(
+                            R.string.products_count_format,
+                            item.optInt("product_count")
+                        ),
+                        deliveryTime = item.optString("delivery_time"),
+                        minimumAmount = item.optDouble("minimum_order_amount"),
+                        minimumQuantity = item.optInt("minimum_order_quantity"),
+                        categories = categoriesBySupplier[supplierId].orEmpty(),
+                        isVerified = item.optInt("is_verified", 0) == 1,
+                        headerColor = ApiFormatting.supplierHeaderColor(index),
+                        email = item.optString("email"),
+                        phoneNumber = item.optString("phone"),
+                        address = item.optString("address"),
+                        description = item.optString("description"),
+                        paymentTerms = item.optString("payment_terms"),
+                        ownerName = item.optString("owner_name"),
+                        status = item.optString("status")
+                    )
+                )
+            }
+        }
+    }
+
+    private fun parseProducts(array: JSONArray, fallbackSupplierName: String = ""): List<Product> {
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                add(
+                    Product(
+                        id = item.optInt("id").toString(),
+                        name = item.optString("catalog_name", item.optString("name")),
+                        price = item.optDouble("price"),
+                        unit = item.optString("unit_type"),
+                        imageResId = 0,
+                        supplierName = item.optString("supplier_name").ifBlank { fallbackSupplierName },
+                        supplierId = item.optInt("supplier_id"),
+                        packaging = item.optString("packaging"),
+                        stockQuantity = item.optInt("stock_quantity"),
+                        deliveryTime = item.optString("delivery_time"),
+                        categoryName = item.optString("category_name")
+                    )
+                )
+            }
+        }
+    }
+
+    private fun parseOrders(array: JSONArray): List<Order> {
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                add(parseOrder(item))
+            }
+        }
+    }
+
+    private fun parseOrder(item: JSONObject): Order {
+        return Order(
+            internalId = item.optInt("id"),
+            orderId = item.optString("order_number"),
+            date = ApiFormatting.displayDate(item.optString("order_date")),
+            status = item.optString("status"),
+            supplier = item.optString("business_name"),
+            itemsCount = item.optInt("item_count", item.optJSONArray("items")?.length() ?: 0),
+            totalAmount = item.optDouble("total_amount"),
+            deliveryDate = ApiFormatting.displayDate(item.optString("delivery_date")).ifBlank { null }
+        )
+    }
+
+    private fun parseThreads(array: JSONArray): List<ChatThread> {
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                val supplier = suppliersCache.firstOrNull { it.id == item.optInt("supplier_id") }
+                add(
+                    ChatThread(
+                        threadId = item.optInt("id"),
+                        supplierName = item.optString("business_name"),
+                        supplierLocation = supplier?.location.orEmpty(),
+                        lastMessage = item.optString("last_message"),
+                        lastSeen = ApiFormatting.displayDateTime(item.optString("last_message_at")),
+                        unreadCount = item.optInt("buyer_unread_count")
+                    )
+                )
+            }
+        }
+    }
+
+    private fun parseMessages(array: JSONArray?): List<ChatMessage> {
+        if (array == null) return emptyList()
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                add(
+                    ChatMessage(
+                        id = item.optInt("id").toString(),
+                        participant = if (item.optString("sender_type").equals("buyer", true)) {
+                            ChatParticipant.BUYER
+                        } else {
+                            ChatParticipant.SUPPLIER
+                        },
+                        type = when (item.optString("message_type").lowercase(Locale.getDefault())) {
+                            "media" -> ChatMessageType.MEDIA
+                            "voice" -> ChatMessageType.VOICE
+                            else -> ChatMessageType.TEXT
+                        },
+                        body = item.optString("message_body"),
+                        timeLabel = ApiFormatting.displayTime(item.optString("created_at"))
+                    )
+                )
+            }
+        }
     }
 
     private fun string(@StringRes resId: Int, vararg args: Any): String {

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -42,8 +43,18 @@ class SupplierProductsFragment : Fragment() {
                 startActivity(Intent(requireContext(), SupplierInventoryManagementActivity::class.java))
             },
             onToggle = { product, checked ->
-                SupplierData.setProductAvailability(product.id, checked)
-                loadProducts()
+                SupplierData.setProductAvailability(
+                    productId = product.id,
+                    isActive = checked,
+                    onSuccess = {
+                        if (_binding == null) return@setProductAvailability
+                        loadProducts()
+                    },
+                    onError = { message ->
+                        if (_binding == null) return@setProductAvailability
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    }
+                )
             }
         )
         binding.rvProducts.layoutManager = LinearLayoutManager(requireContext())
@@ -78,12 +89,27 @@ class SupplierProductsFragment : Fragment() {
         }
 
         updateChipState(chips, binding.chipAll)
-        loadProducts()
+        refreshProducts()
     }
 
     override fun onResume() {
         super.onResume()
-        loadProducts()
+        if (_binding != null) {
+            refreshProducts()
+        }
+    }
+
+    private fun refreshProducts() {
+        SupplierData.refreshProducts(
+            onSuccess = {
+                if (_binding == null) return@refreshProducts
+                loadProducts()
+            },
+            onError = { message ->
+                if (_binding == null) return@refreshProducts
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
     private fun loadProducts() {

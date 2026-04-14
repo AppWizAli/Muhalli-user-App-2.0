@@ -18,6 +18,7 @@
             android:padding="16dp">
 
             <TextView
+                android:id="@+id/tvAboutTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/about_supplier"
@@ -26,6 +27,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvAboutDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -48,6 +50,7 @@
                     app:tint="@color/primary" />
 
                 <TextView
+                    android:id="@+id/tvPhoneValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -70,6 +73,7 @@
                     app:tint="@color/primary" />
 
                 <TextView
+                    android:id="@+id/tvEmailValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -92,6 +96,7 @@
                     app:tint="@color/primary" />
 
                 <TextView
+                    android:id="@+id/tvLocationValue"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"

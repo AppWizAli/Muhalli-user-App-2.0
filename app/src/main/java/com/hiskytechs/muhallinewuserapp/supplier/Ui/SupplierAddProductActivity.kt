@@ -32,7 +32,7 @@ class SupplierAddProductActivity : AppCompatActivity() {
         setupCategoryStep()
         setupProductStep()
         setupPricingStep()
-        renderStep()
+        loadCatalogData()
 
         binding.ivBack.setOnClickListener {
             when (currentStep) {
@@ -106,10 +106,21 @@ class SupplierAddProductActivity : AppCompatActivity() {
                 Toast.makeText(this, getString(R.string.supplier_fill_all_fields), Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            SupplierData.addProduct(product.id, price.toInt(), stock.toInt(), deliveryDays, binding.switchAvailable.isChecked)
-            Toast.makeText(this, getString(R.string.supplier_product_saved), Toast.LENGTH_SHORT).show()
-            SupplierMainActivity.open(this, R.id.nav_supplier_products)
-            finish()
+            SupplierData.addProduct(
+                catalogProductId = product.id,
+                pricePkr = price.toInt(),
+                stock = stock.toInt(),
+                deliveryDays = deliveryDays,
+                isActive = binding.switchAvailable.isChecked,
+                onSuccess = {
+                    Toast.makeText(this, getString(R.string.supplier_product_saved), Toast.LENGTH_SHORT).show()
+                    SupplierMainActivity.open(this, R.id.nav_supplier_products)
+                    finish()
+                },
+                onError = { message ->
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                }
+            )
         }
     }
 
@@ -125,5 +136,18 @@ class SupplierAddProductActivity : AppCompatActivity() {
         binding.layoutStepCategory.visibility = if (currentStep == 1) android.view.View.VISIBLE else android.view.View.GONE
         binding.layoutStepProduct.visibility = if (currentStep == 2) android.view.View.VISIBLE else android.view.View.GONE
         binding.layoutStepPricing.visibility = if (currentStep == 3) android.view.View.VISIBLE else android.view.View.GONE
+    }
+
+    private fun loadCatalogData() {
+        SupplierData.refreshProducts(
+            onSuccess = {
+                categoryAdapter.updateItems(SupplierData.getCategories())
+                renderStep()
+            },
+            onError = { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                renderStep()
+            }
+        )
     }
 }

@@ -2,6 +2,7 @@ package com.hiskytechs.muhallinewuserapp.supplier.Ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,12 +30,28 @@ class SupplierMessagesActivity : AppCompatActivity() {
         binding.rvConversations.adapter = conversationAdapter
         binding.etSearchConversations.addTextChangedListener { loadConversations() }
         binding.ivBack.setOnClickListener { finish() }
-        loadConversations()
+        refreshMessages()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshMessages()
     }
 
     private fun loadConversations() {
         conversationAdapter.updateItems(
             SupplierData.getConversations(binding.etSearchConversations.text?.toString().orEmpty())
+        )
+    }
+
+    private fun refreshMessages() {
+        SupplierData.refreshMessages(
+            onSuccess = {
+                loadConversations()
+            },
+            onError = { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
         )
     }
 }

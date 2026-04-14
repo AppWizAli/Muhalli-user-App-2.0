@@ -45,13 +45,13 @@ class OrderAdapter(
                     ivStatusIcon.setImageResource(R.drawable.ic_check_circle_24)
                     ivStatusIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_delivered_text))
                 }
-                "in transit" -> {
+                "in transit", "shipped" -> {
                     tvStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_transit_bg))
                     tvStatus.setTextColor(ContextCompat.getColor(context, R.color.status_transit_text))
                     ivStatusIcon.setImageResource(R.drawable.ic_local_shipping_24)
                     ivStatusIcon.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_transit_text))
                 }
-                "processing" -> {
+                "processing", "pending" -> {
                     tvStatus.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.status_processing_bg))
                     tvStatus.setTextColor(ContextCompat.getColor(context, R.color.status_processing_text))
                     ivStatusIcon.setImageResource(R.drawable.ic_schedule_24)
@@ -79,8 +79,9 @@ class OrderAdapter(
     private fun localizedStatus(context: android.content.Context, status: String): String {
         return when (status.lowercase()) {
             "delivered" -> context.getString(R.string.delivered)
-            "in transit" -> context.getString(R.string.status_in_transit)
+            "in transit", "shipped" -> context.getString(R.string.status_in_transit)
             "cancelled" -> context.getString(R.string.status_cancelled)
+            "pending" -> context.getString(R.string.pending)
             else -> context.getString(R.string.processing)
         }
     }

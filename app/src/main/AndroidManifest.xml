@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name=".MuhalliApplication"
         android:allowBackup="true"
@@ -12,7 +14,8 @@
         android:localeConfig="@xml/locales_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MuhalliNewUserApp20">
+        android:theme="@style/Theme.MuhalliNewUserApp20"
+        android:usesCleartextTraffic="true">
 
         <activity
             android:name=".Ui.LanguageSelectionActivity"

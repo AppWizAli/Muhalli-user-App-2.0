@@ -128,6 +128,11 @@ class SupplierCategoryAdapter(
     }
 
     override fun getItemCount(): Int = items.size
+
+    fun updateItems(newItems: List<SupplierCategory>) {
+        items = newItems
+        notifyDataSetChanged()
+    }
 }
 
 class SupplierCatalogProductAdapter(

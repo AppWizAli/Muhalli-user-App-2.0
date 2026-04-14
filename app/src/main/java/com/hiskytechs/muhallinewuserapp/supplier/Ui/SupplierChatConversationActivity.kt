@@ -1,6 +1,7 @@
 package com.hiskytechs.muhallinewuserapp.supplier.Ui
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hiskytechs.muhallinewuserapp.databinding.ActivitySupplierChatConversationBinding
@@ -20,14 +21,6 @@ class SupplierChatConversationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         conversationId = intent.getStringExtra(EXTRA_CONVERSATION_ID).orEmpty()
-        val conversation = SupplierData.findConversation(conversationId)
-        if (conversation == null) {
-            finish()
-            return
-        }
-
-        binding.tvAvatar.text = initials(conversation.retailerName)
-        binding.tvRetailerName.text = conversation.retailerName
         binding.ivBack.setOnClickListener { finish() }
 
         messageAdapter = SupplierMessageAdapter(emptyList())
@@ -37,20 +30,62 @@ class SupplierChatConversationActivity : AppCompatActivity() {
         binding.ivSend.setOnClickListener {
             val message = binding.etMessage.text?.toString().orEmpty()
             if (message.isBlank()) return@setOnClickListener
-            SupplierData.sendMessage(conversationId, message)
-            binding.etMessage.text?.clear()
-            loadMessages()
+            SupplierData.sendMessage(
+                conversationId = conversationId,
+                message = message,
+                onSuccess = {
+                    binding.etMessage.text?.clear()
+                    loadMessages()
+                },
+                onError = { error ->
+                    Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+                }
+            )
         }
 
-        loadMessages()
+        bindConversation()
+    }
+
+    private fun bindConversation() {
+        val conversation = SupplierData.findConversation(conversationId)
+        if (conversation != null) {
+            binding.tvAvatar.text = initials(conversation.retailerName)
+            binding.tvRetailerName.text = conversation.retailerName
+            loadMessages()
+            return
+        }
+
+        SupplierData.refreshMessages(
+            onSuccess = {
+                val refreshedConversation = SupplierData.findConversation(conversationId)
+                if (refreshedConversation == null) {
+                    finish()
+                } else {
+                    binding.tvAvatar.text = initials(refreshedConversation.retailerName)
+                    binding.tvRetailerName.text = refreshedConversation.retailerName
+                    loadMessages()
+                }
+            },
+            onError = { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        )
     }
 
     private fun loadMessages() {
-        val messages = SupplierData.getMessages(conversationId)
-        messageAdapter.updateItems(messages)
-        if (messages.isNotEmpty()) {
-            binding.rvMessages.scrollToPosition(messages.lastIndex)
-        }
+        SupplierData.loadConversation(
+            conversationId = conversationId,
+            onSuccess = { messages ->
+                messageAdapter.updateItems(messages)
+                if (messages.isNotEmpty()) {
+                    binding.rvMessages.scrollToPosition(messages.lastIndex)
+                }
+            },
+            onError = { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
     companion object {

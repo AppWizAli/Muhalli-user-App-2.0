@@ -56,15 +56,24 @@ class SupplierProfileFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val profile = SupplierData.getProfile()
-        binding.tvAvatarInitial.text = initials(profile.businessName)
-        binding.tvProfileBusinessName.text = profile.businessName
-        binding.tvProfileOwnerName.text = profile.ownerName
-        binding.tvProfilePhone.text = profile.phoneNumber
-        binding.tvProfileCity.text = profile.city
-        binding.tvProfileEmail.text = profile.emailAddress
-        binding.tvProfileMinAmount.text = formatPkr(profile.minimumOrderAmountPkr)
-        binding.tvProfileMinQuantity.text = getString(R.string.supplier_min_order_qty) + " ${profile.minimumOrderQuantity}"
+        SupplierData.refreshProfile(
+            onSuccess = {
+                if (_binding == null) return@refreshProfile
+                val profile = SupplierData.getProfile()
+                binding.tvAvatarInitial.text = initials(profile.businessName)
+                binding.tvProfileBusinessName.text = profile.businessName
+                binding.tvProfileOwnerName.text = profile.ownerName
+                binding.tvProfilePhone.text = profile.phoneNumber
+                binding.tvProfileCity.text = profile.city
+                binding.tvProfileEmail.text = profile.emailAddress
+                binding.tvProfileMinAmount.text = formatPkr(profile.minimumOrderAmountPkr)
+                binding.tvProfileMinQuantity.text = getString(R.string.supplier_min_order_qty) + " ${profile.minimumOrderQuantity}"
+            },
+            onError = { message ->
+                if (_binding == null) return@refreshProfile
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
     override fun onDestroyView() {

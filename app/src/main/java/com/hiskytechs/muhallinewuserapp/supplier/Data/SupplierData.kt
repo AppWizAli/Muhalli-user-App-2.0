@@ -1,6 +1,11 @@
 package com.hiskytechs.muhallinewuserapp.supplier.Data
 
 import com.hiskytechs.muhallinewuserapp.R
+import com.hiskytechs.muhallinewuserapp.network.ApiClient
+import com.hiskytechs.muhallinewuserapp.network.ApiException
+import com.hiskytechs.muhallinewuserapp.network.ApiFormatting
+import com.hiskytechs.muhallinewuserapp.network.AppSession
+import com.hiskytechs.muhallinewuserapp.network.BackgroundWork
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierCatalogProduct
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierCategory
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierChatMessage
@@ -19,67 +24,32 @@ import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierProfileOption
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierQuickAction
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierStockState
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierTransaction
+import org.json.JSONArray
+import org.json.JSONObject
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import java.util.UUID
+import kotlin.math.roundToInt
 
 object SupplierData {
 
     private val introPages = listOf(
-        SupplierIntroPage(R.drawable.ic_storefront_24, "List Your Products Easily", "Add your wholesale products and reach hundreds of retailers instantly."),
-        SupplierIntroPage(R.drawable.ic_grid_view_24, "Receive Bulk Orders Daily", "Retailers place orders directly. You confirm and prepare."),
-        SupplierIntroPage(R.drawable.ic_attach_money_24, "Track Earnings in Real Time", "Monitor revenue and performance all in one place.")
-    )
-
-    private val categories = listOf(
-        SupplierCategory("snacks", "Snacks", 12, R.color.supplier_orange),
-        SupplierCategory("chips", "Chips", 8, R.color.supplier_yellow),
-        SupplierCategory("drinks", "Drinks", 16, R.color.supplier_pink),
-        SupplierCategory("groceries", "Groceries", 22, R.color.supplier_blue),
-        SupplierCategory("mineral_water", "Mineral Water", 7, R.color.supplier_light_blue),
-        SupplierCategory("dairy", "Dairy", 9, R.color.supplier_soft_blue),
-        SupplierCategory("bakery", "Bakery", 6, R.color.supplier_amber),
-        SupplierCategory("frozen_food", "Frozen Food", 10, R.color.supplier_ice),
-        SupplierCategory("cleaning", "Cleaning Supplies", 11, R.color.supplier_teal),
-        SupplierCategory("personal_care", "Personal Care", 13, R.color.supplier_blush)
-    )
-
-    private val catalogProducts = listOf(
-        SupplierCatalogProduct("lays_classic", "chips", "Lays Classic", "Carton", "Box of 24 packs", R.color.supplier_orange),
-        SupplierCatalogProduct("kurkure_masala", "snacks", "Kurkure Masala Munch", "Carton", "Box of 30 packs", R.color.supplier_orange),
-        SupplierCatalogProduct("coca_cola_250", "drinks", "Coca Cola 250ml", "Carton", "Tray of 24 cans", R.color.supplier_red),
-        SupplierCatalogProduct("nestle_500", "mineral_water", "Nestle Pure Life 500ml", "Carton", "Pack of 12 bottles", R.color.supplier_light_blue),
-        SupplierCatalogProduct("aquafina_15", "mineral_water", "Aquafina 1.5L", "Carton", "Pack of 6 bottles", R.color.supplier_blue),
-        SupplierCatalogProduct("rice_basmati", "groceries", "Rice Basmati 5kg", "Bag", "Premium long grain", R.color.supplier_amber),
-        SupplierCatalogProduct("milk_uht", "dairy", "UHT Milk 1L", "Carton", "Pack of 12 boxes", R.color.supplier_soft_blue),
-        SupplierCatalogProduct("bread_butter", "bakery", "Bread Butter Rusks", "Carton", "Pack of 20", R.color.supplier_amber),
-        SupplierCatalogProduct("frozen_fries", "frozen_food", "Frozen Fries 2.5kg", "Carton", "Pack of 6", R.color.supplier_ice),
-        SupplierCatalogProduct("dishwash", "cleaning", "Dishwash Liquid 500ml", "Carton", "Pack of 24 bottles", R.color.supplier_teal),
-        SupplierCatalogProduct("soap_bar", "personal_care", "Bath Soap 100g", "Carton", "Pack of 48 bars", R.color.supplier_blush)
-    )
-
-    private val supplierProducts = mutableListOf(
-        SupplierProduct("product_1", "lays_classic", "Lays Classic", "Chips", "Carton", 1200, 150, "2-3 days", true, R.color.supplier_orange),
-        SupplierProduct("product_2", "kurkure_masala", "Kurkure Masala Munch", "Snacks", "Carton", 950, 8, "1-2 days", true, R.color.supplier_orange),
-        SupplierProduct("product_3", "coca_cola_250", "Coca Cola 250ml", "Drinks", "Carton", 850, 200, "2-3 days", true, R.color.supplier_red),
-        SupplierProduct("product_4", "nestle_500", "Nestle Pure Life 500ml", "Mineral Water", "Carton", 450, 0, "3-4 days", false, R.color.supplier_light_blue),
-        SupplierProduct("product_5", "rice_basmati", "Rice Basmati 5kg", "Groceries", "Bag", 1450, 85, "2-3 days", true, R.color.supplier_amber)
-    )
-
-    private val orders = mutableListOf(
-        SupplierOrder("WM-10234", "Super Store Karachi", "18/03/2026", "21/03/2026", 3, 45600, SupplierOrderStatus.PENDING),
-        SupplierOrder("WM-10233", "ABC Retail Store", "17/03/2026", "20/03/2026", 2, 32500, SupplierOrderStatus.CONFIRMED),
-        SupplierOrder("WM-10232", "Metro Wholesale", "15/03/2026", "19/03/2026", 4, 68500, SupplierOrderStatus.SHIPPED),
-        SupplierOrder("WM-10231", "Quick Mart", "14/03/2026", "17/03/2026", 1, 24000, SupplierOrderStatus.DELIVERED)
-    )
-
-    private val transactions = listOf(
-        SupplierTransaction("Quick Mart", "WM-10231", "17/03/2026", 24500, SupplierEarningsPeriod.THIS_MONTH),
-        SupplierTransaction("City Grocers", "WM-10228", "15/03/2026", 18900, SupplierEarningsPeriod.THIS_MONTH),
-        SupplierTransaction("Super Store Karachi", "WM-10225", "12/03/2026", 35600, SupplierEarningsPeriod.THIS_MONTH),
-        SupplierTransaction("Metro Wholesale", "WM-10220", "08/03/2026", 52300, SupplierEarningsPeriod.THIS_MONTH),
-        SupplierTransaction("ABC Retail Store", "WM-10215", "05/03/2026", 29800, SupplierEarningsPeriod.THIS_MONTH)
+        SupplierIntroPage(
+            R.drawable.ic_storefront_24,
+            "List Your Products Easily",
+            "Add your wholesale products and reach hundreds of retailers instantly."
+        ),
+        SupplierIntroPage(
+            R.drawable.ic_grid_view_24,
+            "Receive Bulk Orders Daily",
+            "Retailers place orders directly. You confirm and prepare."
+        ),
+        SupplierIntroPage(
+            R.drawable.ic_attach_money_24,
+            "Track Earnings in Real Time",
+            "Monitor revenue and performance all in one place."
+        )
     )
 
     private val quickActions = listOf(
@@ -89,72 +59,148 @@ object SupplierData {
         SupplierQuickAction("Inventory", "Update stock levels", R.drawable.ic_sync_24, SupplierHomeAction.OPEN_INVENTORY)
     )
 
-    private var profile = SupplierProfile(
-        businessName = "Fresh Foods Wholesale",
-        ownerName = "Ahmed Khan",
-        phoneNumber = "+92 300 1234567",
-        emailAddress = "ahmed@freshfoods.pk",
-        city = "Karachi",
-        businessAddress = "Plot 123, Industrial Area, Karachi",
-        minimumOrderQuantity = 5,
-        minimumOrderAmountPkr = 10000
+    private val profileOptions = listOf(
+        SupplierProfileOption("My Products", R.drawable.ic_grid_view_24, SupplierProfileAction.PRODUCTS),
+        SupplierProfileOption("My Orders", R.drawable.ic_shopping_cart_24, SupplierProfileAction.ORDERS),
+        SupplierProfileOption("Earnings", R.drawable.ic_attach_money_24, SupplierProfileAction.EARNINGS),
+        SupplierProfileOption("Business Address", R.drawable.ic_location_on_24, SupplierProfileAction.BUSINESS_ADDRESS),
+        SupplierProfileOption("Notification Settings", R.drawable.ic_notifications_24, SupplierProfileAction.NOTIFICATIONS),
+        SupplierProfileOption("Change Password", R.drawable.ic_lock_24, SupplierProfileAction.CHANGE_PASSWORD),
+        SupplierProfileOption("Help & Support", R.drawable.ic_info_24, SupplierProfileAction.HELP_SUPPORT),
+        SupplierProfileOption("About App", R.drawable.ic_info_24, SupplierProfileAction.ABOUT),
+        SupplierProfileOption("Logout", R.drawable.ic_arrow_back_24, SupplierProfileAction.LOGOUT, true)
     )
 
-    private val conversations = mutableListOf(
-        SupplierConversation("thread_super_store", "Super Store Karachi", "When will the order be delivered?", "10:45 AM", 2, R.color.primary),
-        SupplierConversation("thread_abc", "ABC Retail Store", "Thank you for confirming!", "Yesterday", 0, R.color.supplier_blue)
-    )
+    private var categoriesCache: List<SupplierCategory> = emptyList()
+    private var catalogProductsCache: List<SupplierCatalogProduct> = emptyList()
+    private var supplierProductsCache: MutableList<SupplierProduct> = mutableListOf()
+    private var ordersCache: MutableList<SupplierOrder> = mutableListOf()
+    private var transactionsCache: List<SupplierTransaction> = emptyList()
+    private var conversationsCache: MutableList<SupplierConversation> = mutableListOf()
+    private val messagesCache = linkedMapOf<String, MutableList<SupplierChatMessage>>()
 
-    private val messages = mutableMapOf(
-        "thread_super_store" to mutableListOf(
-            SupplierChatMessage("m1", "thread_super_store", "Hi, I placed an order yesterday.", "10:30 AM", false),
-            SupplierChatMessage("m2", "thread_super_store", "Yes, order #WM-10234. It will be shipped today.", "10:35 AM", true),
-            SupplierChatMessage("m3", "thread_super_store", "When will the order be delivered?", "10:45 AM", false)
-        ),
-        "thread_abc" to mutableListOf(
-            SupplierChatMessage("m4", "thread_abc", "Thank you for confirming!", "Yesterday", false)
-        )
-    )
+    private var dashboardStats = SupplierDashboardStats(0, 0, 0, 0)
+    private var profile = SupplierProfile("", "", "", "", "", "", 0, 0)
 
     fun getIntroPages(): List<SupplierIntroPage> = introPages
-    fun getCategories(): List<SupplierCategory> = categories
     fun getQuickActions(): List<SupplierQuickAction> = quickActions
-    fun getRecentOrders(): List<SupplierOrder> = orders.take(3)
+    fun getProfileOptions(): List<SupplierProfileOption> = profileOptions
+    fun getCategories(): List<SupplierCategory> = categoriesCache
+    fun getRecentOrders(): List<SupplierOrder> = ordersCache.take(3)
     fun getProfile(): SupplierProfile = profile.copy()
-
-    fun getDashboardStats(): SupplierDashboardStats {
-        return SupplierDashboardStats(
-            todayOrders = 1,
-            pendingOrders = orders.count { it.status == SupplierOrderStatus.PENDING },
-            thisMonthRevenuePkr = 24000,
-            totalProducts = supplierProducts.size
-        )
-    }
+    fun getDashboardStats(): SupplierDashboardStats = dashboardStats
 
     fun getLowStockAlert(): String {
-        return if (supplierProducts.any { it.stockState == SupplierStockState.LOW_STOCK }) {
-            "1 product running low on stock"
+        val lowStockCount = supplierProductsCache.count { it.stockState == SupplierStockState.LOW_STOCK }
+        return if (lowStockCount > 0) {
+            "$lowStockCount product running low on stock"
         } else {
             "All products have healthy stock levels."
         }
     }
 
+    fun refreshDashboard(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        BackgroundWork.run(
+            task = {
+                refreshProfileSync()
+                refreshProductsSync()
+                refreshOrdersSync()
+                refreshMessagesSync()
+                dashboardStats = SupplierDashboardStats(
+                    todayOrders = ordersCache.count { isToday(it.orderDate) },
+                    pendingOrders = ordersCache.count { it.status == SupplierOrderStatus.PENDING },
+                    thisMonthRevenuePkr = ordersCache
+                        .filter { isCurrentMonth(it.orderDate) }
+                        .sumOf { it.amountPkr },
+                    totalProducts = supplierProductsCache.size
+                )
+            },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
+    fun refreshProducts(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        BackgroundWork.run(
+            task = { refreshProductsSync() },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
+    fun refreshOrders(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        BackgroundWork.run(
+            task = { refreshOrdersSync() },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
+    fun refreshEarnings(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        BackgroundWork.run(
+            task = { refreshEarningsSync() },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
+    fun refreshMessages(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        BackgroundWork.run(
+            task = { refreshMessagesSync() },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
+    fun refreshProfile(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        BackgroundWork.run(
+            task = { refreshProfileSync() },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
     fun getOrders(status: SupplierOrderStatus? = null): List<SupplierOrder> {
-        return if (status == null) orders.toList() else orders.filter { it.status == status }
+        return if (status == null) ordersCache.toList() else ordersCache.filter { it.status == status }
     }
 
-    fun findOrder(orderId: String): SupplierOrder? = orders.find { it.id == orderId }?.copy()
-
-    fun updateOrderStatus(orderId: String, status: SupplierOrderStatus) {
-        val index = orders.indexOfFirst { it.id == orderId }
-        if (index >= 0) {
-            orders[index] = orders[index].copy(status = status)
-        }
+    fun findOrder(orderId: String): SupplierOrder? {
+        return ordersCache.find { order ->
+            order.id.equals(orderId, ignoreCase = true) ||
+                order.backendId.toString() == orderId
+        }?.copy()
     }
 
-    fun getProducts(filter: SupplierProductFilter = SupplierProductFilter.ALL, query: String = ""): List<SupplierProduct> {
+    fun updateOrderStatus(
+        orderId: String,
+        status: SupplierOrderStatus,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                val order = findOrder(orderId) ?: throw ApiException("Order not found.")
+                ApiClient.postDataObject(
+                    endpoint = "supplier/orders/status",
+                    bodyParams = mapOf(
+                        "supplier_id" to AppSession.supplierId,
+                        "order_id" to order.backendId,
+                        "status" to status.toApiValue()
+                    )
+                )
+                refreshOrdersSync()
+            },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
+    fun getProducts(
+        filter: SupplierProductFilter = SupplierProductFilter.ALL,
+        query: String = ""
+    ): List<SupplierProduct> {
         val normalizedQuery = query.trim().lowercase(Locale.getDefault())
-        return supplierProducts.filter { product ->
+        return supplierProductsCache.filter { product ->
             val matchesFilter = when (filter) {
                 SupplierProductFilter.ALL -> true
                 SupplierProductFilter.ACTIVE -> product.isActive
@@ -170,102 +216,449 @@ object SupplierData {
 
     fun getCatalogProducts(categoryId: String, query: String = ""): List<SupplierCatalogProduct> {
         val normalizedQuery = query.trim().lowercase(Locale.getDefault())
-        return catalogProducts.filter { product ->
+        return catalogProductsCache.filter { product ->
             product.categoryId == categoryId &&
                 (normalizedQuery.isBlank() || product.name.lowercase(Locale.getDefault()).contains(normalizedQuery))
         }
     }
 
-    fun findCategory(categoryId: String): SupplierCategory? = categories.find { it.id == categoryId }
-    fun findCatalogProduct(productId: String): SupplierCatalogProduct? = catalogProducts.find { it.id == productId }
-    fun findProduct(productId: String): SupplierProduct? = supplierProducts.find { it.id == productId }
-    fun findConversation(conversationId: String): SupplierConversation? = conversations.find { it.id == conversationId }
-    fun getMessages(conversationId: String): List<SupplierChatMessage> = messages[conversationId]?.toList().orEmpty()
+    fun findCategory(categoryId: String): SupplierCategory? = categoriesCache.find { it.id == categoryId }
+    fun findCatalogProduct(productId: String): SupplierCatalogProduct? = catalogProductsCache.find { it.id == productId }
+    fun findProduct(productId: String): SupplierProduct? = supplierProductsCache.find { it.id == productId }
+    fun findConversation(conversationId: String): SupplierConversation? = conversationsCache.find { it.id == conversationId }
+    fun getMessages(conversationId: String): List<SupplierChatMessage> = messagesCache[conversationId]?.toList().orEmpty()
 
     fun getConversations(query: String = ""): List<SupplierConversation> {
         val normalizedQuery = query.trim().lowercase(Locale.getDefault())
-        return conversations.filter { conversation ->
+        return conversationsCache.filter { conversation ->
             normalizedQuery.isBlank() ||
                 conversation.retailerName.lowercase(Locale.getDefault()).contains(normalizedQuery) ||
                 conversation.lastMessage.lowercase(Locale.getDefault()).contains(normalizedQuery)
         }
     }
 
-    fun sendMessage(conversationId: String, message: String) {
-        val trimmed = message.trim()
-        if (trimmed.isEmpty()) return
-        val time = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date())
-        val chatMessage = SupplierChatMessage(UUID.randomUUID().toString(), conversationId, trimmed, time, true)
-        messages.getOrPut(conversationId) { mutableListOf() }.add(chatMessage)
+    fun loadConversation(
+        conversationId: String,
+        onSuccess: (List<SupplierChatMessage>) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                val payload = ApiClient.getDataObject(
+                    endpoint = "supplier/messages/thread",
+                    queryParams = mapOf(
+                        "supplier_id" to AppSession.supplierId,
+                        "thread_id" to conversationId
+                    )
+                )
+                val messages = parseMessages(payload.optJSONArray("messages"), conversationId)
+                messagesCache[conversationId] = messages.toMutableList()
+                messages
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
 
-        val index = conversations.indexOfFirst { it.id == conversationId }
-        if (index >= 0) {
-            conversations[index] = conversations[index].copy(lastMessage = trimmed, timeLabel = time, unreadCount = 0)
-        }
+    fun sendMessage(
+        conversationId: String,
+        message: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                val payload = ApiClient.postDataObject(
+                    endpoint = "supplier/messages/send",
+                    bodyParams = mapOf(
+                        "supplier_id" to AppSession.supplierId,
+                        "thread_id" to conversationId.toIntOrNull(),
+                        "message_body" to message,
+                        "message_type" to "text"
+                    )
+                )
+                val messages = parseMessages(payload.optJSONArray("messages"), conversationId)
+                messagesCache[conversationId] = messages.toMutableList()
+                conversationsCache = conversationsCache.map { conversation ->
+                    if (conversation.id == conversationId) {
+                        conversation.copy(
+                            lastMessage = message,
+                            timeLabel = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date()),
+                            unreadCount = 0
+                        )
+                    } else {
+                        conversation
+                    }
+                }.toMutableList()
+            },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
     }
 
     fun getTransactions(period: SupplierEarningsPeriod): List<SupplierTransaction> {
         return when (period) {
-            SupplierEarningsPeriod.ALL -> transactions
-            SupplierEarningsPeriod.THIS_MONTH -> transactions.filter { it.period == SupplierEarningsPeriod.THIS_MONTH }
-            SupplierEarningsPeriod.LAST_MONTH -> emptyList()
+            SupplierEarningsPeriod.ALL -> transactionsCache
+            SupplierEarningsPeriod.THIS_MONTH -> transactionsCache.filter { it.period == SupplierEarningsPeriod.THIS_MONTH }
+            SupplierEarningsPeriod.LAST_MONTH -> transactionsCache.filter { it.period == SupplierEarningsPeriod.LAST_MONTH }
         }
     }
 
-    fun getProfileOptions(): List<SupplierProfileOption> {
-        return listOf(
-            SupplierProfileOption("My Products", R.drawable.ic_grid_view_24, SupplierProfileAction.PRODUCTS),
-            SupplierProfileOption("My Orders", R.drawable.ic_shopping_cart_24, SupplierProfileAction.ORDERS),
-            SupplierProfileOption("Earnings", R.drawable.ic_attach_money_24, SupplierProfileAction.EARNINGS),
-            SupplierProfileOption("Business Address", R.drawable.ic_location_on_24, SupplierProfileAction.BUSINESS_ADDRESS),
-            SupplierProfileOption("Notification Settings", R.drawable.ic_notifications_24, SupplierProfileAction.NOTIFICATIONS),
-            SupplierProfileOption("Change Password", R.drawable.ic_lock_24, SupplierProfileAction.CHANGE_PASSWORD),
-            SupplierProfileOption("Help & Support", R.drawable.ic_info_24, SupplierProfileAction.HELP_SUPPORT),
-            SupplierProfileOption("About App", R.drawable.ic_info_24, SupplierProfileAction.ABOUT),
-            SupplierProfileOption("Logout", R.drawable.ic_arrow_back_24, SupplierProfileAction.LOGOUT, true)
+    fun updateProfile(
+        updatedProfile: SupplierProfile,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                ApiClient.postDataObject(
+                    endpoint = "supplier/profile/update",
+                    bodyParams = mapOf(
+                        "supplier_id" to AppSession.supplierId,
+                        "business_name" to updatedProfile.businessName,
+                        "owner_name" to updatedProfile.ownerName,
+                        "phone" to updatedProfile.phoneNumber,
+                        "email" to updatedProfile.emailAddress,
+                        "city" to updatedProfile.city,
+                        "address" to updatedProfile.businessAddress,
+                        "minimum_order_quantity" to updatedProfile.minimumOrderQuantity,
+                        "minimum_order_amount" to updatedProfile.minimumOrderAmountPkr,
+                        "delivery_time" to updatedProfile.deliveryTime,
+                        "payment_terms" to updatedProfile.paymentTerms,
+                        "description" to updatedProfile.description
+                    )
+                )
+                profile = updatedProfile
+            },
+            onSuccess = { onSuccess() },
+            onError = onError
         )
     }
 
-    fun updateProfile(updatedProfile: SupplierProfile) {
-        profile = updatedProfile
-    }
-
-    fun setProductAvailability(productId: String, isActive: Boolean) {
-        supplierProducts.find { it.id == productId }?.isActive = isActive
-    }
-
-    fun adjustStock(productId: String, delta: Int) {
-        supplierProducts.find { it.id == productId }?.let { product ->
-            product.stock = (product.stock + delta).coerceAtLeast(0)
-            if (product.stock == 0) product.isActive = false
+    fun setProductAvailability(
+        productId: String,
+        isActive: Boolean,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        updateProduct(productId, onSuccess, onError) { product ->
+            mapOf("status" to if (isActive) "active" else "draft")
         }
     }
 
-    fun addProduct(catalogProductId: String, pricePkr: Int, stock: Int, deliveryDays: String, isActive: Boolean) {
-        val catalogProduct = findCatalogProduct(catalogProductId) ?: return
-        val existing = supplierProducts.find { it.catalogProductId == catalogProductId }
-        if (existing != null) {
-            existing.pricePkr = pricePkr
-            existing.stock = stock
-            existing.deliveryDays = deliveryDays
-            existing.isActive = isActive
-            return
+    fun adjustStock(
+        productId: String,
+        delta: Int,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        updateProduct(productId, onSuccess, onError) { product ->
+            mapOf("stock_quantity" to (product.stock + delta).coerceAtLeast(0))
         }
+    }
 
-        supplierProducts.add(
-            0,
-            SupplierProduct(
-                id = "product_${supplierProducts.size + 1}",
-                catalogProductId = catalogProduct.id,
-                name = catalogProduct.name,
-                categoryName = findCategory(catalogProduct.categoryId)?.name.orEmpty(),
-                unitLabel = catalogProduct.unitLabel,
-                pricePkr = pricePkr,
-                stock = stock,
-                deliveryDays = deliveryDays,
-                isActive = isActive,
-                accentColorRes = catalogProduct.accentColorRes
+    fun addProduct(
+        catalogProductId: String,
+        pricePkr: Int,
+        stock: Int,
+        deliveryDays: String,
+        isActive: Boolean,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                ApiClient.postDataObject(
+                    endpoint = "supplier/products/create",
+                    bodyParams = mapOf(
+                        "supplier_id" to AppSession.supplierId,
+                        "catalog_product_id" to catalogProductId.toIntOrNull(),
+                        "price" to pricePkr,
+                        "stock_quantity" to stock,
+                        "delivery_time" to deliveryDays,
+                        "status" to if (isActive) "active" else "draft",
+                        "min_order_qty" to profile.minimumOrderQuantity,
+                        "min_order_amount" to profile.minimumOrderAmountPkr
+                    )
+                )
+                refreshProductsSync()
+            },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
+    private fun updateProduct(
+        productId: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit,
+        extras: (SupplierProduct) -> Map<String, Any>
+    ) {
+        BackgroundWork.run(
+            task = {
+                val product = findProduct(productId) ?: throw ApiException("Product not found.")
+                val body = linkedMapOf<String, Any?>(
+                    "supplier_id" to AppSession.supplierId,
+                    "listing_id" to product.id.toIntOrNull(),
+                    "catalog_product_id" to product.catalogProductId.toIntOrNull(),
+                    "price" to product.pricePkr,
+                    "stock_quantity" to product.stock,
+                    "delivery_time" to product.deliveryDays,
+                    "status" to if (product.isActive) "active" else "draft",
+                    "min_order_qty" to profile.minimumOrderQuantity,
+                    "min_order_amount" to profile.minimumOrderAmountPkr
+                )
+                extras(product).forEach { (key, value) -> body[key] = value }
+
+                ApiClient.postDataObject(
+                    endpoint = "supplier/products/update",
+                    bodyParams = body
+                )
+                refreshProductsSync()
+            },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
+    private fun refreshProfileSync() {
+        val payload = ApiClient.getDataObject(
+            endpoint = "supplier/profile",
+            queryParams = mapOf("supplier_id" to AppSession.supplierId)
+        )
+        profile = SupplierProfile(
+            businessName = payload.optString("business_name"),
+            ownerName = payload.optString("owner_name"),
+            phoneNumber = payload.optString("phone"),
+            emailAddress = payload.optString("email"),
+            city = payload.optString("city"),
+            businessAddress = payload.optString("address"),
+            minimumOrderQuantity = payload.optInt("minimum_order_quantity"),
+            minimumOrderAmountPkr = payload.optDouble("minimum_order_amount").roundToInt(),
+            deliveryTime = payload.optString("delivery_time"),
+            paymentTerms = payload.optString("payment_terms"),
+            description = payload.optString("description"),
+            businessLicenseNumber = payload.optString("business_license_number"),
+            status = payload.optString("status")
+        )
+    }
+
+    private fun refreshProductsSync() {
+        val catalogArray = ApiClient.getDataArray("supplier/catalog")
+        catalogProductsCache = parseCatalogProducts(catalogArray)
+        categoriesCache = parseCategories(catalogArray)
+
+        supplierProductsCache = parseSupplierProducts(
+            ApiClient.getDataArray(
+                endpoint = "supplier/products",
+                queryParams = mapOf("supplier_id" to AppSession.supplierId)
             )
+        ).toMutableList()
+    }
+
+    private fun refreshOrdersSync() {
+        ordersCache = parseOrders(
+            ApiClient.getDataArray(
+                endpoint = "supplier/orders",
+                queryParams = mapOf("supplier_id" to AppSession.supplierId)
+            )
+        ).toMutableList()
+    }
+
+    private fun refreshEarningsSync() {
+        val payload = ApiClient.getDataObject(
+            endpoint = "supplier/earnings",
+            queryParams = mapOf("supplier_id" to AppSession.supplierId)
         )
+        transactionsCache = parseTransactions(payload.optJSONArray("transactions"))
+    }
+
+    private fun refreshMessagesSync() {
+        if (categoriesCache.isEmpty() || supplierProductsCache.isEmpty()) {
+            refreshProductsSync()
+        }
+        conversationsCache = parseConversations(
+            ApiClient.getDataArray(
+                endpoint = "supplier/messages",
+                queryParams = mapOf("supplier_id" to AppSession.supplierId)
+            )
+        ).toMutableList()
+    }
+
+    private fun parseCategories(catalogArray: JSONArray): List<SupplierCategory> {
+        val grouped = linkedMapOf<String, MutableList<JSONObject>>()
+        repeat(catalogArray.length()) { index ->
+            val item = catalogArray.optJSONObject(index) ?: return@repeat
+            val categoryName = item.optString("category_name")
+            grouped.getOrPut(categoryName) { mutableListOf() }.add(item)
+        }
+
+        return grouped.entries.mapIndexed { index, entry ->
+            SupplierCategory(
+                id = entry.value.firstOrNull()?.optInt("category_id").toString(),
+                name = entry.key,
+                productCount = entry.value.size,
+                accentColorRes = ApiFormatting.accentColorRes("${entry.key}-$index")
+            )
+        }
+    }
+
+    private fun parseCatalogProducts(array: JSONArray): List<SupplierCatalogProduct> {
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                add(
+                    SupplierCatalogProduct(
+                        id = item.optInt("id").toString(),
+                        categoryId = item.optInt("category_id").toString(),
+                        name = item.optString("name"),
+                        unitLabel = item.optString("unit_type"),
+                        packaging = item.optString("packaging"),
+                        accentColorRes = ApiFormatting.accentColorRes("${item.optString("name")}-$index")
+                    )
+                )
+            }
+        }
+    }
+
+    private fun parseSupplierProducts(array: JSONArray): List<SupplierProduct> {
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                add(
+                    SupplierProduct(
+                        id = item.optInt("id").toString(),
+                        catalogProductId = item.optInt("catalog_product_id").toString(),
+                        name = item.optString("name"),
+                        categoryName = item.optString("category_name"),
+                        unitLabel = item.optString("unit_type"),
+                        pricePkr = item.optDouble("price").roundToInt(),
+                        stock = item.optInt("stock_quantity"),
+                        deliveryDays = item.optString("delivery_time"),
+                        isActive = item.optString("status").equals("active", true),
+                        accentColorRes = ApiFormatting.accentColorRes("${item.optString("name")}-$index")
+                    )
+                )
+            }
+        }
+    }
+
+    private fun parseOrders(array: JSONArray): List<SupplierOrder> {
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                add(
+                    SupplierOrder(
+                        backendId = item.optInt("id"),
+                        id = item.optString("order_number"),
+                        retailerName = item.optString("store_name"),
+                        orderDate = ApiFormatting.displayDate(item.optString("order_date")),
+                        expectedDeliveryDate = ApiFormatting.displayDate(item.optString("delivery_date")),
+                        itemsCount = item.optInt("item_count"),
+                        amountPkr = item.optDouble("total_amount").roundToInt(),
+                        status = item.optString("status").toSupplierStatus()
+                    )
+                )
+            }
+        }
+    }
+
+    private fun parseTransactions(array: JSONArray?): List<SupplierTransaction> {
+        if (array == null) return emptyList()
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                val displayDate = ApiFormatting.displayDate(item.optString("order_date"))
+                add(
+                    SupplierTransaction(
+                        retailerName = item.optString("order_number"),
+                        orderId = item.optString("order_number"),
+                        date = displayDate,
+                        amountPkr = item.optDouble("total_amount").roundToInt(),
+                        period = when {
+                            isCurrentMonth(displayDate) -> SupplierEarningsPeriod.THIS_MONTH
+                            isLastMonth(displayDate) -> SupplierEarningsPeriod.LAST_MONTH
+                            else -> SupplierEarningsPeriod.ALL
+                        }
+                    )
+                )
+            }
+        }
+    }
+
+    private fun parseConversations(array: JSONArray): List<SupplierConversation> {
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                add(
+                    SupplierConversation(
+                        id = item.optInt("id").toString(),
+                        retailerName = item.optString("store_name"),
+                        lastMessage = item.optString("last_message"),
+                        timeLabel = ApiFormatting.displayDateTime(item.optString("last_message_at")),
+                        unreadCount = item.optInt("supplier_unread_count"),
+                        accentColorRes = ApiFormatting.accentColorRes("${item.optString("store_name")}-$index")
+                    )
+                )
+            }
+        }
+    }
+
+    private fun parseMessages(array: JSONArray?, conversationId: String): List<SupplierChatMessage> {
+        if (array == null) return emptyList()
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                add(
+                    SupplierChatMessage(
+                        id = item.optInt("id").toString(),
+                        conversationId = conversationId,
+                        message = item.optString("message_body"),
+                        timeLabel = ApiFormatting.displayTime(item.optString("created_at")),
+                        isMine = item.optString("sender_type").equals("supplier", true)
+                    )
+                )
+            }
+        }
+    }
+
+    private fun String.toSupplierStatus(): SupplierOrderStatus {
+        return when (lowercase(Locale.getDefault())) {
+            "pending" -> SupplierOrderStatus.PENDING
+            "shipped" -> SupplierOrderStatus.SHIPPED
+            "delivered" -> SupplierOrderStatus.DELIVERED
+            else -> SupplierOrderStatus.CONFIRMED
+        }
+    }
+
+    private fun SupplierOrderStatus.toApiValue(): String {
+        return when (this) {
+            SupplierOrderStatus.PENDING -> "pending"
+            SupplierOrderStatus.CONFIRMED -> "processing"
+            SupplierOrderStatus.SHIPPED -> "shipped"
+            SupplierOrderStatus.DELIVERED -> "delivered"
+        }
+    }
+
+    private fun isToday(displayDate: String): Boolean {
+        return displayDate == ApiFormatting.displayDate(SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()))
+    }
+
+    private fun isCurrentMonth(displayDate: String): Boolean {
+        return monthMatch(displayDate, 0)
+    }
+
+    private fun isLastMonth(displayDate: String): Boolean {
+        return monthMatch(displayDate, -1)
+    }
+
+    private fun monthMatch(displayDate: String, offset: Int): Boolean {
+        return runCatching {
+            val parsed = SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).parse(displayDate) ?: return false
+            val target = Calendar.getInstance().apply { add(Calendar.MONTH, offset) }
+            val calendar = Calendar.getInstance().apply { time = parsed }
+            calendar.get(Calendar.YEAR) == target.get(Calendar.YEAR) &&
+                calendar.get(Calendar.MONTH) == target.get(Calendar.MONTH)
+        }.getOrDefault(false)
     }
 }

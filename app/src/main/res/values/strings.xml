@@ -89,5 +89,11 @@
     <string name="order_cancelled_summary">This order was cancelled before dispatch. Contact the supplier if you want to place it again.</string>
     <string name="preparing_for_dispatch">Preparing for dispatch</string>
     <string name="supplier_preparing_items">The supplier confirmed your order and is preparing the requested items.</string>
+    <string name="pending">Pending</string>
+    <string name="just_now">Just now</string>
+    <string name="not_available">Not available</string>
+    <string name="no_messages_yet">No messages yet</string>
+    <string name="media_coming_soon">Media messages are coming soon</string>
+    <string name="voice_notes_coming_soon">Voice notes are coming soon</string>
     <string name="multiple_suppliers">Multiple Suppliers</string>
 </resources>

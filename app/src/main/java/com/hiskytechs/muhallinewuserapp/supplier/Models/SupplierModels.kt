@@ -66,6 +66,7 @@ enum class SupplierOrderStatus(val label: String) {
 }
 
 data class SupplierOrder(
+    val backendId: Int = 0,
     val id: String,
     val retailerName: String,
     val orderDate: String,
@@ -118,7 +119,12 @@ data class SupplierProfile(
     var city: String,
     var businessAddress: String,
     var minimumOrderQuantity: Int,
-    var minimumOrderAmountPkr: Int
+    var minimumOrderAmountPkr: Int,
+    var deliveryTime: String = "",
+    var paymentTerms: String = "",
+    var description: String = "",
+    var businessLicenseNumber: String = "",
+    var status: String = ""
 )
 
 enum class SupplierProfileAction {

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -74,14 +75,27 @@ class SupplierOrdersFragment : Fragment() {
         }
 
         updateChipState(chips, binding.chipOrdersAll)
-        loadOrders()
+        refreshOrders()
     }
 
     override fun onResume() {
         super.onResume()
         if (_binding != null) {
-            loadOrders()
+            refreshOrders()
         }
+    }
+
+    private fun refreshOrders() {
+        SupplierData.refreshOrders(
+            onSuccess = {
+                if (_binding == null) return@refreshOrders
+                loadOrders()
+            },
+            onError = { message ->
+                if (_binding == null) return@refreshOrders
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
     private fun loadOrders() {

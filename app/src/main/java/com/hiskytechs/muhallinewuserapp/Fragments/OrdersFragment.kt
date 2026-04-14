@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hiskytechs.muhallinewuserapp.Adapters.OrderAdapter
@@ -51,8 +52,17 @@ class OrdersFragment : Fragment() {
     }
 
     private fun loadOrders() {
-        allOrders = AppData.getOrders().toMutableList()
-        orderAdapter.updateOrders(allOrders)
+        AppData.loadOrders(
+            onSuccess = { orders ->
+                if (_binding == null) return@loadOrders
+                allOrders = orders.toMutableList()
+                orderAdapter.updateOrders(allOrders)
+            },
+            onError = { message ->
+                if (_binding == null) return@loadOrders
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
     private fun setupFilters() {

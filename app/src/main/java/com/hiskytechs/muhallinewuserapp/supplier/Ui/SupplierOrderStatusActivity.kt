@@ -20,24 +20,17 @@ import com.hiskytechs.muhallinewuserapp.supplier.Utill.orderStatusTextColor
 class SupplierOrderStatusActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySupplierOrderStatusBinding
-    private lateinit var order: SupplierOrder
+    private var order: SupplierOrder? = null
     private lateinit var statusOptions: List<StatusOptionView>
     private var selectedStatus: SupplierOrderStatus = SupplierOrderStatus.PENDING
+    private var requestedOrderId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySupplierOrderStatusBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val orderId = intent.getStringExtra(EXTRA_ORDER_ID).orEmpty()
-        val supplierOrder = SupplierData.findOrder(orderId)
-        if (supplierOrder == null) {
-            finish()
-            return
-        }
-
-        order = supplierOrder
-        selectedStatus = order.status
+        requestedOrderId = intent.getStringExtra(EXTRA_ORDER_ID).orEmpty()
         statusOptions = listOf(
             StatusOptionView(
                 SupplierOrderStatus.PENDING,
@@ -75,11 +68,11 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
             }
         }
 
-        bindOrder()
-        renderStatusSelection()
+        loadOrder()
     }
 
     private fun bindOrder() {
+        val order = order ?: return
         binding.tvOrderId.text = "#${order.id}"
         binding.tvRetailerName.text = order.retailerName
         binding.tvOrderDateValue.text = order.orderDate
@@ -115,9 +108,47 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
     }
 
     private fun saveStatus() {
-        SupplierData.updateOrderStatus(order.id, selectedStatus)
-        Toast.makeText(this, getString(R.string.supplier_order_status_updated), Toast.LENGTH_SHORT).show()
-        finish()
+        val currentOrder = order ?: return
+        SupplierData.updateOrderStatus(
+            orderId = currentOrder.id,
+            status = selectedStatus,
+            onSuccess = {
+                Toast.makeText(this, getString(R.string.supplier_order_status_updated), Toast.LENGTH_SHORT).show()
+                finish()
+            },
+            onError = { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+    private fun loadOrder() {
+        val cachedOrder = SupplierData.findOrder(requestedOrderId)
+        if (cachedOrder != null) {
+            order = cachedOrder
+            selectedStatus = cachedOrder.status
+            bindOrder()
+            renderStatusSelection()
+            return
+        }
+
+        SupplierData.refreshOrders(
+            onSuccess = {
+                val loadedOrder = SupplierData.findOrder(requestedOrderId)
+                if (loadedOrder == null) {
+                    finish()
+                } else {
+                    order = loadedOrder
+                    selectedStatus = loadedOrder.status
+                    bindOrder()
+                    renderStatusSelection()
+                }
+            },
+            onError = { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        )
     }
 
     private data class StatusOptionView(

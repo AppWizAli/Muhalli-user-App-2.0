@@ -20,9 +20,6 @@ class SupplierDetailsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supplierName = intent.getStringExtra("supplier_name")
-        val deliveryTime = intent.getStringExtra("delivery_time")
-        val minAmount = intent.getStringExtra("min_amount")
-        val minQty = intent.getStringExtra("min_qty")
         val location = intent.getStringExtra("location")
 
         binding.tvSupplierName.text = supplierName
@@ -41,7 +38,7 @@ class SupplierDetailsActivity : AppCompatActivity() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 when (tab?.position) {
                     0 -> loadFragment(SupplierProductsFragment.newInstance(supplierName ?: ""))
-                    1 -> loadFragment(SupplierInfoFragment())
+                    1 -> loadFragment(SupplierInfoFragment.newInstance(supplierName ?: ""))
                 }
             }
             override fun onTabUnselected(tab: TabLayout.Tab?) {}

@@ -10,29 +10,51 @@ import com.hiskytechs.muhallinewuserapp.databinding.ActivityAccountDetailsBindin
 class AccountDetailsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAccountDetailsBinding
+    private var currentProfile = AppData.buyerProfile
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAccountDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val profile = AppData.buyerProfile
         binding.toolbar.setNavigationOnClickListener { finish() }
-        binding.etStoreName.setText(profile.storeName)
-        binding.etBuyerName.setText(profile.buyerName)
-        binding.etEmail.setText(profile.email)
-        binding.etPhone.setText(profile.phoneNumber)
-        binding.etCity.setText(profile.city)
+        loadProfile()
 
         binding.btnSaveProfile.setOnClickListener {
-            profile.storeName = binding.etStoreName.text?.toString()?.trim().orEmpty()
-            profile.buyerName = binding.etBuyerName.text?.toString()?.trim().orEmpty()
-            profile.email = binding.etEmail.text?.toString()?.trim().orEmpty()
-            profile.phoneNumber = binding.etPhone.text?.toString()?.trim().orEmpty()
-            profile.city = binding.etCity.text?.toString()?.trim().orEmpty()
-            Toast.makeText(this, getString(R.string.account_details_updated), Toast.LENGTH_SHORT)
-                .show()
-            finish()
+            val updatedProfile = currentProfile.copy(
+                storeName = binding.etStoreName.text?.toString()?.trim().orEmpty(),
+                buyerName = binding.etBuyerName.text?.toString()?.trim().orEmpty(),
+                email = binding.etEmail.text?.toString()?.trim().orEmpty(),
+                phoneNumber = binding.etPhone.text?.toString()?.trim().orEmpty(),
+                city = binding.etCity.text?.toString()?.trim().orEmpty()
+            )
+            AppData.updateBuyerProfile(
+                updatedProfile = updatedProfile,
+                onSuccess = {
+                    Toast.makeText(this, getString(R.string.account_details_updated), Toast.LENGTH_SHORT)
+                        .show()
+                    finish()
+                },
+                onError = { message ->
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                }
+            )
         }
+    }
+
+    private fun loadProfile() {
+        AppData.loadBuyerProfile(
+            onSuccess = { profile ->
+                currentProfile = profile
+                binding.etStoreName.setText(profile.storeName)
+                binding.etBuyerName.setText(profile.buyerName)
+                binding.etEmail.setText(profile.email)
+                binding.etPhone.setText(profile.phoneNumber)
+                binding.etCity.setText(profile.city)
+            },
+            onError = { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 }

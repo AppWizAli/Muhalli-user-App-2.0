@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hiskytechs.muhallinewuserapp.R
@@ -36,15 +37,28 @@ class SupplierHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupHome()
+        loadHome()
     }
 
     override fun onResume() {
         super.onResume()
-        setupHome()
+        loadHome()
     }
 
-    private fun setupHome() {
+    private fun loadHome() {
+        SupplierData.refreshDashboard(
+            onSuccess = {
+                if (_binding == null) return@refreshDashboard
+                bindHome()
+            },
+            onError = { message ->
+                if (_binding == null) return@refreshDashboard
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+    private fun bindHome() {
         val profile = SupplierData.getProfile()
         val stats = SupplierData.getDashboardStats()
         binding.tvBusinessName.text = profile.businessName

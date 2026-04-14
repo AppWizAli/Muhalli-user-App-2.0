@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,14 +37,6 @@ class SupplierEarningsFragment : Fragment() {
         binding.rvTransactions.layoutManager = LinearLayoutManager(requireContext())
         binding.rvTransactions.adapter = transactionAdapter
 
-        val allTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.ALL)
-        val thisMonthTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.THIS_MONTH)
-        val lastMonthTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.LAST_MONTH)
-
-        binding.tvTotalEarnings.text = formatPkr(allTransactions.sumOf { it.amountPkr })
-        binding.tvThisMonthEarnings.text = formatPkr(thisMonthTransactions.sumOf { it.amountPkr })
-        binding.tvLastMonthEarnings.text = formatPkr(lastMonthTransactions.sumOf { it.amountPkr })
-
         val chips = listOf(binding.chipEarningsAll, binding.chipEarningsThisMonth, binding.chipEarningsLastMonth)
         binding.chipEarningsAll.setOnClickListener {
             updateChipState(chips, binding.chipEarningsAll)
@@ -59,7 +52,34 @@ class SupplierEarningsFragment : Fragment() {
         }
 
         updateChipState(chips, binding.chipEarningsAll)
-        renderTransactions(SupplierEarningsPeriod.ALL)
+        refreshEarnings()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (_binding != null) {
+            refreshEarnings()
+        }
+    }
+
+    private fun refreshEarnings() {
+        SupplierData.refreshEarnings(
+            onSuccess = {
+                if (_binding == null) return@refreshEarnings
+                val allTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.ALL)
+                val thisMonthTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.THIS_MONTH)
+                val lastMonthTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.LAST_MONTH)
+
+                binding.tvTotalEarnings.text = formatPkr(allTransactions.sumOf { it.amountPkr })
+                binding.tvThisMonthEarnings.text = formatPkr(thisMonthTransactions.sumOf { it.amountPkr })
+                binding.tvLastMonthEarnings.text = formatPkr(lastMonthTransactions.sumOf { it.amountPkr })
+                renderTransactions(SupplierEarningsPeriod.ALL)
+            },
+            onError = { message ->
+                if (_binding == null) return@refreshEarnings
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
     private fun renderTransactions(period: SupplierEarningsPeriod) {

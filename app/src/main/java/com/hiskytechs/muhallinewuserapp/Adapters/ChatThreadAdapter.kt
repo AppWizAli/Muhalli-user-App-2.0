@@ -9,7 +9,7 @@ import com.hiskytechs.muhallinewuserapp.Ui.ChatConversationActivity
 import com.hiskytechs.muhallinewuserapp.databinding.ItemChatThreadBinding
 
 class ChatThreadAdapter(
-    private val threads: List<ChatThread>
+    private var threads: List<ChatThread>
 ) : RecyclerView.Adapter<ChatThreadAdapter.ChatThreadViewHolder>() {
 
     inner class ChatThreadViewHolder(val binding: ItemChatThreadBinding) :
@@ -40,6 +40,7 @@ class ChatThreadAdapter(
 
             root.setOnClickListener {
                 val intent = Intent(it.context, ChatConversationActivity::class.java).apply {
+                    putExtra(ChatConversationActivity.EXTRA_THREAD_ID, thread.threadId)
                     putExtra(ChatConversationActivity.EXTRA_SUPPLIER_NAME, thread.supplierName)
                     putExtra(ChatConversationActivity.EXTRA_SUPPLIER_LOCATION, thread.supplierLocation)
                 }
@@ -49,4 +50,9 @@ class ChatThreadAdapter(
     }
 
     override fun getItemCount(): Int = threads.size
+
+    fun updateItems(newThreads: List<ChatThread>) {
+        threads = newThreads
+        notifyDataSetChanged()
+    }
 }

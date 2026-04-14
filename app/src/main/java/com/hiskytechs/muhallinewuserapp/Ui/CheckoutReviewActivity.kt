@@ -2,6 +2,7 @@ package com.hiskytechs.muhallinewuserapp.Ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.hiskytechs.muhallinewuserapp.Data.AppData
 import com.hiskytechs.muhallinewuserapp.R
@@ -44,17 +45,22 @@ class CheckoutReviewActivity : AppCompatActivity() {
             )
         }
         binding.btnPlaceOrder.setOnClickListener {
-            val createdOrder = AppData.addOrderFromCart(
+            AppData.createOrder(
                 items = supplierCart.items,
-                totalAmount = supplierCart.total
+                totalAmount = supplierCart.total,
+                onSuccess = { createdOrder ->
+                    CartManager.clearSupplierCart(supplierName)
+                    val intent = Intent(this, OrderSuccessActivity::class.java).apply {
+                        putExtra(OrderSuccessActivity.EXTRA_ORDER_ID, createdOrder.orderId)
+                        flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    startActivity(intent)
+                    finish()
+                },
+                onError = { message ->
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                }
             )
-            CartManager.clearSupplierCart(supplierName)
-            val intent = Intent(this, OrderSuccessActivity::class.java).apply {
-                putExtra(OrderSuccessActivity.EXTRA_ORDER_ID, createdOrder.orderId)
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            startActivity(intent)
-            finish()
         }
 
         binding.tvAddressName.text = address.fullName

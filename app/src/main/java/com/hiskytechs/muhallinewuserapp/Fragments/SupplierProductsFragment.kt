@@ -5,11 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.hiskytechs.muhallinewuserapp.Adapters.SupplierProductAdapter
+import com.hiskytechs.muhallinewuserapp.Data.AppData
 import com.hiskytechs.muhallinewuserapp.Models.Product
-import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Ui.CartActivity
 import com.hiskytechs.muhallinewuserapp.Utill.CartManager
 import com.hiskytechs.muhallinewuserapp.databinding.FragmentSupplierProductsBinding
@@ -19,6 +20,7 @@ class SupplierProductsFragment : Fragment() {
     private var _binding: FragmentSupplierProductsBinding? = null
     private val binding get() = _binding!!
     private var supplierName: String = ""
+    private lateinit var supplierProductAdapter: SupplierProductAdapter
 
     companion object {
         fun newInstance(supplierName: String): SupplierProductsFragment {
@@ -42,22 +44,13 @@ class SupplierProductsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
+        loadProducts()
     }
 
     private fun setupRecyclerView() {
-        val unitCarton = getString(R.string.data_unit_carton)
-        val products = listOf(
-            Product("1", getString(R.string.data_product_premium_potato_chips), 45.99, unitCarton, 0, supplierName),
-            Product("2", getString(R.string.data_product_mixed_nuts_pack), 89.99, unitCarton, 0, supplierName),
-            Product("3", getString(R.string.data_product_chocolate_cookies), 65.50, unitCarton, 0, supplierName),
-            Product("4", getString(R.string.data_product_energy_drinks_24pk), 120.0, unitCarton, 0, supplierName),
-            Product("5", getString(R.string.data_product_mineral_water_500ml), 15.99, unitCarton, 0, supplierName),
-            Product("6", getString(R.string.data_product_orange_juice_1l), 55.0, unitCarton, 0, supplierName)
-        )
-
         binding.rvProducts.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.rvProducts.isNestedScrollingEnabled = false
-        binding.rvProducts.adapter = SupplierProductAdapter(products, supplierName) { cartItem ->
+        supplierProductAdapter = SupplierProductAdapter(emptyList(), supplierName) { cartItem ->
             CartManager.addItem(cartItem)
 
             startActivity(
@@ -66,6 +59,29 @@ class SupplierProductsFragment : Fragment() {
                 }
             )
         }
+        binding.rvProducts.adapter = supplierProductAdapter
+    }
+
+    private fun loadProducts() {
+        AppData.loadSupplierProducts(
+            supplierName = supplierName,
+            onSuccess = { products: List<Product> ->
+                if (_binding == null) return@loadSupplierProducts
+                supplierProductAdapter = SupplierProductAdapter(products, supplierName) { cartItem ->
+                    CartManager.addItem(cartItem)
+                    startActivity(
+                        Intent(requireContext(), CartActivity::class.java).apply {
+                            putExtra(CartActivity.EXTRA_SUPPLIER_NAME, supplierName)
+                        }
+                    )
+                }
+                binding.rvProducts.adapter = supplierProductAdapter
+            },
+            onError = { message ->
+                if (_binding == null) return@loadSupplierProducts
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
     override fun onDestroyView() {

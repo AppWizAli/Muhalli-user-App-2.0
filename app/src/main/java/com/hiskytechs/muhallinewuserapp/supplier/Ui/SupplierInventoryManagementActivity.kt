@@ -24,8 +24,16 @@ class SupplierInventoryManagementActivity : AppCompatActivity() {
         inventoryAdapter = SupplierInventoryAdapter(
             items = emptyList(),
             onAdjustStock = { product, delta ->
-                SupplierData.adjustStock(product.id, delta)
-                loadInventory()
+                SupplierData.adjustStock(
+                    productId = product.id,
+                    delta = delta,
+                    onSuccess = {
+                        loadInventory()
+                    },
+                    onError = { message ->
+                        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    }
+                )
             },
             onUpdate = {
                 Toast.makeText(this, getString(R.string.supplier_stock_updated), Toast.LENGTH_SHORT).show()
@@ -34,7 +42,23 @@ class SupplierInventoryManagementActivity : AppCompatActivity() {
         binding.rvInventory.layoutManager = LinearLayoutManager(this)
         binding.rvInventory.adapter = inventoryAdapter
         binding.ivBack.setOnClickListener { finish() }
-        loadInventory()
+        refreshInventory()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        refreshInventory()
+    }
+
+    private fun refreshInventory() {
+        SupplierData.refreshProducts(
+            onSuccess = {
+                loadInventory()
+            },
+            onError = { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+        )
     }
 
     private fun loadInventory() {
