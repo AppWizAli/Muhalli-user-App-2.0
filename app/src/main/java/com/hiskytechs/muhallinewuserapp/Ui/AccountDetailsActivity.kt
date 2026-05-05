@@ -21,9 +21,10 @@ class AccountDetailsActivity : AppCompatActivity() {
         loadProfile()
 
         binding.btnSaveProfile.setOnClickListener {
+            val buyerName = binding.etBuyerName.text?.toString()?.trim().orEmpty()
             val updatedProfile = currentProfile.copy(
-                storeName = binding.etStoreName.text?.toString()?.trim().orEmpty(),
-                buyerName = binding.etBuyerName.text?.toString()?.trim().orEmpty(),
+                storeName = buyerName,
+                buyerName = buyerName,
                 email = binding.etEmail.text?.toString()?.trim().orEmpty(),
                 phoneNumber = binding.etPhone.text?.toString()?.trim().orEmpty(),
                 city = binding.etCity.text?.toString()?.trim().orEmpty()
@@ -46,7 +47,6 @@ class AccountDetailsActivity : AppCompatActivity() {
         AppData.loadBuyerProfile(
             onSuccess = { profile ->
                 currentProfile = profile
-                binding.etStoreName.setText(profile.storeName)
                 binding.etBuyerName.setText(profile.buyerName)
                 binding.etEmail.setText(profile.email)
                 binding.etPhone.setText(profile.phoneNumber)

@@ -1,5 +1,5 @@
-<resources>
-    <string name="muhalli_buyer_app">تطبيق محلي للمشتري</string>
+﻿<resources>
+    <string name="muhalli_buyer_app">تطبيق مهالي للمشتري</string>
     <string name="a_clean_buyer_experience_for_discovering_wholesale_supp">تجربة نظيفة للمشتري لاكتشاف موردي الجملة وإدارة الطلبات وحفظ العناوين والدردشة المباشرة مع البائعين.</string>
     <string name="version_1_0_0">الإصدار 1.0.0</string>
     <string name="store_name">اسم المتجر</string>
@@ -49,7 +49,7 @@
     <string name="login">تسجيل الدخول</string>
     <string name="don_t_have_an_account">ليس لديك حساب؟ </string>
     <string name="register_now">سجل الآن</string>
-    <string name="muhalli_buyer">محلي للمشتري</string>
+    <string name="muhalli_buyer">محلّي</string>
     <string name="wholesale_shopping_made_easy">تسوق الجملة بسهولة</string>
     <string name="value_2">2</string>
     <string name="next">التالي</string>
@@ -185,3 +185,4 @@
     <string name="per_carton">للكرتون</string>
     <string name="add_to_cart">أضف إلى السلة</string>
 </resources>
+

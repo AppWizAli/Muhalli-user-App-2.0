@@ -52,6 +52,18 @@ object CartManager {
         }
     }
 
+    fun decrementItem(productId: String, supplierName: String) {
+        val existingItem = cartItems.find {
+            it.id == productId && it.supplier.equals(supplierName, ignoreCase = true)
+        } ?: return
+
+        if (existingItem.quantity > 1) {
+            existingItem.quantity--
+        } else {
+            cartItems.remove(existingItem)
+        }
+    }
+
     fun getItems(): List<CartItem> = cartItems.toList()
 
     fun getItems(supplierName: String): List<CartItem> {
@@ -106,4 +118,11 @@ object CartManager {
     fun getTotalQuantity(): Int = cartItems.sumOf { it.quantity }
 
     fun getTotalQuantity(supplierName: String): Int = getSupplierCart(supplierName)?.totalQuantity ?: 0
+
+    fun getProductQuantity(productId: String, supplierName: String): Int {
+        return cartItems
+            .firstOrNull { it.id == productId && it.supplier.equals(supplierName, ignoreCase = true) }
+            ?.quantity
+            ?: 0
+    }
 }

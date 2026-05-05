@@ -21,6 +21,9 @@ class SupplierEarningsFragment : Fragment() {
     private var _binding: FragmentSupplierEarningsBinding? = null
     private val binding get() = _binding!!
     private lateinit var transactionAdapter: SupplierTransactionAdapter
+    private var currentPeriod = SupplierEarningsPeriod.ALL
+    private var didInitialRefresh = false
+    private var skippedInitialResume = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,29 +38,41 @@ class SupplierEarningsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         transactionAdapter = SupplierTransactionAdapter(emptyList())
         binding.rvTransactions.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvTransactions.setHasFixedSize(true)
         binding.rvTransactions.adapter = transactionAdapter
 
         val chips = listOf(binding.chipEarningsAll, binding.chipEarningsThisMonth, binding.chipEarningsLastMonth)
         binding.chipEarningsAll.setOnClickListener {
             updateChipState(chips, binding.chipEarningsAll)
-            renderTransactions(SupplierEarningsPeriod.ALL)
+            currentPeriod = SupplierEarningsPeriod.ALL
+            renderTransactions(currentPeriod)
         }
         binding.chipEarningsThisMonth.setOnClickListener {
             updateChipState(chips, binding.chipEarningsThisMonth)
-            renderTransactions(SupplierEarningsPeriod.THIS_MONTH)
+            currentPeriod = SupplierEarningsPeriod.THIS_MONTH
+            renderTransactions(currentPeriod)
         }
         binding.chipEarningsLastMonth.setOnClickListener {
             updateChipState(chips, binding.chipEarningsLastMonth)
-            renderTransactions(SupplierEarningsPeriod.LAST_MONTH)
+            currentPeriod = SupplierEarningsPeriod.LAST_MONTH
+            renderTransactions(currentPeriod)
         }
 
         updateChipState(chips, binding.chipEarningsAll)
+        if (SupplierData.restoreCachedEarnings()) {
+            didInitialRefresh = true
+            bindEarnings()
+        }
         refreshEarnings()
     }
 
     override fun onResume() {
         super.onResume()
-        if (_binding != null) {
+        if (!skippedInitialResume) {
+            skippedInitialResume = true
+            return
+        }
+        if (_binding != null && didInitialRefresh) {
             refreshEarnings()
         }
     }
@@ -66,20 +81,27 @@ class SupplierEarningsFragment : Fragment() {
         SupplierData.refreshEarnings(
             onSuccess = {
                 if (_binding == null) return@refreshEarnings
-                val allTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.ALL)
-                val thisMonthTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.THIS_MONTH)
-                val lastMonthTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.LAST_MONTH)
-
-                binding.tvTotalEarnings.text = formatPkr(allTransactions.sumOf { it.amountPkr })
-                binding.tvThisMonthEarnings.text = formatPkr(thisMonthTransactions.sumOf { it.amountPkr })
-                binding.tvLastMonthEarnings.text = formatPkr(lastMonthTransactions.sumOf { it.amountPkr })
-                renderTransactions(SupplierEarningsPeriod.ALL)
+                didInitialRefresh = true
+                bindEarnings()
             },
             onError = { message ->
                 if (_binding == null) return@refreshEarnings
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                if (!didInitialRefresh) {
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         )
+    }
+
+    private fun bindEarnings() {
+        val allTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.ALL)
+        val thisMonthTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.THIS_MONTH)
+        val lastMonthTransactions = SupplierData.getTransactions(SupplierEarningsPeriod.LAST_MONTH)
+
+        binding.tvTotalEarnings.text = formatPkr(allTransactions.sumOf { it.amountPkr })
+        binding.tvThisMonthEarnings.text = formatPkr(thisMonthTransactions.sumOf { it.amountPkr })
+        binding.tvLastMonthEarnings.text = formatPkr(lastMonthTransactions.sumOf { it.amountPkr })
+        renderTransactions(currentPeriod)
     }
 
     private fun renderTransactions(period: SupplierEarningsPeriod) {

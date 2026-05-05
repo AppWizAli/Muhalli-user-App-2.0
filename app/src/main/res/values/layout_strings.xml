@@ -1,5 +1,5 @@
 ﻿<resources>
-    <string name="muhalli_buyer_app">Muhalli Buyer App</string>
+    <string name="muhalli_buyer_app">Mhally Buyer App</string>
     <string name="a_clean_buyer_experience_for_discovering_wholesale_supp">A clean buyer experience for discovering wholesale suppliers, managing orders, saving addresses, and chatting directly with sellers.</string>
     <string name="version_1_0_0">Version 1.0.0</string>
     <string name="store_name">Store name</string>
@@ -49,9 +49,10 @@
     <string name="login">Login</string>
     <string name="don_t_have_an_account">Don\'t have an account? </string>
     <string name="register_now">Register Now</string>
-    <string name="muhalli_buyer">Muhalli Buyer</string>
+    <string name="muhalli_buyer">محلّي</string>
     <string name="wholesale_shopping_made_easy">Wholesale shopping made easy</string>
     <string name="value_2">2</string>
+    <string name="value_1">1</string>
     <string name="next">Next</string>
     <string name="skip">Skip</string>
     <string name="already_have_an_account">Already have an account? </string>
@@ -185,5 +186,6 @@
     <string name="per_carton">per carton</string>
     <string name="add_to_cart">Add to Cart</string>
 </resources>
+
 
 

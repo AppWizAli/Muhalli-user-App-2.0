@@ -17,12 +17,12 @@
     <string name="nav_orders">الطلبات</string>
     <string name="track_order">تتبع الطلب</string>
 
-    <string name="currency_amount_format">$%1$.2f</string>
+    <string name="currency_amount_format">%1$.2f</string>
     <string name="items_count_format">%1$d عنصر</string>
     <string name="products_count_format">%1$d منتج</string>
-    <string name="cart_progress_amount_format">$%1$.2f / $%2$.2f</string>
+    <string name="cart_progress_amount_format">%1$s / %2$s</string>
     <string name="cart_quantity_progress_format">%1$d / %2$d عنصر</string>
-    <string name="cart_add_more_amount_format">أضف $%1$.2f زيادة للوصول للحد الأدنى</string>
+    <string name="cart_add_more_amount_format">أضف %1$s زيادة للوصول للحد الأدنى</string>
     <string name="cart_add_more_quantity_format">أضف %1$d عناصر زيادة للوصول للحد الأدنى</string>
     <string name="minimum_amount_reached">تم الوصول للحد الأدنى للمبلغ</string>
     <string name="minimum_quantity_reached">تم الوصول للحد الأدنى للكمية</string>

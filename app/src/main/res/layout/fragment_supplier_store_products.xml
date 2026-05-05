@@ -18,6 +18,7 @@
             android:text="@string/supplier_my_products"
             android:textColor="@color/text_dark"
             android:textSize="28sp"
+                android:fontFamily="@font/lama_sans_medium"
             android:textStyle="bold" />
 
         <EditText
@@ -30,6 +31,27 @@
             android:drawablePadding="10dp"
             android:hint="@string/supplier_search_products"
             android:paddingHorizontal="14dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBulkUpload"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/supplier_bulk_upload"
+            android:textAllCaps="false"
+            app:cornerRadius="14dp"
+            app:icon="@drawable/ic_upload_24" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBulkCatalogUpload"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/supplier_bulk_catalog_upload"
+            android:textAllCaps="false"
+            app:cornerRadius="14dp"
+            app:icon="@drawable/ic_upload_24" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -89,6 +111,18 @@
                     android:paddingHorizontal="14dp"
                     android:text="@string/supplier_low_stock"
                     android:textColor="@color/supplier_text_secondary" />
+
+                <TextView
+                    android:id="@+id/chipOffers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_supplier_pill_default"
+                    android:gravity="center"
+                    android:minWidth="68dp"
+                    android:paddingHorizontal="14dp"
+                    android:text="@string/offers"
+                    android:textColor="@color/supplier_text_secondary" />
             </LinearLayout>
         </HorizontalScrollView>
 
@@ -103,6 +137,16 @@
             android:paddingBottom="96dp"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical" />
+
+        <ProgressBar
+            android:id="@+id/progressProductsPage"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="10dp"
+            android:indeterminate="true"
+            android:visibility="gone" />
     </LinearLayout>
 
     <ImageView

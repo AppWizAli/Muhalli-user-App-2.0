@@ -1,17 +1,20 @@
 package com.hiskytechs.muhallinewuserapp.Adapters
 
+import android.graphics.Paint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.hiskytechs.muhallinewuserapp.Models.CartItem
 import com.hiskytechs.muhallinewuserapp.Models.Product
+import com.hiskytechs.muhallinewuserapp.Ui.loadMarketplaceImage
+import com.hiskytechs.muhallinewuserapp.Utill.CartManager
 import com.hiskytechs.muhallinewuserapp.databinding.ItemSupplierProductBinding
-import java.util.Locale
+import com.hiskytechs.muhallinewuserapp.network.CurrencyFormatter
 
 class SupplierProductAdapter(
     private val products: List<Product>,
     private val supplierName: String,
-    private val onAddToCart: (CartItem) -> Unit
+    private val onQuantityChanged: (Product, Int) -> Unit
 ) : RecyclerView.Adapter<SupplierProductAdapter.ProductViewHolder>() {
 
     class ProductViewHolder(val binding: ItemSupplierProductBinding) :
@@ -30,24 +33,44 @@ class SupplierProductAdapter(
         val product = products[position]
         holder.binding.apply {
             tvProductName.text = product.name
-            tvPrice.text = String.format(
-                Locale.getDefault(),
-                root.context.getString(com.hiskytechs.muhallinewuserapp.R.string.currency_amount_format),
-                product.price
-            )
-            
+            tvPrice.text = CurrencyFormatter.format(product.displayPrice)
+            if (product.hasOffer) {
+                tvOriginalPrice.visibility = View.VISIBLE
+                tvOriginalPrice.paintFlags = tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                tvOriginalPrice.text = CurrencyFormatter.format(product.price)
+            } else {
+                tvOriginalPrice.visibility = View.GONE
+            }
+            ivProduct.loadMarketplaceImage(product.imageUrl)
+
+            val cartQuantity = CartManager.getProductQuantity(product.id, supplierName)
+            btnAddToCart.visibility = if (cartQuantity > 0) View.GONE else View.VISIBLE
+            llProductQuantity.visibility = if (cartQuantity > 0) View.VISIBLE else View.GONE
+            tvCartQuantity.text = cartQuantity.toString()
+
             btnAddToCart.setOnClickListener {
-                val cartItem = CartItem(
-                    id = product.id,
-                    name = product.name,
-                    supplier = supplierName,
-                    price = product.price,
-                    quantity = 1
-                )
-                onAddToCart(cartItem)
+                onQuantityChanged(product, 1)
+                notifyBoundItem(holder)
+            }
+
+            ivPlus.setOnClickListener {
+                onQuantityChanged(product, 1)
+                notifyBoundItem(holder)
+            }
+
+            ivMinus.setOnClickListener {
+                onQuantityChanged(product, -1)
+                notifyBoundItem(holder)
             }
         }
     }
 
     override fun getItemCount() = products.size
+
+    private fun notifyBoundItem(holder: ProductViewHolder) {
+        val position = holder.bindingAdapterPosition
+        if (position != RecyclerView.NO_POSITION) {
+            notifyItemChanged(position)
+        }
+    }
 }

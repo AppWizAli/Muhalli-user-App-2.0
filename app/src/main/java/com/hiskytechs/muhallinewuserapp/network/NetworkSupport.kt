@@ -1,5 +1,6 @@
 package com.hiskytechs.muhallinewuserapp.network
 
+import android.content.Context
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
@@ -14,20 +15,120 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.Executors
 
 object ApiConfig {
-    const val BASE_URL = "https://hiskytechs.com/muhali/api/index.php"
-    const val STATIC_BUYER_ID = 1
-    const val STATIC_SUPPLIER_ID = 1
+    // Laravel-compatible legacy API endpoint. Keep this path when Laravel replaces the PHP panel at /muhali.
+    const val BASE_URL = "https://mhally.com/api/index.php"
+
+
+    fun resolveMediaUrl(value: String?): String {
+        val raw = value?.trim().orEmpty()
+        if (raw.isBlank()) return ""
+        if (raw.startsWith("http://") || raw.startsWith("https://")) return raw
+
+        val apiUri = Uri.parse(BASE_URL)
+        val origin = buildString {
+            append(apiUri.scheme ?: "http") 
+            append("://")
+            append(apiUri.host ?: "10.0.2.2")
+            apiUri.port.takeIf { it != -1 }?.let {
+                append(":")
+                append(it)
+            }
+        }
+        return if (raw.startsWith("/")) "$origin$raw" else "$origin/$raw"
+    }
 }
 
 object AppSession {
-    var buyerId: Int = ApiConfig.STATIC_BUYER_ID
-    var supplierId: Int = ApiConfig.STATIC_SUPPLIER_ID
+    private const val PREFS_NAME = "muhalli_session"
+    private const val KEY_BUYER_ID = "buyer_id"
+    private const val KEY_BUYER_TOKEN = "buyer_token"
+    private const val KEY_SUPPLIER_ID = "supplier_id"
+    private const val KEY_SUPPLIER_TOKEN = "supplier_token"
+    private const val KEY_ACTIVE_ROLE = "active_role"
+
+    const val ROLE_BUYER = "buyer"
+    const val ROLE_SUPPLIER = "supplier"
+
+    private var initialized = false
+    private var appContext: Context? = null
+
+    var buyerId: Int = 0
+        private set
+    var buyerToken: String = ""
+        private set
+    var supplierId: Int = 0
+        private set
+    var supplierToken: String = ""
+        private set
+    var activeRole: String = ""
+        private set
+
+    fun initialize(context: Context) {
+        if (initialized) return
+        appContext = context.applicationContext
+        val prefs = preferences()
+        buyerId = prefs.getInt(KEY_BUYER_ID, 0)
+        buyerToken = prefs.getString(KEY_BUYER_TOKEN, "").orEmpty()
+        supplierId = prefs.getInt(KEY_SUPPLIER_ID, 0)
+        supplierToken = prefs.getString(KEY_SUPPLIER_TOKEN, "").orEmpty()
+        activeRole = prefs.getString(KEY_ACTIVE_ROLE, "").orEmpty()
+        initialized = true
+    }
+
+    fun saveBuyerSession(token: String, buyerId: Int) {
+        this.buyerId = buyerId
+        buyerToken = token
+        activeRole = ROLE_BUYER
+        persist()
+    }
+
+    fun saveSupplierSession(token: String, supplierId: Int) {
+        this.supplierId = supplierId
+        supplierToken = token
+        activeRole = ROLE_SUPPLIER
+        persist()
+    }
+
+    fun clearAll() {
+        buyerId = 0
+        buyerToken = ""
+        supplierId = 0
+        supplierToken = ""
+        activeRole = ""
+        persist()
+    }
+
+    fun hasBuyerSession(): Boolean = buyerId > 0 && buyerToken.isNotBlank()
+
+    fun hasSupplierSession(): Boolean = supplierId > 0 && supplierToken.isNotBlank()
+
+    fun authTokenForEndpoint(endpoint: String): String {
+        return when {
+            endpoint.startsWith("buyer/") -> buyerToken
+            endpoint.startsWith("supplier/") -> supplierToken
+            else -> ""
+        }
+    }
+
+    private fun persist() {
+        preferences().edit()
+            .putInt(KEY_BUYER_ID, buyerId)
+            .putString(KEY_BUYER_TOKEN, buyerToken)
+            .putInt(KEY_SUPPLIER_ID, supplierId)
+            .putString(KEY_SUPPLIER_TOKEN, supplierToken)
+            .putString(KEY_ACTIVE_ROLE, activeRole)
+            .apply()
+    }
+
+    private fun preferences() = requireNotNull(appContext) {
+        "AppSession.initialize must be called before use."
+    }.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 }
 
 class ApiException(message: String) : Exception(message)
 
 object BackgroundWork {
-    private val executor = Executors.newCachedThreadPool()
+    private val executor = Executors.newFixedThreadPool(4)
     private val mainHandler = Handler(Looper.getMainLooper())
 
     fun <T> run(
@@ -78,16 +179,6 @@ object ApiClient {
         return data as? JSONObject ?: JSONObject()
     }
 
-    fun postDataArray(endpoint: String, bodyParams: Map<String, Any?> = emptyMap()): JSONArray {
-        val response = requestJson(
-            method = "POST",
-            endpoint = endpoint,
-            bodyParams = bodyParams
-        )
-        val data = response.opt("data")
-        return data as? JSONArray ?: JSONArray()
-    }
-
     private fun requestJson(
         method: String,
         endpoint: String,
@@ -97,10 +188,13 @@ object ApiClient {
         val url = URL(buildUrl(endpoint, queryParams))
         val connection = (url.openConnection() as HttpURLConnection).apply {
             requestMethod = method
-            connectTimeout = 15000
-            readTimeout = 15000
+            connectTimeout = 8000
+            readTimeout = 10000
             setRequestProperty("Accept", "application/json")
             setRequestProperty("Content-Type", "application/json; charset=UTF-8")
+            AppSession.authTokenForEndpoint(endpoint).takeIf { it.isNotBlank() }?.let {
+                setRequestProperty("Authorization", "Bearer $it")
+            }
             doInput = true
         }
 

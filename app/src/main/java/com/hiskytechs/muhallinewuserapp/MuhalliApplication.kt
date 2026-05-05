@@ -4,6 +4,8 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import android.view.View
+import com.hiskytechs.muhallinewuserapp.network.AppSession
+import com.hiskytechs.muhallinewuserapp.network.CurrencyFormatter
 
 class MuhalliApplication : Application() {
     companion object {
@@ -15,6 +17,8 @@ class MuhalliApplication : Application() {
         super.onCreate()
         instance = this
         LocaleManager.applySavedLocale(this)
+        AppSession.initialize(this)
+        CurrencyFormatter.initialize(this)
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 activity.window?.decorView?.post {

@@ -26,6 +26,7 @@
                 android:gravity="center"
                 android:textColor="@color/text_dark"
                 android:textSize="18sp"
+                android:fontFamily="@font/lama_sans_medium"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -88,6 +89,7 @@
             android:layout_marginHorizontal="16dp"
             android:textColor="@color/text_dark"
             android:textSize="20sp"
+                android:fontFamily="@font/lama_sans_medium"
             android:textStyle="bold" />
 
         <ImageView

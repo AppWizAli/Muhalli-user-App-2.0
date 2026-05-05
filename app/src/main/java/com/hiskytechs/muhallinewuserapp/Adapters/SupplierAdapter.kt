@@ -5,15 +5,16 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hiskytechs.muhallinewuserapp.Models.Supplier
 import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Ui.SupplierDetailsActivity
 import com.hiskytechs.muhallinewuserapp.databinding.ItemSupplierBinding
-import java.util.Locale
+import com.hiskytechs.muhallinewuserapp.network.CurrencyFormatter
 
 class SupplierAdapter(
-    private val suppliers: List<Supplier>,
+    private var suppliers: List<Supplier>,
     private val highlightedCategory: String? = null
 ) :
     RecyclerView.Adapter<SupplierAdapter.SupplierViewHolder>() {
@@ -37,36 +38,21 @@ class SupplierAdapter(
             tvLocation.text = supplier.location
             tvProductCount.text = supplier.productCount
             tvDeliveryTime.text = supplier.deliveryTime
-            tvMinAmount.text = String.format(
-                Locale.getDefault(),
-                root.context.getString(R.string.currency_amount_format),
-                supplier.minimumAmount
-            )
+            tvMinAmount.text = CurrencyFormatter.format(supplier.minimumAmount)
             tvMinQty.text = supplier.minimumQuantity.toString()
             tvVerified.visibility = if (supplier.isVerified) View.VISIBLE else View.GONE
 
-            val orderedCategories = supplier.categories.sortedByDescending { category ->
-                category.equals(highlightedCategory, ignoreCase = true)
-            }
-            val primaryCategory = orderedCategories.getOrNull(0)
-            val secondaryCategory = orderedCategories.getOrNull(1)
-
-            bindCategoryChip(tvCategoryPrimary, primaryCategory)
-            bindCategoryChip(tvCategorySecondary, secondaryCategory)
             layoutHeader.setBackgroundColor(Color.parseColor(supplier.headerColor))
 
             root.setOnClickListener {
                 val intent = Intent(it.context, SupplierDetailsActivity::class.java).apply {
                     putExtra("supplier_name", supplier.name)
                     putExtra("location", supplier.location)
+                    putExtra("category_name", highlightedCategory.orEmpty())
                     putExtra("delivery_time", supplier.deliveryTime)
                     putExtra(
                         "min_amount",
-                        String.format(
-                            Locale.getDefault(),
-                            it.context.getString(R.string.currency_amount_format),
-                            supplier.minimumAmount
-                        )
+                        CurrencyFormatter.format(supplier.minimumAmount)
                     )
                     putExtra("min_qty", supplier.minimumQuantity.toString())
                 }
@@ -77,12 +63,18 @@ class SupplierAdapter(
 
     override fun getItemCount() = suppliers.size
 
-    private fun bindCategoryChip(view: android.widget.TextView, category: String?) {
-        if (category.isNullOrBlank()) {
-            view.visibility = View.GONE
-        } else {
-            view.visibility = View.VISIBLE
-            view.text = category
-        }
+    fun updateItems(updated: List<Supplier>) {
+        val previous = suppliers
+        suppliers = updated
+        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = previous.size
+            override fun getNewListSize(): Int = updated.size
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return previous[oldItemPosition].id == updated[newItemPosition].id
+            }
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return previous[oldItemPosition] == updated[newItemPosition]
+            }
+        }).dispatchUpdatesTo(this)
     }
 }

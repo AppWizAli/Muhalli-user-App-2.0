@@ -23,52 +23,96 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/muhalli_buyer"
-                android:textColor="@color/text_dark"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="@string/wholesale_shopping_made_easy"
-                android:textColor="@color/text_grey"
-                android:textSize="12sp" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:id="@+id/layoutCartEntry"
-            android:layout_width="48dp"
-            android:layout_height="48dp">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/ivCart"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/bg_toolbar_cart"
-                android:padding="12dp"
-                android:src="@drawable/ic_shopping_cart_24"
-                app:tint="@color/text_dark" />
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="@null"
+                android:scaleType="fitCenter"
+                android:src="@drawable/mhally_logo" />
 
-            <TextView
-                android:id="@+id/tvCartBadge"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|top"
-                android:background="@drawable/bg_unread_badge"
-                android:paddingHorizontal="6dp"
-                android:paddingVertical="2dp"
-                android:text="@string/value_2"
-                android:textColor="@color/white"
-                android:textSize="10sp"
-                android:textStyle="bold" />
-        </FrameLayout>
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/muhalli_buyer"
+                    android:textColor="@color/text_dark"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/lama_sans_medium"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/wholesale_shopping_made_easy"
+                    android:textColor="@color/text_grey"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivNotificationsEntry"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_edittext"
+                android:padding="10dp"
+                android:src="@drawable/ic_notifications_24"
+                app:tint="@color/primary" />
+
+            <ImageView
+                android:id="@+id/ivSupportEntry"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_status_delivered"
+                android:padding="10dp"
+                android:src="@drawable/ic_call_24"
+                app:tint="@color/status_delivered_text" />
+
+            <FrameLayout
+                android:id="@+id/layoutCartEntry"
+                android:layout_width="48dp"
+                android:layout_height="48dp">
+
+                <ImageView
+                    android:id="@+id/ivCart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_toolbar_cart"
+                    android:padding="12dp"
+                    android:src="@drawable/ic_shopping_cart_24"
+                    app:tint="@color/text_dark" />
+
+                <TextView
+                    android:id="@+id/tvCartBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|top"
+                    android:background="@drawable/bg_unread_badge"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:text="@string/value_2"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+        </LinearLayout>
     </LinearLayout>
 
     <FrameLayout

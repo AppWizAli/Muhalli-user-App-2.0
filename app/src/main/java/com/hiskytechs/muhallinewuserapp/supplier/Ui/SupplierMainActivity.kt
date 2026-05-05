@@ -1,12 +1,22 @@
 package com.hiskytechs.muhallinewuserapp.supplier.Ui
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.firebase.messaging.FirebaseMessaging
+import com.hiskytechs.muhallinewuserapp.Data.AppData
 import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.databinding.ActivitySupplierMainBinding
+import com.hiskytechs.muhallinewuserapp.network.BackgroundWork
+import com.hiskytechs.muhallinewuserapp.notifications.AppNotificationHelper
+import com.hiskytechs.muhallinewuserapp.supplier.Data.SupplierData
 import com.hiskytechs.muhallinewuserapp.supplier.Fragments.SupplierEarningsFragment
 import com.hiskytechs.muhallinewuserapp.supplier.Fragments.SupplierHomeFragment
 import com.hiskytechs.muhallinewuserapp.supplier.Fragments.SupplierOrdersFragment
@@ -16,11 +26,27 @@ import com.hiskytechs.muhallinewuserapp.supplier.Fragments.SupplierProfileFragme
 class SupplierMainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySupplierMainBinding
+    private val tabFragments = linkedMapOf<Int, Fragment>()
+    private var activeTabId: Int = 0
+    private val notificationPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) {
+            syncFirebaseNotifications()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySupplierMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        AppNotificationHelper.ensureChannel(this)
+        AppData.loadPublicSettings(onSuccess = {}, onError = {})
+        BackgroundWork.run(
+            task = { SupplierData.restoreCachedDashboard() },
+            onSuccess = {},
+            onError = {}
+        )
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             openTab(item.itemId)
@@ -31,6 +57,7 @@ class SupplierMainActivity : AppCompatActivity() {
             val destination = intent.getIntExtra(EXTRA_TAB_ID, R.id.nav_supplier_home)
             binding.bottomNavigation.selectedItemId = destination
         }
+        maybeRequestNotificationPermission()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -40,26 +67,65 @@ class SupplierMainActivity : AppCompatActivity() {
     }
 
     fun openTab(itemId: Int) {
-        val fragment: Fragment = when (itemId) {
-            R.id.nav_supplier_products -> SupplierProductsFragment()
-            R.id.nav_supplier_orders -> SupplierOrdersFragment()
-            R.id.nav_supplier_earnings -> SupplierEarningsFragment()
-            R.id.nav_supplier_profile -> SupplierProfileFragment()
-            else -> SupplierHomeFragment()
+        if (activeTabId == itemId && tabFragments[itemId]?.isVisible == true) return
+
+        if (binding.bottomNavigation.selectedItemId != itemId) {
+            binding.bottomNavigation.selectedItemId = itemId
+            return
         }
 
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
+        val transaction = supportFragmentManager.beginTransaction()
+            .setReorderingAllowed(true)
+
+        tabFragments[activeTabId]?.let { transaction.hide(it) }
+
+        val fragment = tabFragments.getOrPut(itemId) {
+            when (itemId) {
+                R.id.nav_supplier_products -> SupplierProductsFragment()
+                R.id.nav_supplier_orders -> SupplierOrdersFragment()
+                R.id.nav_supplier_earnings -> SupplierEarningsFragment()
+                R.id.nav_supplier_profile -> SupplierProfileFragment()
+                else -> SupplierHomeFragment()
+            }
+        }
+
+        if (fragment.isAdded) {
+            transaction.show(fragment)
+        } else {
+            transaction.add(R.id.fragmentContainer, fragment, itemId.toString())
+        }
+
+        activeTabId = itemId
+        transaction.commit()
     }
 
     companion object {
-        private const val EXTRA_TAB_ID = "extra_tab_id"
+        const val EXTRA_TAB_ID = "extra_tab_id"
 
         fun open(context: Context, tabId: Int) {
             context.startActivity(
                 Intent(context, SupplierMainActivity::class.java).putExtra(EXTRA_TAB_ID, tabId)
             )
+        }
+    }
+
+    private fun maybeRequestNotificationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            syncFirebaseNotifications()
+            return
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            syncFirebaseNotifications()
+            return
+        }
+        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    private fun syncFirebaseNotifications() {
+        FirebaseMessaging.getInstance().token.addOnSuccessListener { token ->
+            AppData.registerNotificationToken(token)
         }
     }
 }

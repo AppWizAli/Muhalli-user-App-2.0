@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.hiskytechs.muhallinewuserapp.R
+import com.hiskytechs.muhallinewuserapp.Ui.AppLoadingDialog
 import com.hiskytechs.muhallinewuserapp.databinding.ActivitySupplierOrderStatusBinding
 import com.hiskytechs.muhallinewuserapp.supplier.Data.SupplierData
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierOrder
@@ -20,6 +21,7 @@ import com.hiskytechs.muhallinewuserapp.supplier.Utill.orderStatusTextColor
 class SupplierOrderStatusActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySupplierOrderStatusBinding
+    private lateinit var loadingDialog: AppLoadingDialog
     private var order: SupplierOrder? = null
     private lateinit var statusOptions: List<StatusOptionView>
     private var selectedStatus: SupplierOrderStatus = SupplierOrderStatus.PENDING
@@ -29,6 +31,7 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySupplierOrderStatusBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        loadingDialog = AppLoadingDialog(this)
 
         requestedOrderId = intent.getStringExtra(EXTRA_ORDER_ID).orEmpty()
         statusOptions = listOf(
@@ -109,14 +112,19 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
 
     private fun saveStatus() {
         val currentOrder = order ?: return
+        binding.btnSaveStatus.isEnabled = false
+        loadingDialog.show(R.string.loading_updating_status)
         SupplierData.updateOrderStatus(
             orderId = currentOrder.id,
             status = selectedStatus,
             onSuccess = {
+                loadingDialog.dismiss()
                 Toast.makeText(this, getString(R.string.supplier_order_status_updated), Toast.LENGTH_SHORT).show()
                 finish()
             },
             onError = { message ->
+                binding.btnSaveStatus.isEnabled = true
+                loadingDialog.dismiss()
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
         )
@@ -132,8 +140,10 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
             return
         }
 
+        loadingDialog.show(R.string.loading_orders)
         SupplierData.refreshOrders(
             onSuccess = {
+                loadingDialog.dismiss()
                 val loadedOrder = SupplierData.findOrder(requestedOrderId)
                 if (loadedOrder == null) {
                     finish()
@@ -145,6 +155,7 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
                 }
             },
             onError = { message ->
+                loadingDialog.dismiss()
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 finish()
             }
@@ -167,5 +178,10 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
                     .putExtra(EXTRA_ORDER_ID, orderId)
             )
         }
+    }
+
+    override fun onDestroy() {
+        loadingDialog.dismiss()
+        super.onDestroy()
     }
 }

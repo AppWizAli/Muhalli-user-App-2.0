@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hiskytechs.muhallinewuserapp.databinding.ItemSupplierQuickActionBinding
 import com.hiskytechs.muhallinewuserapp.databinding.ItemSupplierRecentOrderBinding
@@ -86,7 +87,17 @@ class SupplierRecentOrderAdapter(
     override fun getItemCount(): Int = items.size
 
     fun updateItems(newItems: List<SupplierOrder>) {
+        val previous = items
         items = newItems
-        notifyDataSetChanged()
+        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = previous.size
+            override fun getNewListSize(): Int = newItems.size
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return previous[oldItemPosition].backendId == newItems[newItemPosition].backendId
+            }
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return previous[oldItemPosition] == newItems[newItemPosition]
+            }
+        }).dispatchUpdatesTo(this)
     }
 }

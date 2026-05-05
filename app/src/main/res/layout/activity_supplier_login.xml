@@ -4,10 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_light"
-    android:fadeScrollbars="false"
-    android:fillViewport="true"
-    android:scrollbarStyle="insideInset"
-    android:scrollbars="vertical">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,15 +17,16 @@
             android:layout_height="108dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="26dp"
-            android:background="@drawable/bg_supplier_login_icon"
+            android:background="@drawable/bg_icon_box"
             android:gravity="center">
 
             <ImageView
-                android:layout_width="52dp"
-                android:layout_height="52dp"
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:adjustViewBounds="true"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_receipt_long_24"
-                app:tint="@color/white" />
+                android:scaleType="fitCenter"
+                android:src="@drawable/mhally_logo" />
         </LinearLayout>
 
         <TextView
@@ -36,9 +34,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
             android:gravity="center"
-            android:text="@string/supplier_welcome_back"
+            android:text="@string/supplier_whatsapp_login_title"
             android:textColor="@color/text_dark"
             android:textSize="22sp"
+                android:fontFamily="@font/lama_sans_medium"
             android:textStyle="bold" />
 
         <TextView
@@ -46,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:gravity="center"
-            android:text="@string/supplier_manage_business"
+            android:text="@string/supplier_whatsapp_login_subtitle"
             android:textColor="@color/text_grey"
             android:textSize="15sp" />
 
@@ -54,38 +53,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
-            android:text="@string/supplier_phone_or_email"
+            android:text="@string/phone_number"
             android:textColor="@color/text_dark"
             android:textSize="14sp"
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/etPhoneOrEmail"
+            android:id="@+id/etPhone"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_edittext"
-            android:hint="@string/supplier_enter_phone_or_email"
-            android:inputType="textEmailAddress"
-            android:paddingHorizontal="14dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="@string/password"
-            android:textColor="@color/text_dark"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/etPassword"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_edittext"
-            android:hint="@string/supplier_enter_password"
-            android:inputType="textPassword"
+            android:hint="@string/phone_number_format_hint"
+            android:inputType="phone"
             android:paddingHorizontal="14dp" />
 
         <TextView
@@ -94,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginTop="14dp"
-            android:text="@string/supplier_forgot_password"
+            android:text="@string/otp_resend_code"
             android:textColor="@color/primary"
             android:textStyle="bold" />
 
@@ -103,7 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="28dp"
-            android:text="@string/login"
+            android:text="@string/supplier_request_otp"
             android:textAllCaps="false"
             app:cornerRadius="16dp" />
 

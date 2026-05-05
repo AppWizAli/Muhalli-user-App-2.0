@@ -13,6 +13,7 @@ class SuppliersActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySuppliersBinding
     private lateinit var selectedCategory: String
+    private var currentSort: String = "default"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,12 +31,12 @@ class SuppliersActivity : AppCompatActivity() {
 
         binding.ivBack.setOnClickListener { finish() }
         binding.layoutFilter.setOnClickListener {
-            Toast.makeText(this, getString(R.string.filter_options_coming_soon), Toast.LENGTH_SHORT)
-                .show()
+            currentSort = "low_min_order"
+            loadSuppliers()
         }
         binding.layoutSort.setOnClickListener {
-            Toast.makeText(this, getString(R.string.sort_options_coming_soon), Toast.LENGTH_SHORT)
-                .show()
+            currentSort = "cheapest"
+            loadSuppliers()
         }
 
         loadSuppliers()
@@ -49,6 +50,8 @@ class SuppliersActivity : AppCompatActivity() {
     private fun loadSuppliers() {
         AppData.loadSuppliers(
             categoryName = selectedCategory,
+            cityFilter = AppData.buyerProfile.city,
+            sort = currentSort,
             onSuccess = { suppliers ->
                 binding.tvResultsCount.text = getString(R.string.suppliers_found_count, suppliers.size)
                 binding.rvSuppliers.adapter = SupplierAdapter(suppliers, selectedCategory)

@@ -4,10 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_light"
-    android:fadeScrollbars="false"
-    android:fillViewport="true"
-    android:scrollbarStyle="insideInset"
-    android:scrollbars="vertical">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,6 +21,16 @@
             android:src="@drawable/ic_arrow_back_24"
             app:tint="@color/text_dark" />
 
+        <ImageView
+            android:layout_width="108dp"
+            android:layout_height="108dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="18dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/mhally_logo" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,13 +38,14 @@
             android:text="@string/supplier_create_account"
             android:textColor="@color/text_dark"
             android:textSize="28sp"
+                android:fontFamily="@font/lama_sans_medium"
             android:textStyle="bold" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/supplier_register_as_supplier"
+            android:text="@string/supplier_register_otp_subtitle"
             android:textColor="@color/text_grey"
             android:textSize="15sp" />
 
@@ -92,7 +100,7 @@
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_edittext"
-            android:hint="@string/value_92_300_1234567"
+            android:hint="@string/phone_number_format_hint"
             android:inputType="phone"
             android:paddingHorizontal="14dp" />
 
@@ -124,59 +132,34 @@
             android:textSize="14sp"
             android:textStyle="bold" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/etCity"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/bg_edittext"
+            android:completionThreshold="1"
             android:hint="@string/supplier_enter_city"
+            android:singleLine="true"
             android:paddingHorizontal="14dp" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="@string/password"
-            android:textColor="@color/text_dark"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/etPassword"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSelectCityFromMap"
+            style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
+            android:layout_height="48dp"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_edittext"
-            android:hint="@string/create_a_password"
-            android:inputType="textPassword"
-            android:paddingHorizontal="14dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:text="@string/confirm_password"
-            android:textColor="@color/text_dark"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/etConfirmPassword"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/bg_edittext"
-            android:hint="@string/supplier_confirm_password"
-            android:inputType="textPassword"
-            android:paddingHorizontal="14dp" />
+            android:text="@string/select_location_from_map"
+            android:textAllCaps="false"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/ic_location_on_24" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCreateAccount"
             android:layout_width="match_parent"
             android:layout_height="56dp"
             android:layout_marginTop="28dp"
-            android:text="@string/supplier_create_supplier_account"
+            android:text="@string/supplier_request_otp"
             android:textAllCaps="false"
             app:cornerRadius="16dp" />
 

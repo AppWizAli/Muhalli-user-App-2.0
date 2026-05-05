@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hiskytechs.muhallinewuserapp.Models.Order
 import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.databinding.ItemOrderBinding
-import java.util.Locale
+import com.hiskytechs.muhallinewuserapp.network.CurrencyFormatter
 
 class OrderAdapter(
     private var orders: List<Order>,
@@ -31,11 +31,7 @@ class OrderAdapter(
             tvStatus.text = localizedStatus(context, order.status)
             tvSupplierName.text = order.supplier
             tvItemsCount.text = context.getString(R.string.products_count_format, order.itemsCount)
-            tvTotalAmount.text = String.format(
-                Locale.getDefault(),
-                context.getString(R.string.currency_amount_format),
-                order.totalAmount
-            )
+            tvTotalAmount.text = CurrencyFormatter.format(order.totalAmount)
 
             // Status styling
             when (order.status.lowercase()) {

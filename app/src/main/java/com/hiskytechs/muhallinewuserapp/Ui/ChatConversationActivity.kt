@@ -17,6 +17,7 @@ class ChatConversationActivity : AppCompatActivity() {
     private lateinit var messageAdapter: ChatMessageAdapter
     private val messages = mutableListOf<ChatMessage>()
     private var supplierName: String = ""
+    private var supplierId: Int = 0
     private var threadId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,6 +26,7 @@ class ChatConversationActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         threadId = intent.getIntExtra(EXTRA_THREAD_ID, 0)
+        supplierId = intent.getIntExtra(EXTRA_SUPPLIER_ID, 0)
         supplierName = intent.getStringExtra(EXTRA_SUPPLIER_NAME).orEmpty()
         val supplierLocation = intent.getStringExtra(EXTRA_SUPPLIER_LOCATION).orEmpty()
 
@@ -66,12 +68,35 @@ class ChatConversationActivity : AppCompatActivity() {
                     it.supplierName.equals(supplierName, ignoreCase = true)
                 }
                 if (match == null) {
-                    Toast.makeText(this, getString(R.string.no_messages_yet), Toast.LENGTH_SHORT).show()
-                    finish()
+                    startNewConversation()
                 } else {
                     threadId = match.threadId
                     loadConversation()
                 }
+            },
+            onError = { message ->
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        )
+    }
+
+    private fun startNewConversation() {
+        if (supplierId <= 0) {
+            Toast.makeText(this, getString(R.string.no_messages_yet), Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        AppData.startChatWithSupplier(
+            supplierId = supplierId,
+            onSuccess = { thread ->
+                threadId = thread.threadId
+                if (supplierName.isBlank()) {
+                    supplierName = thread.supplierName
+                    binding.toolbar.title = supplierName
+                }
+                loadConversation()
             },
             onError = { message ->
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -140,6 +165,7 @@ class ChatConversationActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRA_THREAD_ID = "thread_id"
+        const val EXTRA_SUPPLIER_ID = "supplier_id"
         const val EXTRA_SUPPLIER_NAME = "supplier_name"
         const val EXTRA_SUPPLIER_LOCATION = "supplier_location"
     }

@@ -3,17 +3,17 @@ package com.hiskytechs.muhallinewuserapp.supplier.Utill
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import com.hiskytechs.muhallinewuserapp.R
+import com.hiskytechs.muhallinewuserapp.network.CurrencyFormatter
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierOrderStatus
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierStockState
-import java.text.NumberFormat
 import java.util.Locale
 
 fun formatPkr(amount: Int): String {
-    return "PKR ${NumberFormat.getNumberInstance(Locale.getDefault()).format(amount)}"
+    return CurrencyFormatter.format(amount)
 }
 
 fun formatPositivePkr(amount: Int): String {
-    return "+ PKR ${NumberFormat.getNumberInstance(Locale.getDefault()).format(amount)}"
+    return CurrencyFormatter.formatPositive(amount)
 }
 
 fun initials(value: String): String {

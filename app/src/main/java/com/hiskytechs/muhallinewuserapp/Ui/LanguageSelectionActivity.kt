@@ -40,23 +40,25 @@ class LanguageSelectionActivity : AppCompatActivity() {
     }
 
     private fun renderSelection() {
-        val selectedBackground = ContextCompat.getColor(this, R.color.status_transit_bg)
         val unselectedBackground = ContextCompat.getColor(this, R.color.white)
-        val selectedStroke = ContextCompat.getColor(this, R.color.primary)
         val unselectedStroke = ContextCompat.getColor(this, R.color.divider)
+        val englishSelectedBackground = ContextCompat.getColor(this, R.color.status_transit_bg)
+        val englishSelectedStroke = ContextCompat.getColor(this, R.color.primary)
+        val arabicSelectedBackground = ContextCompat.getColor(this, R.color.status_delivered_bg)
+        val arabicSelectedStroke = ContextCompat.getColor(this, R.color.status_delivered_text)
 
         val englishSelected = selectedLanguageTag == LocaleManager.LANGUAGE_ENGLISH
         binding.cardEnglish.setCardBackgroundColor(
-            if (englishSelected) selectedBackground else unselectedBackground
+            if (englishSelected) englishSelectedBackground else unselectedBackground
         )
-        binding.cardEnglish.strokeColor = if (englishSelected) selectedStroke else unselectedStroke
-        binding.ivEnglishCheck.alpha = if (englishSelected) 1f else 0f
+        binding.cardEnglish.strokeColor = if (englishSelected) englishSelectedStroke else unselectedStroke
+        binding.ivEnglishCheck.alpha = if (englishSelected) 1f else 0.18f
 
         val arabicSelected = selectedLanguageTag == LocaleManager.LANGUAGE_ARABIC_SUDAN
         binding.cardArabicSudan.setCardBackgroundColor(
-            if (arabicSelected) selectedBackground else unselectedBackground
+            if (arabicSelected) arabicSelectedBackground else unselectedBackground
         )
-        binding.cardArabicSudan.strokeColor = if (arabicSelected) selectedStroke else unselectedStroke
-        binding.ivArabicCheck.alpha = if (arabicSelected) 1f else 0f
+        binding.cardArabicSudan.strokeColor = if (arabicSelected) arabicSelectedStroke else unselectedStroke
+        binding.ivArabicCheck.alpha = if (arabicSelected) 1f else 0.18f
     }
 }

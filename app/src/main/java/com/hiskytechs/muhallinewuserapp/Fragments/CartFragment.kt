@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hiskytechs.muhallinewuserapp.Adapters.CartAdapter
@@ -16,7 +15,9 @@ import com.hiskytechs.muhallinewuserapp.Ui.CheckoutAddressActivity
 import com.hiskytechs.muhallinewuserapp.Utill.CartManager
 import com.hiskytechs.muhallinewuserapp.Utill.SupplierCart
 import com.hiskytechs.muhallinewuserapp.databinding.FragmentCartBinding
+import com.hiskytechs.muhallinewuserapp.network.CurrencyFormatter
 import java.util.Locale
+import kotlin.math.roundToInt
 
 class CartFragment : Fragment() {
 
@@ -135,89 +136,53 @@ class CartFragment : Fragment() {
         binding.rvSuppliers.visibility = if (hasSuppliers) View.VISIBLE else View.GONE
 
         if (selectedCart == null) {
-            binding.tvOrderProgressSubtitle.text = getString(R.string.complete_minimum_order_requirements)
             binding.tvItemCountBadge.text = getString(R.string.items_count_format, 0)
             binding.tvSubtotal.text = formatCurrency(0.0)
             binding.tvShipping.text = formatCurrency(0.0)
             binding.tvTotal.text = formatCurrency(0.0)
-            binding.tvAmountProgress.text = getString(R.string.cart_progress_amount_format, 0.0, 0.0)
-            binding.tvQuantityProgress.text = getString(R.string.cart_quantity_progress_format, 0, 0)
-            binding.tvAmountRemaining.text = getString(R.string.cart_empty_message)
-            binding.tvQuantityRemaining.text = getString(R.string.cart_empty_message)
-            binding.tvAmountRemaining.setTextColor(
-                ContextCompat.getColor(requireContext(), R.color.status_processing_text)
-            )
-            binding.tvQuantityRemaining.setTextColor(
-                ContextCompat.getColor(requireContext(), R.color.status_processing_text)
-            )
-            binding.pbAmount.progress = 0
-            binding.pbQuantity.progress = 0
+            binding.minimumProgressGroup.visibility = View.GONE
+            binding.pbMinimumAmount.progress = 0
             binding.btnCheckout.isEnabled = false
             binding.btnCheckout.alpha = 0.6f
             return
         }
 
-        binding.tvOrderProgressSubtitle.text = selectedCart.supplierName
+        updateMinimumProgress(selectedCart)
         binding.tvItemCountBadge.text = getString(
             R.string.items_count_format,
-            selectedCart.lineItemCount
+            selectedCart.totalQuantity
         )
         binding.tvSubtotal.text = formatCurrency(selectedCart.subtotal)
         binding.tvShipping.text = formatCurrency(selectedCart.shipping)
         binding.tvTotal.text = formatCurrency(selectedCart.total)
-        binding.tvAmountProgress.text = getString(
-            R.string.cart_progress_amount_format,
-            selectedCart.subtotal,
-            selectedCart.minimumAmount
-        )
-        binding.tvQuantityProgress.text = getString(
-            R.string.cart_quantity_progress_format,
-            selectedCart.totalQuantity,
-            selectedCart.minimumQuantity
-        )
-        binding.tvAmountRemaining.text = if (selectedCart.remainingAmount > 0.0) {
-            getString(R.string.cart_add_more_amount_format, selectedCart.remainingAmount)
-        } else {
-            getString(R.string.minimum_amount_reached)
-        }
-        binding.tvQuantityRemaining.text = if (selectedCart.remainingQuantity > 0) {
-            getString(R.string.cart_add_more_quantity_format, selectedCart.remainingQuantity)
-        } else {
-            getString(R.string.minimum_quantity_reached)
-        }
-
-        val statusColor = ContextCompat.getColor(
-            requireContext(),
-            if (selectedCart.isMinimumMet) R.color.status_delivered_text else R.color.status_processing_text
-        )
-        binding.tvAmountRemaining.setTextColor(statusColor)
-        binding.tvQuantityRemaining.setTextColor(statusColor)
-
-        binding.pbAmount.progress = calculateProgress(
-            currentValue = selectedCart.subtotal,
-            minimumValue = selectedCart.minimumAmount
-        )
-        binding.pbQuantity.progress = calculateProgress(
-            currentValue = selectedCart.totalQuantity.toDouble(),
-            minimumValue = selectedCart.minimumQuantity.toDouble()
-        )
         binding.btnCheckout.isEnabled = selectedCart.isMinimumMet
         binding.btnCheckout.alpha = if (selectedCart.isMinimumMet) 1f else 0.6f
     }
 
-    private fun calculateProgress(currentValue: Double, minimumValue: Double): Int {
-        if (minimumValue <= 0.0) {
-            return if (currentValue > 0.0) 100 else 0
+    private fun updateMinimumProgress(selectedCart: SupplierCart) {
+        if (selectedCart.minimumAmount <= 0.0) {
+            binding.minimumProgressGroup.visibility = View.GONE
+            binding.pbMinimumAmount.progress = 100
+            return
         }
-        return ((currentValue / minimumValue) * 100).toInt().coerceIn(0, 100)
+
+        binding.minimumProgressGroup.visibility = View.VISIBLE
+        val rawProgress = ((selectedCart.subtotal / selectedCart.minimumAmount) * 100)
+        val progress = if (rawProgress.isFinite()) {
+            rawProgress.coerceIn(0.0, 100.0).roundToInt()
+        } else {
+            0
+        }
+        binding.pbMinimumAmount.progress = progress
+        binding.tvMinimumProgress.text = getString(
+            R.string.cart_minimum_progress_format,
+            formatCurrency(selectedCart.subtotal),
+            formatCurrency(selectedCart.minimumAmount)
+        )
     }
 
     private fun formatCurrency(amount: Double): String {
-        return String.format(
-            Locale.getDefault(),
-            getString(R.string.currency_amount_format),
-            amount
-        )
+        return CurrencyFormatter.format(amount)
     }
 
     override fun onDestroyView() {

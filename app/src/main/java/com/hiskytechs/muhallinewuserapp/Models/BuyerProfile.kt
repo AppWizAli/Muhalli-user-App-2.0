@@ -6,5 +6,8 @@ data class BuyerProfile(
     var email: String,
     var phoneNumber: String,
     var city: String,
-    var memberSince: String
+    var memberSince: String,
+    var address: String = "",
+    var latitude: Double? = null,
+    var longitude: Double? = null
 )

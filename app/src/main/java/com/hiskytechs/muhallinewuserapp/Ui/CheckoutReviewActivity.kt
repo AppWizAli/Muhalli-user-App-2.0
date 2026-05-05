@@ -9,17 +9,20 @@ import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Utill.AddressManager
 import com.hiskytechs.muhallinewuserapp.Utill.CartManager
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityCheckoutReviewBinding
+import com.hiskytechs.muhallinewuserapp.network.CurrencyFormatter
 import java.util.Locale
 
 class CheckoutReviewActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCheckoutReviewBinding
+    private lateinit var loadingDialog: AppLoadingDialog
     private var supplierName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCheckoutReviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        loadingDialog = AppLoadingDialog(this)
 
         val address = AddressManager.getAddress()
         if (address == null) {
@@ -45,10 +48,13 @@ class CheckoutReviewActivity : AppCompatActivity() {
             )
         }
         binding.btnPlaceOrder.setOnClickListener {
+            binding.btnPlaceOrder.isEnabled = false
+            loadingDialog.show(R.string.loading_placing_order)
             AppData.createOrder(
                 items = supplierCart.items,
                 totalAmount = supplierCart.total,
                 onSuccess = { createdOrder ->
+                    loadingDialog.dismiss()
                     CartManager.clearSupplierCart(supplierName)
                     val intent = Intent(this, OrderSuccessActivity::class.java).apply {
                         putExtra(OrderSuccessActivity.EXTRA_ORDER_ID, createdOrder.orderId)
@@ -58,6 +64,8 @@ class CheckoutReviewActivity : AppCompatActivity() {
                     finish()
                 },
                 onError = { message ->
+                    binding.btnPlaceOrder.isEnabled = true
+                    loadingDialog.dismiss()
                     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 }
             )
@@ -70,20 +78,13 @@ class CheckoutReviewActivity : AppCompatActivity() {
         binding.tvSupplierValue.text = supplierCart.supplierName
 
         binding.tvItemsValue.text = getString(R.string.items_count_format, supplierCart.totalQuantity)
-        binding.tvSubtotalValue.text = String.format(
-            Locale.getDefault(),
-            getString(R.string.currency_amount_format),
-            supplierCart.subtotal
-        )
-        binding.tvShippingValue.text = String.format(
-            Locale.getDefault(),
-            getString(R.string.currency_amount_format),
-            supplierCart.shipping
-        )
-        binding.tvTotalValue.text = String.format(
-            Locale.getDefault(),
-            getString(R.string.currency_amount_format),
-            supplierCart.total
-        )
+        binding.tvSubtotalValue.text = CurrencyFormatter.format(supplierCart.subtotal)
+        binding.tvShippingValue.text = CurrencyFormatter.format(supplierCart.shipping)
+        binding.tvTotalValue.text = CurrencyFormatter.format(supplierCart.total)
+    }
+
+    override fun onDestroy() {
+        loadingDialog.dismiss()
+        super.onDestroy()
     }
 }

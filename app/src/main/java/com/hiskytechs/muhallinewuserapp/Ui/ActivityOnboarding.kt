@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.hiskytechs.muhallinewuserapp.Adapters.OnboardingAdapter
-import com.hiskytechs.muhallinewuserapp.MainActivity
 import com.hiskytechs.muhallinewuserapp.Models.OnboardingItem
 import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityOnboardingBinding
@@ -27,6 +26,7 @@ class ActivityOnboarding : AppCompatActivity() {
         setupOnboardingItems()
         setupIndicators()
         setCurrentIndicator(0)
+        updateButtonText(0)
 
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -120,16 +120,14 @@ class ActivityOnboarding : AppCompatActivity() {
         if (position == onboardingAdapter.itemCount - 1) {
             binding.btnNext.text = getString(R.string.get_started)
             binding.tvSkip.visibility = android.view.View.GONE
-            binding.layoutBottomText.visibility = android.view.View.VISIBLE
         } else {
             binding.btnNext.text = getString(R.string.next)
             binding.tvSkip.visibility = android.view.View.VISIBLE
-            binding.layoutBottomText.visibility = android.view.View.GONE
         }
     }
 
     private fun navigateToMain() {
-        startActivity(Intent(this, MainActivity::class.java))
+        startActivity(Intent(this, LoginActivity::class.java))
         finish()
     }
 }

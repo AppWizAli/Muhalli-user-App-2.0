@@ -26,6 +26,7 @@
             android:text="@string/all_categories"
             android:textColor="#1A1C1E"
             android:textSize="20sp"
+                android:fontFamily="@font/lama_sans_medium"
             android:textStyle="bold" />
     </RelativeLayout>
 

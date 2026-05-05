@@ -35,6 +35,7 @@
                 android:text="@string/review_order"
                 android:textColor="@color/text_dark"
                 android:textSize="20sp"
+                android:fontFamily="@font/lama_sans_medium"
                 android:textStyle="bold" />
         </RelativeLayout>
 
@@ -280,6 +281,7 @@
                             android:text="@string/value_145_00"
                             android:textColor="@color/primary"
                             android:textSize="18sp"
+                android:fontFamily="@font/lama_sans_medium"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </LinearLayout>

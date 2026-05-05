@@ -15,7 +15,7 @@ import com.hiskytechs.muhallinewuserapp.Models.Order
 import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Utill.AddressManager
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityOrderDetailsBinding
-import java.util.Locale
+import com.hiskytechs.muhallinewuserapp.network.CurrencyFormatter
 
 class OrderDetailsActivity : AppCompatActivity() {
 
@@ -68,6 +68,7 @@ class OrderDetailsActivity : AppCompatActivity() {
             val targetIntent = if (supplier != null) {
                 Intent(this, ChatConversationActivity::class.java).apply {
                     putExtra(ChatConversationActivity.EXTRA_THREAD_ID, thread?.threadId ?: 0)
+                    putExtra(ChatConversationActivity.EXTRA_SUPPLIER_ID, supplier.id)
                     putExtra(ChatConversationActivity.EXTRA_SUPPLIER_NAME, supplier.name)
                     putExtra(ChatConversationActivity.EXTRA_SUPPLIER_LOCATION, supplier.location)
                 }
@@ -92,11 +93,7 @@ class OrderDetailsActivity : AppCompatActivity() {
         binding.tvSupplierLocation.text = supplier?.location ?: getString(R.string.wholesale_supplier)
         binding.tvOrderId.text = order.orderId
         binding.tvOrderDate.text = order.date
-        binding.tvTotal.text = String.format(
-            Locale.getDefault(),
-            getString(R.string.currency_amount_format),
-            order.totalAmount
-        )
+        binding.tvTotal.text = CurrencyFormatter.format(order.totalAmount)
         binding.tvItems.text = getString(R.string.items_count_format, order.itemsCount)
         binding.tvEstimatedDate.text = statusUi.estimatedDeliveryText
         binding.tvOrderStatusBadge.text = statusUi.badgeText
@@ -126,7 +123,11 @@ class OrderDetailsActivity : AppCompatActivity() {
             stepNumber = 1,
             currentStep = statusUi.currentStep,
             title = getString(R.string.order_placed),
-            subtitle = getString(R.string.your_order_has_been_confirmed),
+            subtitle = if (order.status.equals("pending", ignoreCase = true)) {
+                getString(R.string.waiting_for_supplier_confirmation)
+            } else {
+                getString(R.string.your_order_has_been_confirmed)
+            },
             meta = getString(R.string.order_meta_format, order.date, getString(R.string.order_time_placed)),
             currentColorRes = statusUi.currentColorRes,
             currentBackgroundRes = statusUi.currentBackgroundRes,
@@ -320,9 +321,9 @@ class OrderDetailsActivity : AppCompatActivity() {
                 badgeText = getString(R.string.pending),
                 badgeBackgroundRes = R.drawable.bg_status_processing,
                 badgeTextColorRes = R.color.status_processing_text,
-                estimatedDeliveryText = order.deliveryDate ?: getString(R.string.preparing_for_dispatch),
-                trackingSummary = getString(R.string.your_order_has_been_confirmed),
-                currentStep = 2,
+                estimatedDeliveryText = order.deliveryDate ?: getString(R.string.waiting_for_supplier_confirmation),
+                trackingSummary = getString(R.string.waiting_for_supplier_confirmation),
+                currentStep = 1,
                 currentColorRes = R.color.status_processing_text,
                 currentBackgroundRes = R.drawable.bg_tracking_processing
             )

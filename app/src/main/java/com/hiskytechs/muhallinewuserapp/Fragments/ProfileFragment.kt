@@ -13,6 +13,8 @@ import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Ui.AboutAppActivity
 import com.hiskytechs.muhallinewuserapp.Ui.AccountDetailsActivity
 import com.hiskytechs.muhallinewuserapp.Ui.CheckoutAddressActivity
+import com.hiskytechs.muhallinewuserapp.Ui.ReferralActivity
+import com.hiskytechs.muhallinewuserapp.Utill.LogoutManager
 import com.hiskytechs.muhallinewuserapp.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {
@@ -53,10 +55,10 @@ class ProfileFragment : Fragment() {
     }
 
     private fun bindProfile(profile: com.hiskytechs.muhallinewuserapp.Models.BuyerProfile) {
-        binding.tvStoreName.text = profile.storeName
+        binding.tvStoreName.text = profile.buyerName.ifBlank { profile.storeName }
         binding.tvBuyerMeta.text = getString(
             R.string.profile_member_since_format,
-            profile.buyerName,
+            profile.city.ifBlank { profile.buyerName },
             profile.memberSince
         )
         binding.tvPhone.text = profile.phoneNumber
@@ -69,6 +71,9 @@ class ProfileFragment : Fragment() {
         }
         binding.rowAccountDetails.setOnClickListener {
             startActivity(Intent(requireContext(), AccountDetailsActivity::class.java))
+        }
+        binding.rowReferrals.setOnClickListener {
+            startActivity(Intent(requireContext(), ReferralActivity::class.java))
         }
         binding.rowSavedAddresses.setOnClickListener {
             startActivity(Intent(requireContext(), CheckoutAddressActivity::class.java).apply {
@@ -85,13 +90,16 @@ class ProfileFragment : Fragment() {
             (activity as? MainActivity)?.navigateToTab(R.id.nav_orders)
         }
         binding.btnLogout.setOnClickListener {
+            LogoutManager.clearAll(requireContext())
             startActivity(
                 Intent().setClassName(
                     requireContext(),
                     "com.hiskytechs.muhallinewuserapp.Ui.LoginActivity"
-                )
+                ).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                }
             )
-            activity?.finish()
+            activity?.finishAffinity()
         }
     }
 

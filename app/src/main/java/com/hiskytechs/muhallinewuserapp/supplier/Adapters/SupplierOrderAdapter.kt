@@ -3,6 +3,7 @@ package com.hiskytechs.muhallinewuserapp.supplier.Adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hiskytechs.muhallinewuserapp.databinding.ItemSupplierOrderBinding
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierOrder
@@ -52,7 +53,17 @@ class SupplierOrderAdapter(
     override fun getItemCount(): Int = items.size
 
     fun updateItems(newItems: List<SupplierOrder>) {
+        val previous = items
         items = newItems
-        notifyDataSetChanged()
+        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = previous.size
+            override fun getNewListSize(): Int = newItems.size
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return previous[oldItemPosition].backendId == newItems[newItemPosition].backendId
+            }
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return previous[oldItemPosition] == newItems[newItemPosition]
+            }
+        }).dispatchUpdatesTo(this)
     }
 }

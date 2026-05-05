@@ -9,6 +9,7 @@ data class Supplier(
     val minimumAmount: Double,
     val minimumQuantity: Int,
     val categories: List<String>,
+    val lowestPrice: Double = 0.0,
     val isVerified: Boolean = true,
     val headerColor: String = "#EAF2FF",
     val email: String = "",

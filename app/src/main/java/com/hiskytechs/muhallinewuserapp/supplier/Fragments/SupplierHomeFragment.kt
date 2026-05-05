@@ -25,6 +25,9 @@ class SupplierHomeFragment : Fragment() {
 
     private var _binding: FragmentSupplierHomeBinding? = null
     private val binding get() = _binding!!
+    private var hasStartedRefresh = false
+    private var skippedInitialResume = false
+    private lateinit var recentOrderAdapter: SupplierRecentOrderAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,15 +40,24 @@ class SupplierHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadHome()
+        bindStaticHomeActions()
+        if (SupplierData.restoreCachedDashboard()) {
+            bindHome()
+        }
+        refreshHome()
     }
 
     override fun onResume() {
         super.onResume()
-        loadHome()
+        if (!skippedInitialResume) {
+            skippedInitialResume = true
+            return
+        }
+        refreshHome(showErrors = false)
     }
 
-    private fun loadHome() {
+    private fun refreshHome(showErrors: Boolean = true) {
+        hasStartedRefresh = true
         SupplierData.refreshDashboard(
             onSuccess = {
                 if (_binding == null) return@refreshDashboard
@@ -53,7 +65,9 @@ class SupplierHomeFragment : Fragment() {
             },
             onError = { message ->
                 if (_binding == null) return@refreshDashboard
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                if (showErrors && !SupplierData.hasCachedDashboard()) {
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         )
     }
@@ -69,12 +83,20 @@ class SupplierHomeFragment : Fragment() {
         binding.tvProductsValue.text = stats.totalProducts.toString()
         binding.tvLowStockMessage.text = SupplierData.getLowStockAlert()
         binding.tvNotificationBadge.text = SupplierData.getConversations().sumOf { it.unreadCount }.toString()
+        recentOrderAdapter.updateItems(SupplierData.getRecentOrders())
+    }
+
+    private fun bindStaticHomeActions() {
+        binding.btnHomeAddProduct.setOnClickListener {
+            startActivity(Intent(requireContext(), SupplierAddProductActivity::class.java))
+        }
 
         binding.rvQuickActions.layoutManager = LinearLayoutManager(
             requireContext(),
             LinearLayoutManager.HORIZONTAL,
             false
         )
+        binding.rvQuickActions.setHasFixedSize(true)
         binding.rvQuickActions.adapter = SupplierQuickActionAdapter(SupplierData.getQuickActions()) { action ->
             when (action.action) {
                 SupplierHomeAction.ADD_PRODUCT -> startActivity(Intent(requireContext(), SupplierAddProductActivity::class.java))
@@ -85,9 +107,11 @@ class SupplierHomeFragment : Fragment() {
         }
 
         binding.rvRecentOrders.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvRecentOrders.adapter = SupplierRecentOrderAdapter(SupplierData.getRecentOrders()) {
+        binding.rvRecentOrders.setHasFixedSize(true)
+        recentOrderAdapter = SupplierRecentOrderAdapter(emptyList()) {
             SupplierOrderStatusActivity.open(requireContext(), it.id)
         }
+        binding.rvRecentOrders.adapter = recentOrderAdapter
 
         binding.tvViewAllOrders.setOnClickListener {
             (activity as? SupplierMainActivity)?.openTab(R.id.nav_supplier_orders)

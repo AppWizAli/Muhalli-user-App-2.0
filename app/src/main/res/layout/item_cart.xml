@@ -70,6 +70,19 @@
             app:layout_constraintStart_toStartOf="@id/tvProductName"
             app:layout_constraintTop_toBottomOf="@id/tvSupplier" />
 
+        <TextView
+            android:id="@+id/tvOfferSplit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="@string/hybrid_price_example"
+            android:textColor="@color/text_grey"
+            android:textSize="11sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@id/tvProductName"
+            app:layout_constraintStart_toStartOf="@id/tvProductName"
+            app:layout_constraintTop_toBottomOf="@id/tvPrice" />
+
         <ImageView
             android:id="@+id/ivDelete"
             android:layout_width="24dp"
@@ -90,7 +103,7 @@
             android:padding="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/tvProductName"
-            app:layout_constraintTop_toBottomOf="@id/tvPrice">
+            app:layout_constraintTop_toBottomOf="@id/tvOfferSplit">
 
             <ImageView
                 android:id="@+id/ivMinus"

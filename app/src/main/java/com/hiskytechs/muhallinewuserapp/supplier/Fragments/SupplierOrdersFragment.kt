@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hiskytechs.muhallinewuserapp.R
+import com.hiskytechs.muhallinewuserapp.Ui.AppLoadingDialog
 import com.hiskytechs.muhallinewuserapp.databinding.FragmentSupplierOrdersBinding
 import com.hiskytechs.muhallinewuserapp.supplier.Adapters.SupplierOrderAdapter
 import com.hiskytechs.muhallinewuserapp.supplier.Data.SupplierData
@@ -20,8 +22,11 @@ class SupplierOrdersFragment : Fragment() {
 
     private var _binding: FragmentSupplierOrdersBinding? = null
     private val binding get() = _binding!!
+    private var loadingDialog: AppLoadingDialog? = null
     private lateinit var orderAdapter: SupplierOrderAdapter
     private var currentFilter: SupplierOrderStatus? = null
+    private var didInitialRefresh = false
+    private var skippedInitialResume = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,10 +39,12 @@ class SupplierOrdersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loadingDialog = (activity as? AppCompatActivity)?.let(::AppLoadingDialog)
         orderAdapter = SupplierOrderAdapter(emptyList()) { order ->
             SupplierOrderStatusActivity.open(requireContext(), order.id)
         }
         binding.rvOrders.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvOrders.setHasFixedSize(true)
         binding.rvOrders.adapter = orderAdapter
 
         val chips = listOf(
@@ -75,25 +82,41 @@ class SupplierOrdersFragment : Fragment() {
         }
 
         updateChipState(chips, binding.chipOrdersAll)
-        refreshOrders()
+        if (SupplierData.restoreCachedOrders()) {
+            didInitialRefresh = true
+            loadOrders()
+        }
+        refreshOrders(showBlockingLoader = !didInitialRefresh)
     }
 
     override fun onResume() {
         super.onResume()
-        if (_binding != null) {
-            refreshOrders()
+        if (!skippedInitialResume) {
+            skippedInitialResume = true
+            return
+        }
+        if (_binding != null && didInitialRefresh) {
+            refreshOrders(showBlockingLoader = false)
         }
     }
 
-    private fun refreshOrders() {
+    private fun refreshOrders(showBlockingLoader: Boolean = true) {
+        if (showBlockingLoader) {
+            loadingDialog?.show(R.string.loading_orders)
+        }
         SupplierData.refreshOrders(
             onSuccess = {
                 if (_binding == null) return@refreshOrders
+                loadingDialog?.dismiss()
+                didInitialRefresh = true
                 loadOrders()
             },
             onError = { message ->
                 if (_binding == null) return@refreshOrders
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                loadingDialog?.dismiss()
+                if (!didInitialRefresh) {
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                }
             }
         )
     }
@@ -119,6 +142,8 @@ class SupplierOrdersFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        loadingDialog?.dismiss()
+        loadingDialog = null
         _binding = null
     }
 }

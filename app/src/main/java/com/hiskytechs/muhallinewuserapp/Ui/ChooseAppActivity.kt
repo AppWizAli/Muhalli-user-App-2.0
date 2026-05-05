@@ -4,6 +4,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityChooseAppBinding
+import com.hiskytechs.muhallinewuserapp.network.AppSession
+import com.hiskytechs.muhallinewuserapp.supplier.Ui.SupplierMainActivity
 import com.hiskytechs.muhallinewuserapp.supplier.Ui.ActivitySupplierOnboarding
 
 class ChooseAppActivity : AppCompatActivity() {
@@ -22,10 +24,18 @@ class ChooseAppActivity : AppCompatActivity() {
     }
 
     private fun openBuyerApp() {
-        startActivity(Intent(this, ActivityOnboarding::class.java))
+        val destination = when {
+            AppSession.hasBuyerSession() -> Intent(this, com.hiskytechs.muhallinewuserapp.MainActivity::class.java)
+            else -> Intent(this, ActivityOnboarding::class.java)
+        }
+        startActivity(destination)
     }
 
     private fun openSupplierApp() {
-        startActivity(Intent(this, ActivitySupplierOnboarding::class.java))
+        val destination = when {
+            AppSession.hasSupplierSession() -> Intent(this, SupplierMainActivity::class.java)
+            else -> Intent(this, ActivitySupplierOnboarding::class.java)
+        }
+        startActivity(destination)
     }
 }

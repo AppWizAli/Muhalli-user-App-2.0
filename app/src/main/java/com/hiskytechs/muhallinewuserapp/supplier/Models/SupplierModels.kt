@@ -22,6 +22,7 @@ data class SupplierCatalogProduct(
     val name: String,
     val unitLabel: String,
     val packaging: String,
+    val imageUrl: String,
     @ColorRes val accentColorRes: Int
 )
 
@@ -31,12 +32,22 @@ data class SupplierProduct(
     val name: String,
     val categoryName: String,
     val unitLabel: String,
+    val imageUrl: String,
     var pricePkr: Int,
     var stock: Int,
     var deliveryDays: String,
     var isActive: Boolean,
+    var isOnOffer: Boolean = false,
+    var offerPricePkr: Int = 0,
+    var maximumOfferQuantity: Int = 0,
     @ColorRes val accentColorRes: Int
 ) {
+    val hasActiveOffer: Boolean
+        get() = isOnOffer && offerPricePkr > 0 && offerPricePkr < pricePkr
+
+    val displayPricePkr: Int
+        get() = if (hasActiveOffer) offerPricePkr else pricePkr
+
     val stockState: SupplierStockState
         get() = when {
             stock <= 0 -> SupplierStockState.OUT_OF_STOCK
@@ -55,7 +66,8 @@ enum class SupplierProductFilter {
     ALL,
     ACTIVE,
     INACTIVE,
-    LOW_STOCK
+    LOW_STOCK,
+    OFFERS
 }
 
 enum class SupplierOrderStatus(val label: String) {
@@ -124,7 +136,9 @@ data class SupplierProfile(
     var paymentTerms: String = "",
     var description: String = "",
     var businessLicenseNumber: String = "",
-    var status: String = ""
+    var status: String = "",
+    var latitude: Double? = null,
+    var longitude: Double? = null
 )
 
 enum class SupplierProfileAction {

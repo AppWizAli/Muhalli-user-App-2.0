@@ -1,11 +1,15 @@
 package com.hiskytechs.muhallinewuserapp.supplier.Adapters
 
+import android.graphics.Paint
 import android.content.res.ColorStateList
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.hiskytechs.muhallinewuserapp.R
+import com.hiskytechs.muhallinewuserapp.Ui.loadMarketplaceImage
 import com.hiskytechs.muhallinewuserapp.databinding.ItemSupplierCatalogProductBinding
 import com.hiskytechs.muhallinewuserapp.databinding.ItemSupplierCategoryBinding
 import com.hiskytechs.muhallinewuserapp.databinding.ItemSupplierInventoryBinding
@@ -22,6 +26,7 @@ import com.hiskytechs.muhallinewuserapp.supplier.Utill.stockTextColor
 class SupplierStoreProductAdapter(
     private var items: List<SupplierProduct>,
     private val onEdit: (SupplierProduct) -> Unit,
+    private val onOffer: (SupplierProduct) -> Unit,
     private val onToggle: (SupplierProduct, Boolean) -> Unit
 ) : RecyclerView.Adapter<SupplierStoreProductAdapter.SupplierStoreProductViewHolder>() {
 
@@ -32,11 +37,39 @@ class SupplierStoreProductAdapter(
         fun bind(item: SupplierProduct) {
             val context = binding.root.context
             binding.tvThumbInitial.text = initials(item.name)
+            binding.ivProductImage.loadMarketplaceImage(item.imageUrl)
+            binding.tvThumbInitial.alpha = if (item.imageUrl.isBlank()) 1f else 0f
             binding.tvThumbInitial.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(context, item.accentColorRes)
             )
             binding.tvProductName.text = item.name
-            binding.tvPrice.text = context.getString(R.string.supplier_price_format, item.pricePkr, item.unitLabel)
+            binding.tvPrice.text = context.getString(
+                R.string.supplier_price_format,
+                formatPkr(item.displayPricePkr),
+                item.unitLabel
+            )
+            binding.tvOriginalPrice.visibility = if (item.hasActiveOffer) View.VISIBLE else View.GONE
+            binding.tvOfferLimit.visibility = if (item.hasActiveOffer && item.maximumOfferQuantity > 0) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+            if (item.hasActiveOffer) {
+                binding.tvOriginalPrice.text = context.getString(
+                    R.string.supplier_price_format,
+                    formatPkr(item.pricePkr),
+                    item.unitLabel
+                )
+                binding.tvOriginalPrice.paintFlags =
+                    binding.tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                binding.tvOfferLimit.text = context.getString(
+                    R.string.offer_limit_format,
+                    item.maximumOfferQuantity
+                )
+            } else {
+                binding.tvOriginalPrice.paintFlags =
+                    binding.tvOriginalPrice.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            }
             binding.tvStockState.text = when (item.stockState.name) {
                 "IN_STOCK" -> context.getString(R.string.supplier_in_stock)
                 "LOW_STOCK" -> context.getString(R.string.supplier_low_stock)
@@ -54,6 +87,12 @@ class SupplierStoreProductAdapter(
                 onToggle(item, checked)
             }
             binding.ivEdit.setOnClickListener { onEdit(item) }
+            binding.btnAddOffer.text = if (item.isOnOffer) {
+                context.getString(R.string.supplier_on_offer)
+            } else {
+                context.getString(R.string.supplier_add_to_offers)
+            }
+            binding.btnAddOffer.setOnClickListener { onOffer(item) }
         }
     }
 
@@ -73,8 +112,18 @@ class SupplierStoreProductAdapter(
     override fun getItemCount(): Int = items.size
 
     fun updateItems(newItems: List<SupplierProduct>) {
+        val previous = items
         items = newItems
-        notifyDataSetChanged()
+        DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize(): Int = previous.size
+            override fun getNewListSize(): Int = newItems.size
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return previous[oldItemPosition].id == newItems[newItemPosition].id
+            }
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+                return previous[oldItemPosition] == newItems[newItemPosition]
+            }
+        }).dispatchUpdatesTo(this)
     }
 }
 
@@ -150,6 +199,8 @@ class SupplierCatalogProductAdapter(
             val context = binding.root.context
             val selected = item.id == selectedProductId
             binding.tvProductInitial.text = initials(item.name)
+            binding.ivProductImage.loadMarketplaceImage(item.imageUrl)
+            binding.tvProductInitial.alpha = if (item.imageUrl.isBlank()) 1f else 0f
             binding.tvProductInitial.backgroundTintList = ColorStateList.valueOf(
                 ContextCompat.getColor(context, item.accentColorRes)
             )

@@ -18,6 +18,7 @@
             android:text="@string/profile"
             android:textColor="@color/text_dark"
             android:textSize="24sp"
+                android:fontFamily="@font/lama_sans_medium"
             android:textStyle="bold" />
 
         <LinearLayout
@@ -63,6 +64,7 @@
                         android:text="@string/my_retail_store"
                         android:textColor="@color/white"
                         android:textSize="24sp"
+                android:fontFamily="@font/lama_sans_medium"
                         android:textStyle="bold" />
 
                     <TextView
@@ -347,6 +349,47 @@
                         android:layout_marginStart="14dp"
                         android:layout_weight="1"
                         android:text="@string/account_details"
+                        android:textColor="@color/text_dark"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_chevron_right_24"
+                        app:tint="@color/text_grey" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/divider" />
+
+                <LinearLayout
+                    android:id="@+id/rowReferrals"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_person_24"
+                        app:tint="@color/status_delivered_text" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:text="@string/referrals"
                         android:textColor="@color/text_dark"
                         android:textSize="15sp"
                         android:textStyle="bold" />

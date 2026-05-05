@@ -30,6 +30,7 @@
             android:text="@string/order_success"
             android:textColor="@color/text_dark"
             android:textSize="20sp"
+                android:fontFamily="@font/lama_sans_medium"
             android:textStyle="bold" />
     </RelativeLayout>
 
@@ -76,6 +77,7 @@
                     android:text="@string/order_placed_successfully"
                     android:textColor="@color/text_dark"
                     android:textSize="24sp"
+                android:fontFamily="@font/lama_sans_medium"
                     android:textStyle="bold" />
 
                 <TextView
@@ -103,6 +105,7 @@
                     android:text="@string/ord_13000"
                     android:textColor="@color/primary"
                     android:textSize="18sp"
+                android:fontFamily="@font/lama_sans_medium"
                     android:textStyle="bold" />
 
                 <com.google.android.material.button.MaterialButton
