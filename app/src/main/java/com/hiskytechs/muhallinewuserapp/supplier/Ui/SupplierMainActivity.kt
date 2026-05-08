@@ -9,14 +9,14 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.messaging.FirebaseMessaging
 import com.hiskytechs.muhallinewuserapp.Data.AppData
 import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.databinding.ActivitySupplierMainBinding
-import com.hiskytechs.muhallinewuserapp.network.BackgroundWork
 import com.hiskytechs.muhallinewuserapp.notifications.AppNotificationHelper
-import com.hiskytechs.muhallinewuserapp.supplier.Data.SupplierData
 import com.hiskytechs.muhallinewuserapp.supplier.Fragments.SupplierEarningsFragment
 import com.hiskytechs.muhallinewuserapp.supplier.Fragments.SupplierHomeFragment
 import com.hiskytechs.muhallinewuserapp.supplier.Fragments.SupplierOrdersFragment
@@ -28,6 +28,7 @@ class SupplierMainActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySupplierMainBinding
     private val tabFragments = linkedMapOf<Int, Fragment>()
     private var activeTabId: Int = 0
+    private var isChangingSelectedTab = false
     private val notificationPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -40,22 +41,20 @@ class SupplierMainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySupplierMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        applyWindowInsets()
         AppNotificationHelper.ensureChannel(this)
         AppData.loadPublicSettings(onSuccess = {}, onError = {})
-        BackgroundWork.run(
-            task = { SupplierData.restoreCachedDashboard() },
-            onSuccess = {},
-            onError = {}
-        )
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
-            openTab(item.itemId)
+            if (!isChangingSelectedTab) {
+                showTab(item.itemId)
+            }
             true
         }
 
         if (savedInstanceState == null) {
             val destination = intent.getIntExtra(EXTRA_TAB_ID, R.id.nav_supplier_home)
-            binding.bottomNavigation.selectedItemId = destination
+            openTab(destination)
         }
         maybeRequestNotificationPermission()
     }
@@ -63,16 +62,20 @@ class SupplierMainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         val destination = intent.getIntExtra(EXTRA_TAB_ID, R.id.nav_supplier_home)
-        binding.bottomNavigation.selectedItemId = destination
+        openTab(destination)
     }
 
     fun openTab(itemId: Int) {
-        if (activeTabId == itemId && tabFragments[itemId]?.isVisible == true) return
-
         if (binding.bottomNavigation.selectedItemId != itemId) {
+            isChangingSelectedTab = true
             binding.bottomNavigation.selectedItemId = itemId
-            return
+            isChangingSelectedTab = false
         }
+        showTab(itemId)
+    }
+
+    private fun showTab(itemId: Int) {
+        if (activeTabId == itemId && tabFragments[itemId]?.isVisible == true) return
 
         val transaction = supportFragmentManager.beginTransaction()
             .setReorderingAllowed(true)
@@ -97,6 +100,20 @@ class SupplierMainActivity : AppCompatActivity() {
 
         activeTabId = itemId
         transaction.commit()
+    }
+
+    private fun applyWindowInsets() {
+        val initialBottomPadding = binding.root.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(
+                view.paddingLeft,
+                view.paddingTop,
+                view.paddingRight,
+                initialBottomPadding + systemBars.bottom
+            )
+            insets
+        }
     }
 
     companion object {

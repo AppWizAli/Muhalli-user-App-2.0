@@ -114,6 +114,10 @@ class SupplierStoreProductAdapter(
     fun updateItems(newItems: List<SupplierProduct>) {
         val previous = items
         items = newItems
+        if (previous.size + newItems.size > LARGE_PRODUCT_DIFF_THRESHOLD) {
+            notifyDataSetChanged()
+            return
+        }
         DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize(): Int = previous.size
             override fun getNewListSize(): Int = newItems.size
@@ -124,6 +128,10 @@ class SupplierStoreProductAdapter(
                 return previous[oldItemPosition] == newItems[newItemPosition]
             }
         }).dispatchUpdatesTo(this)
+    }
+
+    private companion object {
+        private const val LARGE_PRODUCT_DIFF_THRESHOLD = 80
     }
 }
 

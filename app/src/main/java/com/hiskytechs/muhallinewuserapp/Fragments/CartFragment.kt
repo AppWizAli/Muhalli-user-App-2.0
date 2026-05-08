@@ -12,6 +12,8 @@ import com.hiskytechs.muhallinewuserapp.Adapters.CartAdapter
 import com.hiskytechs.muhallinewuserapp.Adapters.CartSupplierAdapter
 import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Ui.CheckoutAddressActivity
+import com.hiskytechs.muhallinewuserapp.Ui.CheckoutReviewActivity
+import com.hiskytechs.muhallinewuserapp.Utill.AddressManager
 import com.hiskytechs.muhallinewuserapp.Utill.CartManager
 import com.hiskytechs.muhallinewuserapp.Utill.SupplierCart
 import com.hiskytechs.muhallinewuserapp.databinding.FragmentCartBinding
@@ -66,8 +68,13 @@ class CartFragment : Fragment() {
                     ).show()
                 }
                 else -> {
+                    val checkoutClass = if (AddressManager.hasAddress()) {
+                        CheckoutReviewActivity::class.java
+                    } else {
+                        CheckoutAddressActivity::class.java
+                    }
                     startActivity(
-                        Intent(requireContext(), CheckoutAddressActivity::class.java).apply {
+                        Intent(requireContext(), checkoutClass).apply {
                             putExtra(CheckoutAddressActivity.EXTRA_SUPPLIER_NAME, activeSupplierName)
                         }
                     )

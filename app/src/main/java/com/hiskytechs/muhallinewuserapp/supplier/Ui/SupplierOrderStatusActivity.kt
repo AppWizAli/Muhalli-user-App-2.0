@@ -3,6 +3,7 @@ package com.hiskytechs.muhallinewuserapp.supplier.Ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -63,6 +64,7 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
 
         binding.ivBack.setOnClickListener { finish() }
         binding.btnSaveStatus.setOnClickListener { saveStatus() }
+        binding.btnChatBuyer.setOnClickListener { openBuyerChat() }
 
         statusOptions.forEach { option ->
             option.container.setOnClickListener {
@@ -77,15 +79,114 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
     private fun bindOrder() {
         val order = order ?: return
         binding.tvOrderId.text = "#${order.id}"
-        binding.tvRetailerName.text = order.retailerName
-        binding.tvOrderDateValue.text = order.orderDate
+        binding.tvRetailerName.text = order.retailerName.ifBlank { order.buyerName }
+        binding.tvDeliveryAddress.text = order.deliveryAddress.ifBlank { getString(R.string.default_delivery_address) }
+        binding.tvOrderNotes.visibility = if (order.notes.isBlank()) View.GONE else View.VISIBLE
+        binding.tvOrderNotes.text = order.notes
+        binding.tvOrderDateValue.text = order.orderDateTime.ifBlank { order.orderDate }
         binding.tvExpectedDeliveryValue.text = order.expectedDeliveryDate
+            .takeUnless { it.isBlank() || it.equals("null", ignoreCase = true) }
+            ?: getString(R.string.not_available)
         binding.tvItemsCountValue.text = getString(R.string.supplier_items_count_format, order.itemsCount)
         binding.tvOrderAmountValue.text = formatPkr(order.amountPkr)
         binding.tvCurrentStatusValue.text = order.status.label
         binding.tvCurrentStatusValue.setBackgroundResource(orderStatusBackground(order.status))
         binding.tvCurrentStatusValue.setTextColor(
             ContextCompat.getColor(this, orderStatusTextColor(order.status))
+        )
+        bindOrderItems(order)
+    }
+
+    private fun bindOrderItems(order: SupplierOrder) {
+        binding.cardOrderItems.visibility = View.VISIBLE
+        binding.layoutOrderItems.removeAllViews()
+        if (order.items.isEmpty()) {
+            val emptyMessage = TextView(this).apply {
+                text = getString(R.string.order_items_loading_or_missing)
+                setTextColor(ContextCompat.getColor(this@SupplierOrderStatusActivity, R.color.supplier_text_secondary))
+                textSize = 13f
+            }
+            binding.layoutOrderItems.addView(emptyMessage)
+            return
+        }
+        order.items.forEach { item ->
+            val row = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                setPadding(0, 8, 0, 8)
+            }
+            val itemText = LinearLayout(this).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            }
+            val title = TextView(this).apply {
+                text = item.productName
+                setTextColor(ContextCompat.getColor(this@SupplierOrderStatusActivity, R.color.text_dark))
+                textSize = 14f
+                setTypeface(typeface, android.graphics.Typeface.BOLD)
+            }
+            val meta = TextView(this).apply {
+                text = getString(
+                    R.string.order_item_meta_format,
+                    item.quantity,
+                    item.unitLabel.ifBlank { getString(R.string.not_available) },
+                    formatPkr(item.unitPricePkr)
+                )
+                setTextColor(ContextCompat.getColor(this@SupplierOrderStatusActivity, R.color.supplier_text_secondary))
+                textSize = 12f
+            }
+            val amount = TextView(this).apply {
+                text = formatPkr(item.lineTotalPkr)
+                setTextColor(ContextCompat.getColor(this@SupplierOrderStatusActivity, R.color.primary))
+                textSize = 14f
+                setTypeface(typeface, android.graphics.Typeface.BOLD)
+            }
+            itemText.addView(title)
+            itemText.addView(meta)
+            row.addView(itemText)
+            row.addView(amount)
+            binding.layoutOrderItems.addView(row)
+        }
+    }
+
+    private fun openBuyerChat() {
+        val currentOrder = order ?: return
+        val cachedConversation = SupplierData.findConversationForBuyer(
+            currentOrder.buyerName,
+            currentOrder.retailerName
+        )
+        if (cachedConversation != null) {
+            openConversation(cachedConversation.id)
+            return
+        }
+
+        binding.btnChatBuyer.isEnabled = false
+        loadingDialog.show(R.string.loading_message)
+        SupplierData.refreshMessages(
+            onSuccess = {
+                binding.btnChatBuyer.isEnabled = true
+                loadingDialog.dismiss()
+                val conversation = SupplierData.findConversationForBuyer(
+                    currentOrder.buyerName,
+                    currentOrder.retailerName
+                )
+                if (conversation == null) {
+                    Toast.makeText(this, R.string.supplier_chat_not_available, Toast.LENGTH_SHORT).show()
+                } else {
+                    openConversation(conversation.id)
+                }
+            },
+            onError = { message ->
+                binding.btnChatBuyer.isEnabled = true
+                loadingDialog.dismiss()
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+        )
+    }
+
+    private fun openConversation(conversationId: String) {
+        startActivity(
+            Intent(this, SupplierChatConversationActivity::class.java)
+                .putExtra(SupplierChatConversationActivity.EXTRA_CONVERSATION_ID, conversationId)
         )
     }
 
@@ -137,14 +238,17 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
             selectedStatus = cachedOrder.status
             bindOrder()
             renderStatusSelection()
-            return
+            if (cachedOrder.items.isNotEmpty() && cachedOrder.deliveryAddress.isNotBlank()) {
+                return
+            }
         }
 
         loadingDialog.show(R.string.loading_orders)
-        SupplierData.refreshOrders(
-            onSuccess = {
+        SupplierData.refreshOrderDetail(
+            orderId = requestedOrderId,
+            onSuccess = { detailedOrder ->
                 loadingDialog.dismiss()
-                val loadedOrder = SupplierData.findOrder(requestedOrderId)
+                val loadedOrder = detailedOrder ?: SupplierData.findOrder(requestedOrderId)
                 if (loadedOrder == null) {
                     finish()
                 } else {
@@ -154,10 +258,26 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
                     renderStatusSelection()
                 }
             },
-            onError = { message ->
+            onError = {
+                SupplierData.refreshOrders(
+                    onSuccess = {
+                        loadingDialog.dismiss()
+                        val loadedOrder = SupplierData.findOrder(requestedOrderId)
+                        if (loadedOrder == null) {
+                            finish()
+                        } else {
+                            order = loadedOrder
+                            selectedStatus = loadedOrder.status
+                            bindOrder()
+                            renderStatusSelection()
+                        }
+                    },
+                    onError = { message ->
                 loadingDialog.dismiss()
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 finish()
+                    }
+                )
             }
         )
     }

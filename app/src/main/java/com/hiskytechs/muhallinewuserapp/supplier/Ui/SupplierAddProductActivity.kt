@@ -254,6 +254,7 @@ class SupplierAddProductActivity : AppCompatActivity() {
     }
 
     private fun renderStep() {
+        setEditContentLoading(false)
         binding.tvStepLabel.text = getString(R.string.supplier_step_format, currentStep)
         binding.layoutStepCategory.visibility = if (currentStep == 1) View.VISIBLE else View.GONE
         binding.layoutStepProduct.visibility = if (currentStep == 2) View.VISIBLE else View.GONE
@@ -269,27 +270,91 @@ class SupplierAddProductActivity : AppCompatActivity() {
         binding.scrollAddProduct.post { binding.scrollAddProduct.smoothScrollTo(0, 0) }
     }
 
+    private fun setEditContentLoading(isLoading: Boolean) {
+        if (!isEditMode) return
+        binding.scrollAddProduct.visibility = if (isLoading) View.INVISIBLE else View.VISIBLE
+        binding.btnStickyNext.visibility = if (isLoading || currentStep == 3) View.GONE else View.VISIBLE
+    }
+
     private fun loadCatalogData() {
-        loadingDialog.show(R.string.loading_supplier_catalog)
-        val onSuccess = {
-            loadingDialog.dismiss()
-            categoryAdapter.updateItems(SupplierData.getCategories())
-            if (isEditMode) {
-                prefillEditProduct()
-            } else {
-                renderStep()
-            }
-        }
-        val onError = { message: String ->
-            loadingDialog.dismiss()
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        if (isEditMode) {
+            setEditContentLoading(true)
+            loadingDialog.show(R.string.loading_supplier_catalog)
+        } else {
             renderStep()
         }
-        if (isEditMode) {
-            SupplierData.refreshProducts(onSuccess = onSuccess, onError = onError)
-        } else {
-            SupplierData.refreshCatalog(onSuccess = onSuccess, onError = onError)
-        }
+        BackgroundWork.run(
+            task = { SupplierData.restoreCachedProducts() },
+            onSuccess = { restoredFromCache ->
+                if (isFinishing || isDestroyed) return@run
+                var didPrefillFromCache = false
+                if (restoredFromCache) {
+                    categoryAdapter.updateItems(SupplierData.getCategories())
+                    didPrefillFromCache = if (isEditMode) {
+                        prefillEditProduct(finishIfMissing = false)
+                    } else {
+                        renderStep()
+                        true
+                    }
+                }
+                val shouldShowLoader = !restoredFromCache || (isEditMode && !didPrefillFromCache)
+                if (shouldShowLoader) {
+                    loadingDialog.show(R.string.loading_supplier_catalog)
+                } else if (isEditMode) {
+                    loadingDialog.dismiss()
+                    setEditContentLoading(false)
+                }
+
+                val onSuccess: () -> Unit = {
+                    loadingDialog.dismiss()
+                    categoryAdapter.updateItems(SupplierData.getCategories())
+                    if (isEditMode && selectedProduct == null) {
+                        prefillEditProduct(finishIfMissing = true)
+                    } else if (!isEditMode) {
+                        renderStep()
+                    } else {
+                        setEditContentLoading(false)
+                    }
+                    Unit
+                }
+                val onError = { message: String ->
+                    loadingDialog.dismiss()
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    if (!isEditMode || selectedProduct == null) {
+                        renderStep()
+                    }
+                }
+                if (isEditMode) {
+                    SupplierData.refreshProducts(onSuccess = onSuccess, onError = onError)
+                } else {
+                    SupplierData.refreshCatalog(onSuccess = onSuccess, onError = onError)
+                }
+            },
+            onError = {
+                if (isFinishing || isDestroyed) return@run
+                loadingDialog.show(R.string.loading_supplier_catalog)
+                val onSuccess: () -> Unit = {
+                    loadingDialog.dismiss()
+                    categoryAdapter.updateItems(SupplierData.getCategories())
+                    if (isEditMode) {
+                        prefillEditProduct(finishIfMissing = true)
+                    } else {
+                        renderStep()
+                    }
+                    Unit
+                }
+                val onError = { message: String ->
+                    loadingDialog.dismiss()
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    renderStep()
+                }
+                if (isEditMode) {
+                    SupplierData.refreshProducts(onSuccess = onSuccess, onError = onError)
+                } else {
+                    SupplierData.refreshCatalog(onSuccess = onSuccess, onError = onError)
+                }
+            }
+        )
     }
 
     private fun goToProductStep() {
@@ -310,12 +375,14 @@ class SupplierAddProductActivity : AppCompatActivity() {
         renderStep()
     }
 
-    private fun prefillEditProduct() {
+    private fun prefillEditProduct(finishIfMissing: Boolean = true): Boolean {
         val product = editProductId?.let(SupplierData::findProduct)
         if (product == null) {
-            Toast.makeText(this, getString(R.string.supplier_product_not_found), Toast.LENGTH_SHORT).show()
-            finish()
-            return
+            if (finishIfMissing) {
+                Toast.makeText(this, getString(R.string.supplier_product_not_found), Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            return false
         }
 
         selectedProduct = SupplierData.findCatalogProduct(product.catalogProductId)
@@ -355,6 +422,7 @@ class SupplierAddProductActivity : AppCompatActivity() {
         binding.tvSelectedImageStatus.text = getString(R.string.supplier_product_image_helper)
         currentStep = 3
         renderStep()
+        return true
     }
 
     private fun bindSelectedProduct(product: SupplierCatalogProduct, fallbackImageUrl: String = product.imageUrl) {

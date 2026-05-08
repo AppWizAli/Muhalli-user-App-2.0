@@ -19,6 +19,7 @@ import com.hiskytechs.muhallinewuserapp.Models.ReferralSummary
 import com.hiskytechs.muhallinewuserapp.Models.Supplier
 import com.hiskytechs.muhallinewuserapp.R
 import android.content.Context
+import com.hiskytechs.muhallinewuserapp.Utill.AddressManager
 import com.hiskytechs.muhallinewuserapp.network.ApiClient
 import com.hiskytechs.muhallinewuserapp.network.ApiException
 import com.hiskytechs.muhallinewuserapp.network.ApiFormatting
@@ -562,6 +563,7 @@ object AppData {
 
                 val subtotal = items.sumOf { it.subtotal }
                 val deliveryFee = (totalAmount - subtotal).coerceAtLeast(0.0)
+                val address = AddressManager.getAddress() ?: throw ApiException("Delivery address is required.")
                 val createdOrder = parseOrder(
                     ApiClient.postDataObject(
                         endpoint = "buyer/orders/create",
@@ -569,6 +571,10 @@ object AppData {
                             "buyer_id" to AppSession.buyerId,
                             "supplier_id" to supplier.id,
                             "delivery_fee" to deliveryFee,
+                            "delivery_name" to address.fullName,
+                            "delivery_phone" to address.phoneNumber,
+                            "delivery_address" to address.formattedAddress,
+                            "notes" to address.note,
                             "items" to items.map { item ->
                                 mapOf(
                                     "supplier_product_id" to (item.id.toIntOrNull() ?: 0),

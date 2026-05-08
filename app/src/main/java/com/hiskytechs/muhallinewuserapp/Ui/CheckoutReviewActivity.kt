@@ -26,6 +26,14 @@ class CheckoutReviewActivity : AppCompatActivity() {
 
         val address = AddressManager.getAddress()
         if (address == null) {
+            startActivity(
+                Intent(this, CheckoutAddressActivity::class.java).apply {
+                    putExtra(
+                        CheckoutAddressActivity.EXTRA_SUPPLIER_NAME,
+                        intent.getStringExtra(CheckoutAddressActivity.EXTRA_SUPPLIER_NAME)
+                    )
+                }
+            )
             finish()
             return
         }

@@ -9,7 +9,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.hiskytechs.muhallinewuserapp.R
+import com.hiskytechs.muhallinewuserapp.Ui.AppLoadingDialog
 import com.hiskytechs.muhallinewuserapp.databinding.FragmentSupplierHomeBinding
+import com.hiskytechs.muhallinewuserapp.network.BackgroundWork
 import com.hiskytechs.muhallinewuserapp.supplier.Adapters.SupplierQuickActionAdapter
 import com.hiskytechs.muhallinewuserapp.supplier.Adapters.SupplierRecentOrderAdapter
 import com.hiskytechs.muhallinewuserapp.supplier.Data.SupplierData
@@ -25,8 +27,9 @@ class SupplierHomeFragment : Fragment() {
 
     private var _binding: FragmentSupplierHomeBinding? = null
     private val binding get() = _binding!!
-    private var hasStartedRefresh = false
+    private var loadingDialog: AppLoadingDialog? = null
     private var skippedInitialResume = false
+    private var didLoadExtras = false
     private lateinit var recentOrderAdapter: SupplierRecentOrderAdapter
 
     override fun onCreateView(
@@ -40,11 +43,11 @@ class SupplierHomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loadingDialog = (activity as? androidx.appcompat.app.AppCompatActivity)?.let(::AppLoadingDialog)
+        loadingDialog?.show(R.string.loading_orders)
         bindStaticHomeActions()
-        if (SupplierData.restoreCachedDashboard()) {
-            bindHome()
-        }
-        refreshHome()
+        bindHome()
+        restoreHomeCacheInBackground()
     }
 
     override fun onResume() {
@@ -53,23 +56,62 @@ class SupplierHomeFragment : Fragment() {
             skippedInitialResume = true
             return
         }
-        refreshHome(showErrors = false)
+        refreshHome(showErrors = false, showBlockingLoader = false)
     }
 
-    private fun refreshHome(showErrors: Boolean = true) {
-        hasStartedRefresh = true
-        SupplierData.refreshDashboard(
+    private fun refreshHome(showErrors: Boolean = true, showBlockingLoader: Boolean = false) {
+        if (showBlockingLoader) {
+            loadingDialog?.show(R.string.loading_orders)
+        }
+        SupplierData.refreshHomeSummary(
             onSuccess = {
-                if (_binding == null) return@refreshDashboard
+                if (_binding == null) return@refreshHomeSummary
+                loadingDialog?.dismiss()
                 bindHome()
             },
             onError = { message ->
-                if (_binding == null) return@refreshDashboard
+                if (_binding == null) return@refreshHomeSummary
+                loadingDialog?.dismiss()
                 if (showErrors && !SupplierData.hasCachedDashboard()) {
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
             }
         )
+    }
+
+    private fun restoreHomeCacheInBackground() {
+        BackgroundWork.run(
+            task = { SupplierData.restoreCachedHomeSummary() },
+            onSuccess = { restoredFromCache ->
+                if (_binding == null) return@run
+                bindHome()
+                refreshHome(showBlockingLoader = !restoredFromCache)
+                if (restoredFromCache) {
+                    loadingDialog?.dismiss()
+                }
+                scheduleHomeExtrasRefresh()
+            },
+            onError = {
+                if (_binding == null) return@run
+                refreshHome(showBlockingLoader = true)
+                scheduleHomeExtrasRefresh()
+            }
+        )
+    }
+
+    private fun scheduleHomeExtrasRefresh() {
+        if (didLoadExtras) return
+        didLoadExtras = true
+        binding.root.postDelayed({
+            if (_binding == null) return@postDelayed
+            SupplierData.refreshHomeExtras(
+                onSuccess = {
+                    if (_binding == null) return@refreshHomeExtras
+                    bindHome()
+                },
+                onError = {}
+            )
+        }, HOME_EXTRAS_DELAY_MS)
     }
 
     private fun bindHome() {
@@ -128,6 +170,12 @@ class SupplierHomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        loadingDialog?.dismiss()
+        loadingDialog = null
         _binding = null
+    }
+
+    companion object {
+        private const val HOME_EXTRAS_DELAY_MS = 1200L
     }
 }

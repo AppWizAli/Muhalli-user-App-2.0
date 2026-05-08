@@ -91,15 +91,23 @@
                 app:layout_constraintStart_toStartOf="@id/tvSupplierName"
                 app:layout_constraintTop_toBottomOf="@id/tvLocation" />
 
-            <LinearLayout
-                android:id="@+id/layoutCategories"
+            <HorizontalScrollView
+                android:id="@+id/scrollCategories"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:orientation="horizontal"
+                android:fillViewport="false"
+                android:scrollbars="none"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cvLogo" />
+                app:layout_constraintTop_toBottomOf="@id/cvLogo">
+
+                <LinearLayout
+                    android:id="@+id/layoutCategories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
 
             <LinearLayout
                 android:id="@+id/layoutStats"
@@ -110,7 +118,7 @@
                 android:weightSum="3"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layoutCategories">
+                app:layout_constraintTop_toBottomOf="@id/scrollCategories">
 
                 <LinearLayout
                     android:layout_width="0dp"

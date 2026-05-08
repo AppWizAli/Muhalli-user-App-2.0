@@ -606,7 +606,7 @@ function order_summary_cards(): array
 function find_order(int $id): ?array
 {
     $order = fetch_one(
-        'SELECT o.*, b.store_name, b.buyer_name, b.phone AS buyer_phone, b.city AS buyer_city,
+        'SELECT o.*, b.store_name, b.buyer_name, b.phone AS buyer_phone, b.city AS buyer_city, b.address AS buyer_address,
                 s.business_name, s.owner_name, s.phone AS supplier_phone
          FROM orders o
          JOIN buyers b ON b.id = o.buyer_id
@@ -620,9 +620,13 @@ function find_order(int $id): ?array
     }
 
     $order['items'] = fetch_all(
-        'SELECT oi.*, sp.sku
+        'SELECT oi.*,
+                sp.sku,
+                COALESCE(NULLIF(oi.product_name, ""), cp.name, "Product item") AS product_name,
+                COALESCE(NULLIF(oi.unit_label, ""), cp.unit_type, "") AS unit_label
          FROM order_items oi
          LEFT JOIN supplier_products sp ON sp.id = oi.supplier_product_id
+         LEFT JOIN catalog_products cp ON cp.id = sp.catalog_product_id
          WHERE oi.order_id = :order_id
          ORDER BY oi.id ASC',
         ['order_id' => $id]
@@ -1254,8 +1258,9 @@ function supplier_catalog_payload(): array
 
 function supplier_orders_payload(int $supplierId): array
 {
-    return fetch_all(
-        'SELECT o.*, b.store_name, b.buyer_name, COUNT(oi.id) AS item_count
+    $orders = fetch_all(
+        'SELECT o.*, b.store_name, b.buyer_name, b.phone AS buyer_phone, b.city AS buyer_city, b.address AS buyer_address,
+                COUNT(oi.id) AS item_count
          FROM orders o
          JOIN buyers b ON b.id = o.buyer_id
          LEFT JOIN order_items oi ON oi.order_id = o.id
@@ -1264,6 +1269,26 @@ function supplier_orders_payload(int $supplierId): array
          ORDER BY o.order_date DESC',
         ['supplier_id' => $supplierId]
     );
+
+    foreach ($orders as &$order) {
+        $order['delivery_address'] = $order['buyer_address'] ?? '';
+        $order['items'] = fetch_all(
+            'SELECT oi.supplier_product_id,
+                    COALESCE(NULLIF(oi.product_name, ""), cp.name, "Product item") AS product_name,
+                    COALESCE(NULLIF(oi.unit_label, ""), cp.unit_type, "") AS unit_label,
+                    oi.quantity,
+                    oi.unit_price,
+                    oi.line_total
+             FROM order_items oi
+             LEFT JOIN supplier_products sp ON sp.id = oi.supplier_product_id
+             LEFT JOIN catalog_products cp ON cp.id = sp.catalog_product_id
+             WHERE oi.order_id = :order_id
+             ORDER BY id ASC',
+            ['order_id' => (int) $order['id']]
+        );
+    }
+
+    return $orders;
 }
 
 function supplier_earnings_payload(int $supplierId): array

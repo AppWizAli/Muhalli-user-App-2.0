@@ -98,6 +98,7 @@ class SupplierProductsFragment : Fragment() {
         binding.rvProducts.layoutManager = LinearLayoutManager(requireContext())
         binding.rvProducts.setHasFixedSize(true)
         binding.rvProducts.adapter = productAdapter
+        loadingDialog?.show(R.string.loading_supplier_catalog)
         binding.rvProducts.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -165,12 +166,7 @@ class SupplierProductsFragment : Fragment() {
         }
 
         updateChipState(chips, binding.chipAll)
-        val restoredFromCache = SupplierData.restoreCachedProducts()
-        if (restoredFromCache) {
-            didInitialRefresh = true
-            loadProducts()
-        }
-        refreshProducts(showBlockingLoader = !restoredFromCache)
+        binding.root.post { restoreProductsCacheInBackground() }
     }
 
     override fun onResume() {
@@ -201,6 +197,25 @@ class SupplierProductsFragment : Fragment() {
                 if (!didInitialRefresh) {
                     Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 }
+            }
+        )
+    }
+
+    private fun restoreProductsCacheInBackground() {
+        BackgroundWork.run(
+            task = { SupplierData.restoreCachedProducts() },
+            onSuccess = { restoredFromCache ->
+                if (_binding == null) return@run
+                if (restoredFromCache) {
+                    didInitialRefresh = true
+                    loadProducts()
+                    loadingDialog?.dismiss()
+                }
+                refreshProducts(showBlockingLoader = !restoredFromCache)
+            },
+            onError = {
+                if (_binding == null) return@run
+                refreshProducts(showBlockingLoader = true)
             }
         )
     }

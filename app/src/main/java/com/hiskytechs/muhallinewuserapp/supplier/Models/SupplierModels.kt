@@ -81,11 +81,25 @@ data class SupplierOrder(
     val backendId: Int = 0,
     val id: String,
     val retailerName: String,
+    val buyerName: String = "",
+    val buyerPhone: String = "",
+    val deliveryAddress: String = "",
+    val notes: String = "",
     val orderDate: String,
+    val orderDateTime: String = "",
     val expectedDeliveryDate: String,
     val itemsCount: Int,
     val amountPkr: Int,
-    val status: SupplierOrderStatus
+    val status: SupplierOrderStatus,
+    val items: List<SupplierOrderItem> = emptyList()
+)
+
+data class SupplierOrderItem(
+    val productName: String,
+    val unitLabel: String,
+    val quantity: Int,
+    val unitPricePkr: Int,
+    val lineTotalPkr: Int
 )
 
 data class SupplierDashboardStats(

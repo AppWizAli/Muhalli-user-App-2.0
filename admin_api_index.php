@@ -148,6 +148,23 @@ function order_payload_from_items(int $buyerId, int $supplierId, array $items, s
 
     $deliveryFee = (float) api_value('delivery_fee', 0);
 
+    $deliveryName = trim((string) api_value('delivery_name', ''));
+    $deliveryPhone = trim((string) api_value('delivery_phone', ''));
+    $deliveryAddress = trim((string) api_value('delivery_address', ''));
+    $deliveryLines = [];
+    if ($deliveryName !== '') {
+        $deliveryLines[] = 'Name: ' . $deliveryName;
+    }
+    if ($deliveryPhone !== '') {
+        $deliveryLines[] = 'Phone: ' . $deliveryPhone;
+    }
+    if ($deliveryAddress !== '') {
+        $deliveryLines[] = 'Address: ' . $deliveryAddress;
+    }
+    if (trim($notes) !== '') {
+        $deliveryLines[] = 'Note: ' . trim($notes);
+    }
+
     return [
         'order_number' => 'MW-' . date('Ymd') . '-' . random_int(100, 999),
         'buyer_id' => $buyerId,
@@ -155,7 +172,7 @@ function order_payload_from_items(int $buyerId, int $supplierId, array $items, s
         'subtotal' => $subtotal,
         'delivery_fee' => $deliveryFee,
         'total_amount' => $subtotal + $deliveryFee,
-        'notes' => $notes,
+        'notes' => implode("\n", $deliveryLines),
         'status' => 'processing',
         'payment_status' => 'pending',
         'items' => $preparedItems,
@@ -832,6 +849,15 @@ try {
         case 'supplier/orders':
             $identity = require_api_identity('supplier');
             api_success(supplier_orders_payload((int) $identity['user_id']));
+
+        case 'supplier/orders/detail':
+            $identity = require_api_identity('supplier');
+            $order = find_order((int) api_value('order_id', 0));
+            if (!$order || (int) $order['supplier_id'] !== (int) $identity['user_id']) {
+                api_fail('Order not found.', 404);
+            }
+            $order['delivery_address'] = $order['buyer_address'] ?? '';
+            api_success($order);
 
         case 'supplier/orders/status':
             if ($method !== 'POST') {

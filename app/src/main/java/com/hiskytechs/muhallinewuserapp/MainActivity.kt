@@ -12,6 +12,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.messaging.FirebaseMessaging
 import com.hiskytechs.muhallinewuserapp.Fragments.CategoriesFragment
@@ -49,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        applyWindowInsets()
         AppNotificationHelper.ensureChannel(this)
         AppData.loadPublicSettings(onSuccess = {}, onError = {})
 
@@ -128,6 +131,20 @@ class MainActivity : AppCompatActivity() {
             "profile" -> navigateToTab(R.id.nav_profile)
             "categories" -> navigateToTab(R.id.nav_categories)
             else -> navigateToTab(R.id.nav_home)
+        }
+    }
+
+    private fun applyWindowInsets() {
+        val initialBottomPadding = binding.root.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(
+                view.paddingLeft,
+                view.paddingTop,
+                view.paddingRight,
+                initialBottomPadding + systemBars.bottom
+            )
+            insets
         }
     }
 

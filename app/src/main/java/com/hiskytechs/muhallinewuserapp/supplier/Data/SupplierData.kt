@@ -20,6 +20,7 @@ import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierEarningsPeriod
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierHomeAction
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierIntroPage
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierOrder
+import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierOrderItem
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierOrderStatus
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierProduct
 import com.hiskytechs.muhallinewuserapp.supplier.Models.SupplierProductFilter
@@ -169,10 +170,19 @@ object SupplierData {
 
     fun restoreCachedDashboard(): Boolean {
         val restoredProfile = restoreCachedProfile()
-        val restoredProducts = restoreCachedProducts()
         val restoredOrders = restoreOrdersFromCache()
         val restoredConversations = restoreCachedConversations()
-        if (restoredProfile || restoredProducts || restoredOrders || restoredConversations) {
+        if (restoredProfile || restoredOrders || restoredConversations) {
+            updateDashboardStats()
+            return true
+        }
+        return false
+    }
+
+    fun restoreCachedHomeSummary(): Boolean {
+        val restoredProfile = restoreCachedProfile()
+        val restoredOrders = restoreOrdersFromCache()
+        if (restoredProfile || restoredOrders) {
             updateDashboardStats()
             return true
         }
@@ -202,6 +212,30 @@ object SupplierData {
         )
     }
 
+    fun refreshHomeSummary(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        BackgroundWork.run(
+            task = {
+                refreshProfileSync()
+                refreshOrdersSync()
+                updateDashboardStats()
+            },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
+    fun refreshHomeExtras(onSuccess: () -> Unit, onError: (String) -> Unit) {
+        BackgroundWork.run(
+            task = {
+                refreshProductsSync()
+                runCatching { refreshMessagesSync() }
+                updateDashboardStats()
+            },
+            onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
     fun refreshProducts(onSuccess: () -> Unit, onError: (String) -> Unit) {
         BackgroundWork.run(
             task = { refreshProductsSync() },
@@ -222,6 +256,14 @@ object SupplierData {
         BackgroundWork.run(
             task = { refreshOrdersSync() },
             onSuccess = { onSuccess() },
+            onError = onError
+        )
+    }
+
+    fun refreshOrderDetail(orderId: String, onSuccess: (SupplierOrder?) -> Unit, onError: (String) -> Unit) {
+        BackgroundWork.run(
+            task = { refreshOrderDetailSync(orderId) },
+            onSuccess = onSuccess,
             onError = onError
         )
     }
@@ -317,6 +359,17 @@ object SupplierData {
     fun findCatalogProduct(productId: String): SupplierCatalogProduct? = catalogProductsCache.find { it.id == productId }
     fun findProduct(productId: String): SupplierProduct? = supplierProductsCache.find { it.id == productId }
     fun findConversation(conversationId: String): SupplierConversation? = conversationsCache.find { it.id == conversationId }
+    fun findConversationForBuyer(vararg buyerNames: String): SupplierConversation? {
+        val names = buyerNames
+            .map { it.trim().lowercase(Locale.getDefault()) }
+            .filter { it.isNotBlank() }
+            .distinct()
+        if (names.isEmpty()) return null
+        return conversationsCache.firstOrNull { conversation ->
+            val retailerName = conversation.retailerName.trim().lowercase(Locale.getDefault())
+            names.any { name -> retailerName == name || retailerName.contains(name) || name.contains(retailerName) }
+        }
+    }
     fun getMessages(conversationId: String): List<SupplierChatMessage> = messagesCache[conversationId]?.toList().orEmpty()
 
     fun clearCachedState() {
@@ -801,6 +854,30 @@ object SupplierData {
         }
     }
 
+    private fun refreshOrderDetailSync(orderId: String): SupplierOrder? {
+        val cachedOrder = findOrder(orderId)
+        val backendId = cachedOrder?.backendId ?: orderId.toIntOrNull() ?: return cachedOrder
+        val payload = ApiClient.getDataObject(
+            endpoint = "supplier/orders/detail",
+            queryParams = mapOf(
+                "supplier_id" to AppSession.supplierId,
+                "order_id" to backendId
+            )
+        )
+        if (payload.length() == 0) return cachedOrder
+        val detailedOrder = parseOrders(JSONArray().put(payload)).firstOrNull() ?: return cachedOrder
+        val existingIndex = ordersCache.indexOfFirst { order ->
+            order.backendId == detailedOrder.backendId || order.id.equals(detailedOrder.id, ignoreCase = true)
+        }
+        if (existingIndex >= 0) {
+            ordersCache[existingIndex] = detailedOrder
+        } else {
+            ordersCache.add(0, detailedOrder)
+        }
+        updateDashboardStats()
+        return detailedOrder
+    }
+
     private fun refreshEarningsSync() {
         val payload = ApiClient.getDataObject(
             endpoint = "supplier/earnings",
@@ -814,9 +891,6 @@ object SupplierData {
     }
 
     private fun refreshMessagesSync() {
-        if (categoriesCache.isEmpty() || supplierProductsCache.isEmpty()) {
-            refreshProductsSync()
-        }
         val conversationsArray = ApiClient.getDataArray(
             endpoint = "supplier/messages",
             queryParams = mapOf("supplier_id" to AppSession.supplierId)
@@ -930,20 +1004,77 @@ object SupplierData {
         return buildList {
             repeat(array.length()) { index ->
                 val item = array.optJSONObject(index) ?: return@repeat
+                val orderItems = parseOrderItems(item.optJSONArray("items"))
+                val notes = item.optString("notes")
+                val buyerName = item.optString("buyer_name").ifBlank { notes.valueAfterLabel("Name") }
+                val storeName = item.optString("store_name")
+                val buyerCity = item.optString("buyer_city", item.optString("city"))
+                val buyerAddress = item.optString("delivery_address").ifBlank {
+                    item.optString("buyer_address", item.optString("address"))
+                }.ifBlank { notes.valueAfterLabel("Address") }
                 add(
                     SupplierOrder(
                         backendId = item.optInt("id"),
                         id = item.optString("order_number"),
-                        retailerName = item.optString("store_name"),
+                        retailerName = storeName.ifBlank { buyerName },
+                        buyerName = buyerName.ifBlank { storeName },
+                        buyerPhone = item.optString("buyer_phone", item.optString("phone"))
+                            .ifBlank { notes.valueAfterLabel("Phone") },
+                        deliveryAddress = listOf(buyerAddress, buyerCity)
+                            .filter { it.isNotBlank() }
+                            .distinct()
+                            .joinToString(", "),
+                        notes = notes.valueAfterLabel("Note"),
                         orderDate = ApiFormatting.displayDate(item.optString("order_date")),
+                        orderDateTime = ApiFormatting.displayDateTime(
+                            item.optString("created_at").ifBlank { item.optString("order_date") }
+                        ),
                         expectedDeliveryDate = ApiFormatting.displayDate(item.optString("delivery_date")),
-                        itemsCount = item.optInt("item_count"),
+                        itemsCount = item.optInt("item_count", orderItems.size),
                         amountPkr = safeMoneyInt(item.optDouble("total_amount")),
-                        status = item.optString("status").toSupplierStatus()
+                        status = item.optString("status").toSupplierStatus(),
+                        items = orderItems
                     )
                 )
             }
         }
+    }
+
+    private fun parseOrderItems(array: JSONArray?): List<SupplierOrderItem> {
+        if (array == null) return emptyList()
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                val supplierProductId = item.optString("supplier_product_id", item.optString("product_id"))
+                val productName = item.optString("product_name")
+                    .ifBlank { item.optString("catalog_name") }
+                    .ifBlank { item.optString("supplier_product_name") }
+                    .ifBlank { item.optString("item_name") }
+                    .ifBlank { item.optString("name") }
+                    .ifBlank { supplierProductId.takeIf { it.isNotBlank() }?.let { findProduct(it)?.name }.orEmpty() }
+                    .ifBlank { string(R.string.order_item_unknown_product) }
+                val quantity = item.optInt("quantity", item.optInt("qty"))
+                val unitPrice = safeMoneyInt(item.optDouble("unit_price", item.optDouble("price")))
+                val lineTotal = safeMoneyInt(item.optDouble("line_total", item.optDouble("total")))
+                add(
+                    SupplierOrderItem(
+                        productName = productName,
+                        unitLabel = item.optString("unit_label", item.optString("unit_type")),
+                        quantity = quantity,
+                        unitPricePkr = unitPrice,
+                        lineTotalPkr = if (lineTotal > 0) lineTotal else unitPrice * quantity
+                    )
+                )
+            }
+        }
+    }
+
+    private fun String.valueAfterLabel(label: String): String {
+        return lineSequence()
+            .firstOrNull { it.startsWith("$label:", ignoreCase = true) }
+            ?.substringAfter(':')
+            ?.trim()
+            .orEmpty()
     }
 
     private fun parseTransactions(array: JSONArray?): List<SupplierTransaction> {
