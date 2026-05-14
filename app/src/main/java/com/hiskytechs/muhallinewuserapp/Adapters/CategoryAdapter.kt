@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.hiskytechs.muhallinewuserapp.Models.Category
+import com.hiskytechs.muhallinewuserapp.Ui.loadMarketplaceImage
 import com.hiskytechs.muhallinewuserapp.databinding.ItemCategoryBinding
 
 class CategoryAdapter(
@@ -30,7 +31,11 @@ class CategoryAdapter(
         holder.binding.apply {
             tvCategoryName.text = category.name
             tvProductCount.text = category.productCount
-            ivCategoryIcon.setImageResource(category.iconResId)
+            if (category.imageUrl.isBlank()) {
+                ivCategoryIcon.setImageResource(category.iconResId)
+            } else {
+                ivCategoryIcon.loadMarketplaceImage(category.imageUrl)
+            }
             cvIcon.setCardBackgroundColor(Color.parseColor(category.backgroundColor))
             root.setOnClickListener { onCategoryClick(category) }
         }

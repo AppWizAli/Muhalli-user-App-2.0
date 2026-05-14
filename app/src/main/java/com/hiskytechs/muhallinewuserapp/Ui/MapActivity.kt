@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
@@ -47,6 +48,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         binding = ActivityMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        runCatching { MapsInitializer.initialize(applicationContext) }
 
         mode = intent.getStringExtra(EXTRA_MODE) ?: MODE_VIEW
         initialCity = intent.getStringExtra(EXTRA_CITY).orEmpty()
@@ -106,6 +108,11 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
+        googleMap.uiSettings.isZoomControlsEnabled = true
+        googleMap.uiSettings.isMapToolbarEnabled = true
+        if (hasLocationPermission()) {
+            runCatching { googleMap.isMyLocationEnabled = true }
+        }
         val fallbackCity = initialCity.ifBlank { getString(R.string.default_city_name) }
         val targetLatLng = geocodeCity(fallbackCity) ?: LatLng(24.8607, 67.0011)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(targetLatLng, 11f))

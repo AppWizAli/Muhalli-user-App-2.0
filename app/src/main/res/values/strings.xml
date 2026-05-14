@@ -57,6 +57,12 @@
     <string name="order_item_meta_format">Qty %1$d %2$s at %3$s each</string>
     <string name="order_item_unknown_product">Product item</string>
     <string name="order_items_loading_or_missing">Order item details are loading. If they do not appear, update the admin API files on the server.</string>
+    <string name="invoice">Invoice</string>
+    <string name="invoice_items_not_loaded">Invoice items are loading. Pull to refresh or try again if they do not appear.</string>
+    <string name="invoice_item_meta_format">Carton Packing: %1$s · Qty %2$d %3$s · %4$s each</string>
+    <string name="invoice_subtotal_format">Subtotal: %1$s</string>
+    <string name="invoice_delivery_format">Delivery: %1$s</string>
+    <string name="invoice_total_format">Total: %1$s</string>
     <string name="chat_with_buyer">Chat with buyer</string>
     <string name="supplier_chat_not_available">No buyer chat is available for this order yet.</string>
     <string name="showing_all_verified_suppliers">Showing all verified suppliers</string>

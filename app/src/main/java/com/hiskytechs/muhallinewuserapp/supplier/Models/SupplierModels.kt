@@ -97,6 +97,7 @@ data class SupplierOrder(
 data class SupplierOrderItem(
     val productName: String,
     val unitLabel: String,
+    val packaging: String = "",
     val quantity: Int,
     val unitPricePkr: Int,
     val lineTotalPkr: Int

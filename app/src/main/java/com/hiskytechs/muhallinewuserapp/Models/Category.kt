@@ -6,5 +6,6 @@ data class Category(
     val productCount: String,
     val iconResId: Int,
     val backgroundColor: String,
-    val description: String = ""
+    val description: String = "",
+    val imageUrl: String = ""
 )

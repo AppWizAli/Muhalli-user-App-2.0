@@ -52,6 +52,7 @@ class SuppliersActivity : AppCompatActivity() {
             categoryName = selectedCategory,
             cityFilter = AppData.buyerProfile.city,
             sort = currentSort,
+            forceRefresh = true,
             onSuccess = { suppliers ->
                 binding.tvResultsCount.text = getString(R.string.suppliers_found_count, suppliers.size)
                 binding.rvSuppliers.adapter = SupplierAdapter(suppliers, selectedCategory)

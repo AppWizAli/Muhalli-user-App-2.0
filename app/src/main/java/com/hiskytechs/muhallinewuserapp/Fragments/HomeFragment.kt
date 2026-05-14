@@ -42,6 +42,7 @@ class HomeFragment : Fragment() {
     private var activeLoadingCount = 0
     private var currentSort = SORT_DEFAULT
     private var currentSearch = ""
+    private var nextSupplierLoadForceRefresh = false
     private val searchHandler = Handler(Looper.getMainLooper())
     private var pendingSearchLoad: Runnable? = null
     private var skippedInitialResume = false
@@ -194,6 +195,7 @@ class HomeFragment : Fragment() {
                 binding.tvActiveCity.text = profile.city.ifBlank {
                     getString(R.string.default_city_name)
                 }
+                nextSupplierLoadForceRefresh = true
                 loadOffers()
                 loadSuppliers()
                 loadReferralSummary()
@@ -202,6 +204,7 @@ class HomeFragment : Fragment() {
                 if (_binding == null) return@loadBuyerProfile
                 hideInlineLoading()
                 binding.tvActiveCity.text = getString(R.string.default_city_name)
+                nextSupplierLoadForceRefresh = true
                 loadOffers()
                 loadSuppliers()
                 loadReferralSummary()
@@ -238,11 +241,14 @@ class HomeFragment : Fragment() {
         binding.rvSearchProducts.visibility = View.GONE
         binding.rvSuppliers.visibility = View.VISIBLE
         val requestSearch = currentSearch
+        val forceRefresh = nextSupplierLoadForceRefresh
+        nextSupplierLoadForceRefresh = false
         showInlineLoading()
         AppData.loadHomeSuppliers(
             searchQuery = requestSearch,
             cityFilter = binding.tvActiveCity.text?.toString().orEmpty(),
             sort = currentSort,
+            forceRefresh = forceRefresh,
             onSuccess = { suppliers ->
                 if (_binding == null) return@loadHomeSuppliers
                 if (requestSearch != currentSearch) {
@@ -268,6 +274,7 @@ class HomeFragment : Fragment() {
         AppData.loadProductSearchResults(
             searchQuery = requestSearch,
             cityFilter = binding.tvActiveCity.text?.toString().orEmpty(),
+            forceRefresh = nextSupplierLoadForceRefresh.also { nextSupplierLoadForceRefresh = false },
             onSuccess = { products ->
                 if (_binding == null) return@loadProductSearchResults
                 if (requestSearch != currentSearch) {

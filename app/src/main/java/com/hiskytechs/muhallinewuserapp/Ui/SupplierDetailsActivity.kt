@@ -1,14 +1,15 @@
 package com.hiskytechs.muhallinewuserapp.Ui
 
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.os.Bundle
-import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.chip.Chip
 import com.hiskytechs.muhallinewuserapp.Adapters.SupplierProductAdapter
 import com.hiskytechs.muhallinewuserapp.Data.AppData
 import com.hiskytechs.muhallinewuserapp.Models.CartItem
@@ -68,6 +69,7 @@ class SupplierDetailsActivity : AppCompatActivity() {
         AppData.loadSuppliers(
             searchQuery = supplierName,
             cityFilter = "",
+            forceRefresh = true,
             onSuccess = { suppliers ->
                 hideInlineLoading()
                 supplier = suppliers.firstOrNull { it.name.equals(supplierName, ignoreCase = true) }
@@ -97,21 +99,22 @@ class SupplierDetailsActivity : AppCompatActivity() {
 
         binding.layoutCategories.removeAllViews()
         item.categories.ifEmpty { listOf(getString(R.string.general_category)) }.forEach { category ->
-            val chip = TextView(this).apply {
+            val chip = Chip(this).apply {
                 text = category
-                setTextColor(ContextCompat.getColor(this@SupplierDetailsActivity, R.color.primary))
                 textSize = 12f
                 setTypeface(typeface, android.graphics.Typeface.BOLD)
-                background = ContextCompat.getDrawable(this@SupplierDetailsActivity, R.drawable.bg_status_transit)
-                setPadding(28, 14, 28, 14)
-                val params = android.widget.LinearLayout.LayoutParams(
-                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
-                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-                params.marginEnd = 12
-                layoutParams = params
+                isCheckable = false
                 isClickable = true
                 isFocusable = true
+                chipMinHeight = 36f
+                chipStartPadding = 12f
+                chipEndPadding = 12f
+                textStartPadding = 0f
+                textEndPadding = 0f
+                shapeAppearanceModel = shapeAppearanceModel.toBuilder()
+                    .setAllCornerSizes(18f)
+                    .build()
+                chipStrokeWidth = 0f
                 setOnClickListener {
                     selectedCategoryName = if (selectedCategoryName.equals(category, ignoreCase = true)) {
                         ""
@@ -129,9 +132,11 @@ class SupplierDetailsActivity : AppCompatActivity() {
                     if (isSelected) R.color.white else R.color.primary
                 )
             )
-            chip.background = ContextCompat.getDrawable(
-                this,
-                if (isSelected) R.drawable.bg_badge else R.drawable.bg_status_transit
+            chip.chipBackgroundColor = ColorStateList.valueOf(
+                ContextCompat.getColor(
+                    this,
+                    if (isSelected) R.color.primary else R.color.status_transit_bg
+                )
             )
             binding.layoutCategories.addView(chip)
         }
@@ -143,6 +148,7 @@ class SupplierDetailsActivity : AppCompatActivity() {
             supplierName = supplierName,
             query = currentQuery,
             categoryName = selectedCategoryName,
+            forceRefresh = supplier == null,
             onSuccess = { products ->
                 hideInlineLoading()
                 productAdapter = SupplierProductAdapter(products, supplierName, ::onProductQuantityChanged)

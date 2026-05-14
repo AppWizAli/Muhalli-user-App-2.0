@@ -213,4 +213,7 @@
     <string name="supplier_product_image_helper">أضف صورة للمنتج الآن أو احتفظ بصورة الكتالوج الافتراضية.</string>
     <string name="supplier_special_offer_description">عرض خاص من المورد</string>
     <string name="supplier_special_offer_badge">عرض خاص</string>
+    <string name="supplier_edit_product">تعديل المنتج</string>
+    <string name="supplier_product_not_found">لم يتم العثور على المنتج.</string>
+    <string name="supplier_product_updated">تم تحديث المنتج بنجاح</string>
 </resources>

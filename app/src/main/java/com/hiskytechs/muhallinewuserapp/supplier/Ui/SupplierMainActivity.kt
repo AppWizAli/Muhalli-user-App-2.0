@@ -103,13 +103,13 @@ class SupplierMainActivity : AppCompatActivity() {
     }
 
     private fun applyWindowInsets() {
-        val initialBottomPadding = binding.root.paddingBottom
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
+        val initialBottomPadding = binding.bottomNavigation.paddingBottom
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(
-                view.paddingLeft,
-                view.paddingTop,
-                view.paddingRight,
+            binding.bottomNavigation.setPadding(
+                binding.bottomNavigation.paddingLeft,
+                binding.bottomNavigation.paddingTop,
+                binding.bottomNavigation.paddingRight,
                 initialBottomPadding + systemBars.bottom
             )
             insets

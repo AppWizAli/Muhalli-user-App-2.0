@@ -126,7 +126,8 @@ class SupplierOrderStatusActivity : AppCompatActivity() {
             }
             val meta = TextView(this).apply {
                 text = getString(
-                    R.string.order_item_meta_format,
+                    R.string.invoice_item_meta_format,
+                    item.packaging.ifBlank { getString(R.string.not_available) },
                     item.quantity,
                     item.unitLabel.ifBlank { getString(R.string.not_available) },
                     formatPkr(item.unitPricePkr)

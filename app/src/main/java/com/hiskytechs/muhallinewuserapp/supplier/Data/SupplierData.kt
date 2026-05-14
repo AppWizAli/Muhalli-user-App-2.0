@@ -1060,6 +1060,9 @@ object SupplierData {
                     SupplierOrderItem(
                         productName = productName,
                         unitLabel = item.optString("unit_label", item.optString("unit_type")),
+                        packaging = item.optString("packaging").ifBlank {
+                            item.optString("carton_packing")
+                        },
                         quantity = quantity,
                         unitPricePkr = unitPrice,
                         lineTotalPkr = if (lineTotal > 0) lineTotal else unitPrice * quantity

@@ -12,6 +12,7 @@ import com.hiskytechs.muhallinewuserapp.Models.ChatParticipant
 import com.hiskytechs.muhallinewuserapp.Models.ChatThread
 import com.hiskytechs.muhallinewuserapp.Models.MarketplaceOffer
 import com.hiskytechs.muhallinewuserapp.Models.Order
+import com.hiskytechs.muhallinewuserapp.Models.OrderItem
 import com.hiskytechs.muhallinewuserapp.Models.Product
 import com.hiskytechs.muhallinewuserapp.Models.PublicAppSettings
 import com.hiskytechs.muhallinewuserapp.Models.ReferralClaim
@@ -76,18 +77,29 @@ object AppData {
         searchQuery: String = "",
         cityFilter: String = buyerProfile.city,
         sort: String = "default",
+        forceRefresh: Boolean = false,
         onSuccess: (List<Supplier>) -> Unit,
         onError: (String) -> Unit
     ) {
         BackgroundWork.run(
             task = {
-                ensureMarketplaceData()
-                filterSuppliers(
+                ensureMarketplaceData(forceRefresh = forceRefresh)
+                val filtered = filterSuppliers(
                     categoryName = "",
                     searchQuery = searchQuery,
                     cityFilter = cityFilter,
                     sort = sort
-                ).take(8)
+                )
+                if (filtered.isEmpty() && cityFilter.isNotBlank()) {
+                    filterSuppliers(
+                        categoryName = "",
+                        searchQuery = searchQuery,
+                        cityFilter = "",
+                        sort = sort
+                    ).take(8)
+                } else {
+                    filtered.take(8)
+                }
             },
             onSuccess = onSuccess,
             onError = onError
@@ -113,12 +125,13 @@ object AppData {
         searchQuery: String = "",
         cityFilter: String = buyerProfile.city,
         sort: String = "default",
+        forceRefresh: Boolean = false,
         onSuccess: (List<Supplier>) -> Unit,
         onError: (String) -> Unit
     ) {
         BackgroundWork.run(
             task = {
-                ensureMarketplaceData()
+                ensureMarketplaceData(forceRefresh = forceRefresh)
                 filterSuppliers(
                     categoryName = categoryName,
                     searchQuery = searchQuery,
@@ -134,6 +147,7 @@ object AppData {
     fun loadProductSearchResults(
         searchQuery: String,
         cityFilter: String = buyerProfile.city,
+        forceRefresh: Boolean = false,
         onSuccess: (List<Product>) -> Unit,
         onError: (String) -> Unit
     ) {
@@ -144,25 +158,34 @@ object AppData {
                     return@run emptyList()
                 }
 
-                ensureMarketplaceData()
-                val normalizedCity = cityFilter.trim()
-                productsCache.filter { product ->
-                    val supplier = supplierByName[product.supplierName.lowercase(Locale.getDefault())]
-                    product.stockQuantity > 0 &&
-                        (normalizedCity.isBlank() || supplier?.location?.equals(normalizedCity, ignoreCase = true) == true) &&
-                        (
-                            product.name.contains(normalizedSearch, ignoreCase = true) ||
-                                product.categoryName.contains(normalizedSearch, ignoreCase = true) ||
-                                product.packaging.contains(normalizedSearch, ignoreCase = true) ||
-                                product.supplierName.contains(normalizedSearch, ignoreCase = true)
-                            )
+                ensureMarketplaceData(forceRefresh = forceRefresh)
+                fun matchingProducts(city: String): List<Product> {
+                    return productsCache.filter { product ->
+                        val supplier = supplierByName[product.supplierName.lowercase(Locale.getDefault())]
+                        product.stockQuantity > 0 &&
+                            (city.isBlank() || supplier?.location?.equals(city, ignoreCase = true) == true) &&
+                            (
+                                product.name.contains(normalizedSearch, ignoreCase = true) ||
+                                    product.categoryName.contains(normalizedSearch, ignoreCase = true) ||
+                                    product.packaging.contains(normalizedSearch, ignoreCase = true) ||
+                                    product.supplierName.contains(normalizedSearch, ignoreCase = true)
+                                )
+                    }
                 }
-                    .sortedWith(
-                        compareBy<Product> { it.displayPrice }
-                            .thenBy { it.supplierName.lowercase(Locale.getDefault()) }
-                            .thenBy { it.name.lowercase(Locale.getDefault()) }
-                    )
-                    .take(40)
+
+                val normalizedCity = cityFilter.trim()
+                val cityMatches = matchingProducts(normalizedCity)
+                val results = if (cityMatches.isEmpty() && normalizedCity.isNotBlank()) {
+                    matchingProducts("")
+                } else {
+                    cityMatches
+                }
+
+                results.sortedWith(
+                    compareBy<Product> { it.displayPrice }
+                        .thenBy { it.supplierName.lowercase(Locale.getDefault()) }
+                        .thenBy { it.name.lowercase(Locale.getDefault()) }
+                ).take(40)
             },
             onSuccess = onSuccess,
             onError = onError
@@ -173,12 +196,13 @@ object AppData {
         supplierName: String,
         query: String = "",
         categoryName: String = "",
+        forceRefresh: Boolean = false,
         onSuccess: (List<Product>) -> Unit,
         onError: (String) -> Unit
     ) {
         BackgroundWork.run(
             task = {
-                ensureMarketplaceData()
+                ensureMarketplaceData(forceRefresh = forceRefresh)
                 val supplier = supplierByName.values.firstOrNull {
                     it.name.equals(supplierName, ignoreCase = true)
                 } ?: throw ApiException("Supplier not found.")
@@ -370,6 +394,41 @@ object AppData {
                 ).toMutableList()
                 ordersCache = orders
                 ordersCache.toList()
+            },
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun loadOrderDetail(
+        orderId: String,
+        onSuccess: (Order?) -> Unit,
+        onError: (String) -> Unit
+    ) {
+        BackgroundWork.run(
+            task = {
+                val cachedOrder = findOrder(orderId)
+                val backendId = cachedOrder?.internalId ?: orderId.toIntOrNull()
+                if (backendId == null || backendId == 0) return@run cachedOrder
+                val payload = ApiClient.getDataObject(
+                    endpoint = "buyer/orders/detail",
+                    queryParams = mapOf(
+                        "buyer_id" to AppSession.buyerId,
+                        "order_id" to backendId
+                    )
+                )
+                if (payload.length() == 0) return@run cachedOrder
+                val detailedOrder = parseOrder(payload)
+                val existingIndex = ordersCache.indexOfFirst { order ->
+                    order.internalId == detailedOrder.internalId ||
+                        order.orderId.equals(detailedOrder.orderId, ignoreCase = true)
+                }
+                if (existingIndex >= 0) {
+                    ordersCache[existingIndex] = detailedOrder
+                } else {
+                    ordersCache.add(0, detailedOrder)
+                }
+                detailedOrder
             },
             onSuccess = onSuccess,
             onError = onError
@@ -790,7 +849,10 @@ object AppData {
                         backgroundColor = item.optString("accent_color").ifBlank {
                             ApiFormatting.supplierHeaderColor(index)
                         },
-                        description = item.optString("description")
+                        description = item.optString("description"),
+                        imageUrl = ApiConfig.resolveMediaUrl(
+                            item.optString("image_url").ifBlank { item.optString("icon") }
+                        )
                     )
                 )
             }
@@ -957,16 +1019,50 @@ object AppData {
     }
 
     private fun parseOrder(item: JSONObject): Order {
+        val orderItems = parseOrderItems(item.optJSONArray("items"))
         return Order(
             internalId = item.optInt("id"),
             orderId = item.optString("order_number"),
             date = ApiFormatting.displayDate(item.optString("order_date")),
             status = item.optString("status"),
             supplier = item.optString("business_name"),
-            itemsCount = item.optInt("item_count", item.optJSONArray("items")?.length() ?: 0),
+            itemsCount = item.optInt("item_count", orderItems.size),
             totalAmount = item.optDouble("total_amount"),
-            deliveryDate = ApiFormatting.displayDate(item.optString("delivery_date")).ifBlank { null }
+            deliveryDate = ApiFormatting.displayDate(item.optString("delivery_date"))
+                .takeUnless { it.isBlank() || it.equals("null", ignoreCase = true) },
+            deliveryAddress = item.optString("delivery_address")
+                .ifBlank { item.optString("buyer_address", item.optString("address")) },
+            subtotal = item.optDouble("subtotal"),
+            deliveryFee = item.optDouble("delivery_fee"),
+            items = orderItems
         )
+    }
+
+    private fun parseOrderItems(array: JSONArray?): List<OrderItem> {
+        if (array == null) return emptyList()
+        return buildList {
+            repeat(array.length()) { index ->
+                val item = array.optJSONObject(index) ?: return@repeat
+                val quantity = item.optInt("quantity", item.optInt("qty"))
+                val unitPrice = item.optDouble("unit_price", item.optDouble("price"))
+                val lineTotal = item.optDouble("line_total", item.optDouble("total"))
+                    .takeIf { it > 0.0 } ?: (unitPrice * quantity)
+                add(
+                    OrderItem(
+                        productName = item.optString("product_name")
+                            .ifBlank { item.optString("catalog_name") }
+                            .ifBlank { item.optString("name") }
+                            .ifBlank { string(R.string.order_item_unknown_product) },
+                        unitLabel = item.optString("unit_label", item.optString("unit_type")),
+                        packaging = item.optString("packaging")
+                            .ifBlank { item.optString("carton_packing") },
+                        quantity = quantity,
+                        unitPrice = unitPrice,
+                        lineTotal = lineTotal
+                    )
+                )
+            }
+        }
     }
 
     private fun parseThreads(array: JSONArray): List<ChatThread> {

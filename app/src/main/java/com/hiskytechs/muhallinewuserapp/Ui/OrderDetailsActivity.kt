@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +13,7 @@ import androidx.core.content.ContextCompat
 import com.hiskytechs.muhallinewuserapp.Data.AppData
 import com.hiskytechs.muhallinewuserapp.MainActivity
 import com.hiskytechs.muhallinewuserapp.Models.Order
+import com.hiskytechs.muhallinewuserapp.Models.OrderItem
 import com.hiskytechs.muhallinewuserapp.R
 import com.hiskytechs.muhallinewuserapp.Utill.AddressManager
 import com.hiskytechs.muhallinewuserapp.databinding.ActivityOrderDetailsBinding
@@ -37,17 +39,30 @@ class OrderDetailsActivity : AppCompatActivity() {
         val cachedOrder = AppData.findOrder(requestedOrderId)
         if (cachedOrder != null) {
             bindOrder(cachedOrder)
-            return
+            if (cachedOrder.items.isNotEmpty()) {
+                return
+            }
         }
 
-        AppData.loadOrders(
-            onSuccess = {
-                val loadedOrder = AppData.findOrder(requestedOrderId)
+        AppData.loadOrderDetail(
+            orderId = requestedOrderId,
+            onSuccess = { detailedOrder ->
+                val loadedOrder = detailedOrder ?: AppData.findOrder(requestedOrderId)
                 if (loadedOrder == null) {
-                    finish()
+                    loadOrdersFallback()
                 } else {
                     bindOrder(loadedOrder)
                 }
+            },
+            onError = { loadOrdersFallback() }
+        )
+    }
+
+    private fun loadOrdersFallback() {
+        AppData.loadOrders(
+            onSuccess = {
+                val loadedOrder = AppData.findOrder(requestedOrderId)
+                if (loadedOrder == null) finish() else bindOrder(loadedOrder)
             },
             onError = { message ->
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -59,6 +74,7 @@ class OrderDetailsActivity : AppCompatActivity() {
     private fun bindOrder(order: Order) {
         val statusUi = buildStatusUi(order)
         bindSummary(order, statusUi)
+        bindInvoice(order)
         bindTracking(order, statusUi)
         bindAddress()
 
@@ -104,10 +120,72 @@ class OrderDetailsActivity : AppCompatActivity() {
         binding.tvTrackingSummary.text = statusUi.trackingSummary
     }
 
+    private fun bindInvoice(order: Order) {
+        binding.layoutInvoiceItems.removeAllViews()
+        if (order.items.isEmpty()) {
+            binding.layoutInvoiceItems.addView(TextView(this).apply {
+                text = getString(R.string.invoice_items_not_loaded)
+                setTextColor(ContextCompat.getColor(this@OrderDetailsActivity, R.color.text_grey))
+                textSize = 13f
+            })
+        } else {
+            order.items.forEach { item ->
+                binding.layoutInvoiceItems.addView(createInvoiceRow(item))
+            }
+        }
+
+        val subtotal = order.subtotal.takeIf { it > 0.0 } ?: order.items.sumOf { it.lineTotal }
+        val deliveryFee = order.deliveryFee.takeIf { it > 0.0 } ?: (order.totalAmount - subtotal).coerceAtLeast(0.0)
+        binding.tvInvoiceSubtotal.text = getString(R.string.invoice_subtotal_format, CurrencyFormatter.format(subtotal))
+        binding.tvInvoiceDelivery.text = getString(R.string.invoice_delivery_format, CurrencyFormatter.format(deliveryFee))
+        binding.tvInvoiceTotal.text = getString(R.string.invoice_total_format, CurrencyFormatter.format(order.totalAmount))
+    }
+
+    private fun createInvoiceRow(item: OrderItem): View {
+        val row = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            setPadding(0, 8, 0, 8)
+        }
+        val textColumn = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+        }
+        val title = TextView(this).apply {
+            text = item.productName
+            setTextColor(ContextCompat.getColor(this@OrderDetailsActivity, R.color.text_dark))
+            textSize = 14f
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+        }
+        val meta = TextView(this).apply {
+            val packagingText = item.packaging.ifBlank { getString(R.string.not_available) }
+            text = getString(
+                R.string.invoice_item_meta_format,
+                packagingText,
+                item.quantity,
+                item.unitLabel.ifBlank { getString(R.string.not_available) },
+                CurrencyFormatter.format(item.unitPrice)
+            )
+            setTextColor(ContextCompat.getColor(this@OrderDetailsActivity, R.color.text_grey))
+            textSize = 12f
+        }
+        val amount = TextView(this).apply {
+            text = CurrencyFormatter.format(item.lineTotal)
+            setTextColor(ContextCompat.getColor(this@OrderDetailsActivity, R.color.primary))
+            textSize = 14f
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+        }
+        textColumn.addView(title)
+        textColumn.addView(meta)
+        row.addView(textColumn)
+        row.addView(amount)
+        return row
+    }
+
     private fun bindAddress() {
         val address = AddressManager.getAddress()
-        binding.tvDeliveryAddress.text = address?.formattedAddress
-            ?: getString(R.string.default_delivery_address)
+        val orderAddress = AppData.findOrder(requestedOrderId)?.deliveryAddress.orEmpty()
+        binding.tvDeliveryAddress.text = orderAddress.ifBlank { address?.formattedAddress.orEmpty() }
+            .ifBlank { getString(R.string.default_delivery_address) }
     }
 
     private fun bindTracking(order: Order, statusUi: OrderStatusUi) {
